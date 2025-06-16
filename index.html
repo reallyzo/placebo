@@ -21,7 +21,6 @@
       width: 200px;
       position: relative;
       perspective: 1000px;
-      overflow: hidden;
     }
 
     .logo {
@@ -31,31 +30,19 @@
       transition: transform 0.1s ease;
       background-color: transparent;
       will-change: transform;
+      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0));
+      transition: filter 0.3s ease;
     }
 
-    .shine {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 200%;
-      height: 100%;
-      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.25), transparent);
-      pointer-events: none;
-      animation: shine 2.5s infinite;
-    }
-
-    @keyframes shine {
-      0% { left: -100%; }
-      50% { left: 100%; }
-      100% { left: 100%; }
+    .logo-container:hover .logo,
+    .logo-container.glisten .logo {
+      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
     }
   </style>
 </head>
 <body>
   <div class="logo-container" id="logoContainer">
     <img src="triangle-logo.png" alt="PLACEBO Logo" class="logo" id="logo" />
-    <div class="shine"></div>
   </div>
 
   <script>
@@ -79,6 +66,14 @@
     document.addEventListener("mouseleave", function () {
       logo.style.transform = "rotateX(0deg) rotateY(0deg)";
     });
+
+    // Glisten interval effect
+    setInterval(() => {
+      container.classList.add("glisten");
+      setTimeout(() => {
+        container.classList.remove("glisten");
+      }, 400);
+    }, 5000);
   </script>
 </body>
 </html>
