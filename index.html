@@ -30,13 +30,7 @@
       transition: transform 0.1s ease;
       background-color: transparent;
       will-change: transform;
-      filter: drop-shadow(0 0 2px rgba(255, 255, 255, 2)); /* Softened glow */
-    }
-
-    }
-
-    .logo-container:hover .shine {
-      animation: shine 2s linear;
+      filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4)); /* Subtle glow */
     }
   </style>
 </head>
@@ -60,7 +54,7 @@
       const rotateX = offsetY * -10;
       const rotateY = offsetX * 10;
 
-      logo.style.transform = rotateX(${rotateX}deg) rotateY(${rotateY}deg);
+      logo.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     });
 
     document.addEventListener("mouseleave", function () {
