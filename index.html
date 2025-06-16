@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -53,7 +53,7 @@
 <body>
   <div class="logo-container" id="logoContainer">
     <div class="logo-wrapper" id="logoWrapper">
-      <img src="triangle-logo.png" alt="PLACEBO Logo" class="logo" />
+      <img src="triangle-logo.png" alt="PLACEBO Logo" class="logo" id="logoImage" />
     </div>
   </div>
 
@@ -77,6 +77,14 @@
 
     document.addEventListener("mouseleave", function () {
       wrapper.style.transform = "rotateX(0deg) rotateY(0deg)";
+    });
+
+    // ⚡️ iOS/Safari mobile glow fix
+    window.addEventListener("load", () => {
+      const logo = document.getElementById("logoImage");
+      logo.style.display = "none";
+      void logo.offsetHeight;
+      logo.style.display = "block";
     });
   </script>
 </body>
