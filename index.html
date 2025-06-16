@@ -30,30 +30,43 @@
       transition: transform 0.1s ease;
       background-color: transparent;
       will-change: transform;
-      filter: drop-shadow(0 0 0px #fff);
+      filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.4)); /* Softened glow */
     }
 
-    .logo-container:hover .logo {
-      filter: drop-shadow(0 0 6px #fff);
+    .shine {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 200%;
+      height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.2), transparent);
+      pointer-events: none;
+      animation: shine 6s linear infinite;
+      mask-image: url("triangle-logo.png");
+      mask-size: contain;
+      mask-repeat: no-repeat;
+      mask-position: center;
+      -webkit-mask-image: url("triangle-logo.png");
+      -webkit-mask-size: contain;
+      -webkit-mask-repeat: no-repeat;
+      -webkit-mask-position: center;
     }
 
-    @keyframes pulseGlow {
-      0%, 100% {
-        filter: drop-shadow(0 0 0px #fff);
-      }
-      50% {
-        filter: drop-shadow(0 0 6px #fff);
-      }
+    @keyframes shine {
+      0% { left: -100%; }
+      100% { left: 100%; }
     }
 
-    .logo.glow-pulse {
-      animation: pulseGlow 6s ease-in-out infinite;
+    .logo-container:hover .shine {
+      animation: shine 2s linear;
     }
   </style>
 </head>
 <body>
   <div class="logo-container" id="logoContainer">
-    <img src="triangle-logo.png" alt="PLACEBO Logo" class="logo glow-pulse" id="logo" />
+    <img src="triangle-logo.png" alt="PLACEBO Logo" class="logo" id="logo" />
+    <div class="shine"></div>
   </div>
 
   <script>
