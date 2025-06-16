@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PLACEBO</title>
-  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="icon" href="favicon.png" type="image/png" />
   <style>
     body {
       margin: 0;
-      background-color: #000;
+      background: #000;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -33,13 +33,20 @@
 
     .logo {
       width: 100%;
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       background-color: transparent;
+      animation: glowPulse 6s ease-in-out infinite;
       will-change: transform, filter;
     }
 
-    .animate {
-      animation: glowPulse 6s ease-in-out infinite;
+    .logo img {
+      width: 100%;
+      height: auto;
+      display: block;
+      background-color: transparent;
+      pointer-events: none;
     }
 
     @keyframes glowPulse {
@@ -64,16 +71,17 @@
 <body>
   <div class="logo-container" id="logoContainer">
     <div class="logo-wrapper" id="logoWrapper">
-      <img src="triangle-logo.png" alt="PLACEBO Logo" class="logo" id="logoImage" />
+      <div class="logo" id="logoPulse">
+        <img src="triangle-logo.png" alt="PLACEBO Logo" id="logoImage" />
+      </div>
     </div>
   </div>
 
   <script>
     const wrapper = document.getElementById("logoWrapper");
     const container = document.getElementById("logoContainer");
-    const logo = document.getElementById("logoImage");
 
-    // Cursor-based rotation
+    // Mouse rotate effect (desktop only)
     document.addEventListener("mousemove", function (e) {
       const rect = container.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
@@ -89,13 +97,13 @@
       wrapper.style.transform = "rotateX(0deg) rotateY(0deg)";
     });
 
-    // ✅ Final iOS/Safari animation fix
+    // Final iOS fix: trigger animation on first frame
     window.addEventListener("load", () => {
-      setTimeout(() => {
-        logo.classList.add("animate");
-        // ✅ Additional trick: force GPU layer
-        logo.style.transform += ' translateZ(0)';
-      }, 50); // small delay helps Safari register it
+      requestAnimationFrame(() => {
+        const logo = document.getElementById("logoPulse");
+        void logo.offsetWidth; // force reflow
+        logo.style.animationPlayState = "running";
+      });
     });
   </script>
 </body>
