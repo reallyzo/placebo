@@ -41,7 +41,7 @@
     const logo = document.getElementById("logo");
     const container = document.getElementById("logoContainer");
 
-    container.addEventListener("mousemove", (e) => {
+    container.addEventListener("mousemove", function (e) {
       const rect = container.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
@@ -49,13 +49,13 @@
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
 
-      const rotateX = -(y - centerY) / 6; // More sensitive
-      const rotateY = (x - centerX) / 6;
+      const rotateX = ((y - centerY) / centerY) * -15;
+      const rotateY = ((x - centerX) / centerX) * 15;
 
       logo.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     });
 
-    container.addEventListener("mouseleave", () => {
+    container.addEventListener("mouseleave", function () {
       logo.style.transform = "rotateX(0deg) rotateY(0deg)";
     });
   </script>
