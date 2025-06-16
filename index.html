@@ -47,17 +47,6 @@
       pointer-events: none;
     }
 
-    @keyframes glowPulse {
-      0%, 100% {
-        filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.2));
-        transform: scale(1);
-      }
-      50% {
-        filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.9));
-        transform: scale(1.15);
-      }
-    }
-
     @media (prefers-reduced-motion: reduce) {
       .logo {
         animation: none !important;
@@ -78,8 +67,9 @@
   <script>
     const wrapper = document.getElementById("logoWrapper");
     const container = document.getElementById("logoContainer");
+    const pulse = document.getElementById("logoPulse");
 
-    // Mouse movement for desktop
+    // Mouse rotation for desktop
     document.addEventListener("mousemove", function (e) {
       const rect = container.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
@@ -95,13 +85,29 @@
       wrapper.style.transform = "rotateX(0deg) rotateY(0deg)";
     });
 
-    // ✨ FINAL FIX: Add animation from JS AFTER page load
-    window.addEventListener("load", () => {
-      setTimeout(() => {
-        const logo = document.getElementById("logoPulse");
-        logo.style.animation = "glowPulse 6s ease-in-out infinite";
-        logo.style.transform += " translateZ(0)";
-      }, 50);
+    // ✨ Inject CSS + Start animation post-load for iOS Safari
+    window.addEventListener("DOMContentLoaded", () => {
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes glowPulse {
+          0%, 100% {
+            filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.2));
+            transform: scale(1);
+          }
+          50% {
+            filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.9));
+            transform: scale(1.15);
+          }
+        }
+        #logoPulse {
+          animation: glowPulse 6s ease-in-out infinite;
+        }
+      `;
+      document.head.appendChild(style);
+
+      // Force reflow before applying animation
+      void pulse.offsetWidth;
+      pulse.style.transform += ' translateZ(0)';
     });
   </script>
 </body>
