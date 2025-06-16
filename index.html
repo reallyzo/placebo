@@ -25,12 +25,16 @@
 
     .logo {
       width: 100%;
+      animation: glowPulse 6s ease-in-out infinite;
+    }
+
+    .logo img {
+      width: 100%;
       display: block;
       transform-style: preserve-3d;
       transition: transform 0.1s ease;
       background-color: transparent;
       will-change: transform;
-      animation: glowPulse 6s ease-in-out infinite;
     }
 
     @keyframes glowPulse {
@@ -45,11 +49,13 @@
 </head>
 <body>
   <div class="logo-container" id="logoContainer">
-    <img src="triangle-logo.png" alt="PLACEBO Logo" class="logo" id="logo" />
+    <div class="logo" id="logoWrapper">
+      <img src="triangle-logo.png" alt="PLACEBO Logo" id="logoImage" />
+    </div>
   </div>
 
   <script>
-    const logo = document.getElementById("logo");
+    const logoImage = document.getElementById("logoImage");
     const container = document.getElementById("logoContainer");
 
     document.addEventListener("mousemove", function (e) {
@@ -63,11 +69,11 @@
       const rotateX = offsetY * -5;
       const rotateY = offsetX * 5;
 
-      logo.style.transform = `scale(1.03) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      logoImage.style.transform = `scale(1.03) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     });
 
     document.addEventListener("mouseleave", function () {
-      logo.style.transform = "scale(1)";
+      logoImage.style.transform = "scale(1)";
     });
   </script>
 </body>
