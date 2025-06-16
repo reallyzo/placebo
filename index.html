@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PLACEBO</title>
-  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="icon" type="image/png" href="favicon.png" />
   <style>
     body {
       margin: 0;
@@ -22,15 +22,9 @@
       position: relative;
     }
 
-    .logo-container:hover {
-      animation: wiggle 0.6s ease-in-out;
-    }
-
     .logo {
       width: 100%;
       display: block;
-      filter: drop-shadow(0 0 5px #fff5);
-      transform-style: preserve-3d;
       transition: transform 0.4s ease;
     }
 
@@ -49,33 +43,20 @@
       }
     }
 
-    @keyframes wiggle {
-      0%, 100% { transform: rotate(0deg); }
-      25% { transform: rotate(2deg); }
-      50% { transform: rotate(-2deg); }
-      75% { transform: rotate(1deg); }
-    }
-
     .shine {
       position: absolute;
       top: 0;
-      left: -100%;
-      width: 200%;
+      left: -50%;
+      width: 100%;
       height: 100%;
-      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.2), transparent);
-      animation: shine 5s infinite;
+      background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+      animation: shine 2.5s infinite;
+      pointer-events: none;
     }
 
     @keyframes shine {
-      0% {
-        left: -100%;
-      }
-      50% {
-        left: 100%;
-      }
-      100% {
-        left: 100%;
-      }
+      0% { left: -50%; }
+      100% { left: 100%; }
     }
   </style>
 </head>
