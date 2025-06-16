@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -35,6 +35,7 @@
       width: 100%;
       display: block;
       background-color: transparent;
+      will-change: transform, filter;
       animation: glowPulse 6s ease-in-out infinite;
     }
 
@@ -44,8 +45,15 @@
         transform: scale(1);
       }
       50% {
-        filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.5));
-        transform: scale(1.1);
+        filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.9));
+        transform: scale(1.15);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .logo {
+        animation: none !important;
+        filter: drop-shadow(0 0 3px rgba(255,255,255,0.3));
       }
     }
   </style>
@@ -60,7 +68,9 @@
   <script>
     const wrapper = document.getElementById("logoWrapper");
     const container = document.getElementById("logoContainer");
+    const logo = document.getElementById("logoImage");
 
+    // Mouse rotate effect
     document.addEventListener("mousemove", function (e) {
       const rect = container.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
@@ -79,11 +89,10 @@
       wrapper.style.transform = "rotateX(0deg) rotateY(0deg)";
     });
 
-    // ⚡️ iOS/Safari mobile glow fix
+    // 🩹 iOS fix: force repaint on load
     window.addEventListener("load", () => {
-      const logo = document.getElementById("logoImage");
       logo.style.display = "none";
-      void logo.offsetHeight;
+      void logo.offsetHeight; // trigger reflow
       logo.style.display = "block";
     });
   </script>
