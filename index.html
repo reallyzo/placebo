@@ -36,6 +36,9 @@
       display: block;
       background-color: transparent;
       will-change: transform, filter;
+    }
+
+    .animate {
       animation: glowPulse 6s ease-in-out infinite;
     }
 
@@ -70,18 +73,15 @@
     const container = document.getElementById("logoContainer");
     const logo = document.getElementById("logoImage");
 
-    // Mouse rotate effect
+    // Cursor-based rotation
     document.addEventListener("mousemove", function (e) {
       const rect = container.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
-
       const offsetX = (e.clientX - centerX) / (rect.width / 2);
       const offsetY = (e.clientY - centerY) / (rect.height / 2);
-
       const rotateX = offsetY * -5;
       const rotateY = offsetX * 5;
-
       wrapper.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     });
 
@@ -89,13 +89,13 @@
       wrapper.style.transform = "rotateX(0deg) rotateY(0deg)";
     });
 
-    // ✅ iOS WebKit fix for CSS animation triggering
+    // ✅ Final iOS/Safari animation fix
     window.addEventListener("load", () => {
-      requestAnimationFrame(() => {
-        logo.classList.remove("logo"); // force reflow
-        void logo.offsetWidth;
-        logo.classList.add("logo");
-      });
+      setTimeout(() => {
+        logo.classList.add("animate");
+        // ✅ Additional trick: force GPU layer
+        logo.style.transform += ' translateZ(0)';
+      }, 50); // small delay helps Safari register it
     });
   </script>
 </body>
