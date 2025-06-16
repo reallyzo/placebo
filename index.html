@@ -30,16 +30,15 @@
       transition: transform 0.1s ease;
       background-color: transparent;
       will-change: transform;
-      filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4));
-      animation: pulse 6s ease-in-out infinite;
+      animation: glowPulse 6s ease-in-out infinite;
     }
 
-    @keyframes pulse {
+    @keyframes glowPulse {
       0%, 100% {
-        transform: scale(1);
+        filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.2));
       }
       50% {
-        transform: scale(1.06);
+        filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.5));
       }
     }
   </style>
