@@ -33,29 +33,6 @@
       filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.25)); /* Softened glow */
     }
 
-    .shine {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 200%;
-      height: 100%;
-      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.2), transparent);
-      pointer-events: none;
-      animation: shine 6s linear infinite;
-      mask-image: url("triangle-logo.png");
-      mask-size: contain;
-      mask-repeat: no-repeat;
-      mask-position: center;
-      -webkit-mask-image: url("triangle-logo.png");
-      -webkit-mask-size: contain;
-      -webkit-mask-repeat: no-repeat;
-      -webkit-mask-position: center;
-    }
-
-    @keyframes shine {
-      0% { left: -100%; }
-      100% { left: 100%; }
     }
 
     .logo-container:hover .shine {
