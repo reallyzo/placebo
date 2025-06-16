@@ -29,6 +29,7 @@
       transform-style: preserve-3d;
       transition: transform 0.1s ease;
       background-color: transparent;
+      will-change: transform;
     }
   </style>
 </head>
@@ -41,18 +42,20 @@
     const logo = document.getElementById("logo");
     const container = document.getElementById("logoContainer");
 
-    container.addEventListener("mousemove", function (e) {
+    document.addEventListener("mousemove", function (e) {
       const rect = container.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
 
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
+      if (x >= 0 && y >= 0 && x <= rect.width && y <= rect.height) {
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
 
-      const rotateX = ((y - centerY) / centerY) * -15;
-      const rotateY = ((x - centerX) / centerX) * 15;
+        const rotateX = ((y - centerY) / centerY) * -15;
+        const rotateY = ((x - centerX) / centerX) * 15;
 
-      logo.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        logo.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      }
     });
 
     container.addEventListener("mouseleave", function () {
