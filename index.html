@@ -20,51 +20,43 @@
     .logo-container {
       width: 200px;
       position: relative;
-      transform-style: preserve-3d;
-      transition: transform 0.2s ease-out;
+      perspective: 1000px;
     }
 
     .logo {
       width: 100%;
       display: block;
-    }
-
-    .shine {
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 200%;
-      height: 100%;
-      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.2), transparent);
-      animation: shine 5s infinite;
-      pointer-events: none;
-    }
-
-    @keyframes shine {
-      0% { left: -100%; }
-      50% { left: 100%; }
-      100% { left: 100%; }
+      filter: drop-shadow(0 0 5px #fff5);
+      transform-style: preserve-3d;
+      transition: transform 0.1s ease;
     }
   </style>
 </head>
 <body>
   <div class="logo-container" id="logoContainer">
-    <img src="triangle-logo.png" alt="PLACEBO Logo" class="logo" />
-    <div class="shine"></div>
+    <img src="triangle-logo.png" alt="PLACEBO Logo" class="logo" id="logo" />
   </div>
 
   <script>
-    const logo = document.getElementById('logoContainer');
+    const logo = document.getElementById("logo");
+    const container = document.getElementById("logoContainer");
 
-    document.addEventListener('mousemove', (e) => {
-      const x = e.clientX;
-      const y = e.clientY;
-      const centerX = window.innerWidth / 2;
-      const centerY = window.innerHeight / 2;
-      const rotateX = (y - centerY) / centerY * 30; // exaggerate a little
-      const rotateY = (x - centerX) / centerX * 30;
+    container.addEventListener("mousemove", (e) => {
+      const rect = container.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
 
-      logo.style.transform = `rotateX(${-rotateX}deg) rotateY(${rotateY}deg)`;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      const rotateX = -(y - centerY) / 12;
+      const rotateY = (x - centerX) / 12;
+
+      logo.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+
+    container.addEventListener("mouseleave", () => {
+      logo.style.transform = "rotateX(0deg) rotateY(0deg)";
     });
   </script>
 </body>
