@@ -26,9 +26,9 @@
     .logo {
       width: 100%;
       display: block;
-      filter: drop-shadow(0 0 5px #fff5);
       transform-style: preserve-3d;
       transition: transform 0.1s ease;
+      background-color: transparent;
     }
   </style>
 </head>
@@ -49,8 +49,8 @@
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
 
-      const rotateX = -(y - centerY) / 12;
-      const rotateY = (x - centerX) / 12;
+      const rotateX = -(y - centerY) / 6; // More sensitive
+      const rotateY = (x - centerX) / 6;
 
       logo.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     });
