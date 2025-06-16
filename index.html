@@ -19,7 +19,6 @@
 
     .logo-container {
       width: 200px;
-      position: relative;
       perspective: 1000px;
     }
 
@@ -37,7 +36,6 @@
       align-items: center;
       justify-content: center;
       background-color: transparent;
-      animation: glowPulse 6s ease-in-out infinite;
       will-change: transform, filter;
     }
 
@@ -81,7 +79,7 @@
     const wrapper = document.getElementById("logoWrapper");
     const container = document.getElementById("logoContainer");
 
-    // Mouse rotate effect (desktop only)
+    // Mouse movement for desktop
     document.addEventListener("mousemove", function (e) {
       const rect = container.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
@@ -97,13 +95,13 @@
       wrapper.style.transform = "rotateX(0deg) rotateY(0deg)";
     });
 
-    // Final iOS fix: trigger animation on first frame
+    // ✨ FINAL FIX: Add animation from JS AFTER page load
     window.addEventListener("load", () => {
-      requestAnimationFrame(() => {
+      setTimeout(() => {
         const logo = document.getElementById("logoPulse");
-        void logo.offsetWidth; // force reflow
-        logo.style.animationPlayState = "running";
-      });
+        logo.style.animation = "glowPulse 6s ease-in-out infinite";
+        logo.style.transform += " translateZ(0)";
+      }, 50);
     });
   </script>
 </body>
