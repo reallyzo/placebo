@@ -6,62 +6,44 @@
   <title>PLACEBO</title>
   <link rel="icon" type="image/png" href="favicon.png" />
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
+      margin: 0;
       background-color: #000;
-      height: 100vh;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
+      height: 100vh;
       overflow: hidden;
       cursor: default;
     }
 
     .logo-container {
-      position: relative;
       width: 200px;
+      position: relative;
       transform-style: preserve-3d;
-      transition: transform 0.2s ease;
+      transition: transform 0.2s ease-out;
     }
 
     .logo {
       width: 100%;
       display: block;
-      position: relative;
-      z-index: 2;
     }
 
     .shine {
-      content: "";
       position: absolute;
       top: 0;
-      left: 0;
-      width: 100%;
+      left: -100%;
+      width: 200%;
       height: 100%;
-      background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.2), transparent);
+      animation: shine 5s infinite;
       pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      z-index: 1;
     }
 
-    .logo-container:hover .shine {
-      opacity: 1;
-      animation: shineMove 1s ease;
-    }
-
-    @keyframes shineMove {
-      0% {
-        background-position: -200% 0;
-      }
-      100% {
-        background-position: 200% 0;
-      }
+    @keyframes shine {
+      0% { left: -100%; }
+      50% { left: 100%; }
+      100% { left: 100%; }
     }
   </style>
 </head>
@@ -72,13 +54,17 @@
   </div>
 
   <script>
-    const logoContainer = document.getElementById("logoContainer");
+    const logo = document.getElementById('logoContainer');
 
-    document.addEventListener("mousemove", (e) => {
-      const { innerWidth, innerHeight } = window;
-      const rotateX = (y / window.innerHeight - 0.5) * 45;
-      const rotateY = (x / window.innerWidth - 0.5) * 45;
-      logoContainer.style.transform = `rotateX(${-rotateX}deg) rotateY(${rotateY}deg)`;
+    document.addEventListener('mousemove', (e) => {
+      const x = e.clientX;
+      const y = e.clientY;
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      const rotateX = (y - centerY) / centerY * 30; // exaggerate a little
+      const rotateY = (x - centerX) / centerX * 30;
+
+      logo.style.transform = `rotateX(${-rotateX}deg) rotateY(${rotateY}deg)`;
     });
   </script>
 </body>
