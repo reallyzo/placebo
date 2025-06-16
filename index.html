@@ -30,7 +30,17 @@
       transition: transform 0.1s ease;
       background-color: transparent;
       will-change: transform;
-      filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4)); /* Subtle glow */
+      filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4));
+      animation: pulseGlow 4s ease-in-out infinite;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% {
+        filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.2));
+      }
+      50% {
+        filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+      }
     }
   </style>
 </head>
