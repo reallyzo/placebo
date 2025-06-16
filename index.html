@@ -26,20 +26,17 @@
     .logo-wrapper {
       width: 100%;
       height: 100%;
-      transform-style: preserve-3d;
       transition: transform 0.1s ease;
+      transform-style: preserve-3d;
       will-change: transform;
     }
 
     .logo {
       width: 100%;
-      height: 100%;
-      background-image: url("triangle-logo.png");
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      animation: glowPulse 6s ease-in-out infinite;
+      display: block;
+      background-color: transparent;
       will-change: transform, filter;
+      animation: glowPulse 6s ease-in-out infinite;
     }
 
     @keyframes glowPulse {
@@ -64,14 +61,16 @@
 <body>
   <div class="logo-container" id="logoContainer">
     <div class="logo-wrapper" id="logoWrapper">
-      <div class="logo" id="logo"></div>
+      <img src="triangle-logo.png" alt="PLACEBO Logo" class="logo" id="logoImage" />
     </div>
   </div>
 
   <script>
     const wrapper = document.getElementById("logoWrapper");
     const container = document.getElementById("logoContainer");
+    const logo = document.getElementById("logoImage");
 
+    // Mouse rotate effect
     document.addEventListener("mousemove", function (e) {
       const rect = container.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
@@ -88,6 +87,13 @@
 
     document.addEventListener("mouseleave", function () {
       wrapper.style.transform = "rotateX(0deg) rotateY(0deg)";
+    });
+
+    // 🩹 iOS/Safari fix for animation not starting until tap
+    window.addEventListener("load", () => {
+      logo.style.display = "none";
+      void logo.offsetHeight;
+      logo.style.display = "block";
     });
   </script>
 </body>
