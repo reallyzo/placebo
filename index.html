@@ -30,19 +30,30 @@
       transition: transform 0.1s ease;
       background-color: transparent;
       will-change: transform;
-      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0));
-      transition: filter 0.3s ease;
+      filter: drop-shadow(0 0 0px #fff);
     }
 
-    .logo-container:hover .logo,
-    .logo-container.glisten .logo {
-      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+    .logo-container:hover .logo {
+      filter: drop-shadow(0 0 6px #fff);
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% {
+        filter: drop-shadow(0 0 0px #fff);
+      }
+      50% {
+        filter: drop-shadow(0 0 6px #fff);
+      }
+    }
+
+    .logo.glow-pulse {
+      animation: pulseGlow 6s ease-in-out infinite;
     }
   </style>
 </head>
 <body>
   <div class="logo-container" id="logoContainer">
-    <img src="triangle-logo.png" alt="PLACEBO Logo" class="logo" id="logo" />
+    <img src="triangle-logo.png" alt="PLACEBO Logo" class="logo glow-pulse" id="logo" />
   </div>
 
   <script>
@@ -66,14 +77,6 @@
     document.addEventListener("mouseleave", function () {
       logo.style.transform = "rotateX(0deg) rotateY(0deg)";
     });
-
-    // Glisten interval effect
-    setInterval(() => {
-      container.classList.add("glisten");
-      setTimeout(() => {
-        container.classList.remove("glisten");
-      }, 400);
-    }, 5000);
   </script>
 </body>
 </html>
