@@ -89,11 +89,13 @@
       wrapper.style.transform = "rotateX(0deg) rotateY(0deg)";
     });
 
-    // 🩹 iOS/Safari fix for animation not starting until tap
+    // ✅ iOS WebKit fix for CSS animation triggering
     window.addEventListener("load", () => {
-      logo.style.display = "none";
-      void logo.offsetHeight;
-      logo.style.display = "block";
+      requestAnimationFrame(() => {
+        logo.classList.remove("logo"); // force reflow
+        void logo.offsetWidth;
+        logo.classList.add("logo");
+      });
     });
   </script>
 </body>
