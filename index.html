@@ -6,63 +6,80 @@
   <title>PLACEBO</title>
   <link rel="icon" type="image/png" href="favicon.png" />
   <style>
-    body {
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
       background-color: #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       overflow: hidden;
+      cursor: none;
     }
 
     .logo-container {
-      width: 200px;
-      animation: fadeInZoom 1.2s ease-out forwards;
       position: relative;
+      width: 200px;
+      transform-style: preserve-3d;
+      transition: transform 0.2s ease;
     }
 
     .logo {
       width: 100%;
       display: block;
-      transition: transform 0.4s ease;
-    }
-
-    .logo-container:hover .logo {
-      transform: rotateZ(2deg);
-    }
-
-    @keyframes fadeInZoom {
-      0% {
-        opacity: 0;
-        transform: scale(0.95);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1);
-      }
+      position: relative;
+      z-index: 2;
     }
 
     .shine {
+      content: "";
       position: absolute;
       top: 0;
-      left: -50%;
+      left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
-      animation: shine 2.5s infinite;
+      background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.2), transparent);
       pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 1;
     }
 
-    @keyframes shine {
-      0% { left: -50%; }
-      100% { left: 100%; }
+    .logo-container:hover .shine {
+      opacity: 1;
+      animation: shineMove 1s ease;
+    }
+
+    @keyframes shineMove {
+      0% {
+        background-position: -200% 0;
+      }
+      100% {
+        background-position: 200% 0;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="logo-container">
+  <div class="logo-container" id="logoContainer">
     <img src="triangle-logo.png" alt="PLACEBO Logo" class="logo" />
+    <div class="shine"></div>
   </div>
+
+  <script>
+    const logoContainer = document.getElementById("logoContainer");
+
+    document.addEventListener("mousemove", (e) => {
+      const { innerWidth, innerHeight } = window;
+      const rotateX = ((e.clientY / innerHeight) - 0.5) * 20;
+      const rotateY = ((e.clientX / innerWidth) - 0.5) * 20;
+      logoContainer.style.transform = `rotateX(${-rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+  </script>
 </body>
 </html>
