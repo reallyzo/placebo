@@ -36,7 +36,6 @@
       align-items: center;
       justify-content: center;
       background-color: transparent;
-      will-change: transform, filter;
     }
 
     .logo img {
@@ -45,10 +44,11 @@
       display: block;
       background-color: transparent;
       pointer-events: none;
+      will-change: transform, filter;
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .logo {
+      .logo img {
         animation: none !important;
         filter: drop-shadow(0 0 3px rgba(255,255,255,0.3));
       }
@@ -58,7 +58,7 @@
 <body>
   <div class="logo-container" id="logoContainer">
     <div class="logo-wrapper" id="logoWrapper">
-      <div class="logo" id="logoPulse">
+      <div class="logo">
         <img src="triangle-logo.png" alt="PLACEBO Logo" id="logoImage" />
       </div>
     </div>
@@ -67,10 +67,10 @@
   <script>
     const wrapper = document.getElementById("logoWrapper");
     const container = document.getElementById("logoContainer");
-    const pulse = document.getElementById("logoPulse");
+    const logoImage = document.getElementById("logoImage");
 
-    // Mouse rotation for desktop
-    document.addEventListener("mousemove", function (e) {
+    // Rotation (desktop only)
+    document.addEventListener("mousemove", (e) => {
       const rect = container.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
@@ -81,13 +81,13 @@
       wrapper.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     });
 
-    document.addEventListener("mouseleave", function () {
+    document.addEventListener("mouseleave", () => {
       wrapper.style.transform = "rotateX(0deg) rotateY(0deg)";
     });
 
-    // ✨ Inject CSS + Start animation post-load for iOS Safari
-    window.addEventListener("DOMContentLoaded", () => {
-      const style = document.createElement('style');
+    // 👻 Inject animation post-load to trick Safari
+    window.addEventListener("load", () => {
+      const style = document.createElement("style");
       style.textContent = `
         @keyframes glowPulse {
           0%, 100% {
@@ -99,15 +99,15 @@
             transform: scale(1.15);
           }
         }
-        #logoPulse {
+        #logoImage {
           animation: glowPulse 6s ease-in-out infinite;
         }
       `;
       document.head.appendChild(style);
 
-      // Force reflow before applying animation
-      void pulse.offsetWidth;
-      pulse.style.transform += ' translateZ(0)';
+      // Force Safari to repaint and engage animation
+      void logoImage.offsetWidth;
+      logoImage.style.transform += " translateZ(0)";
     });
   </script>
 </body>
