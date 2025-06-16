@@ -26,17 +26,20 @@
     .logo-wrapper {
       width: 100%;
       height: 100%;
-      transition: transform 0.1s ease;
       transform-style: preserve-3d;
+      transition: transform 0.1s ease;
       will-change: transform;
     }
 
     .logo {
       width: 100%;
-      display: block;
-      background-color: transparent;
-      will-change: transform, filter;
+      height: 100%;
+      background-image: url("triangle-logo.png");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
       animation: glowPulse 6s ease-in-out infinite;
+      will-change: transform, filter;
     }
 
     @keyframes glowPulse {
@@ -61,16 +64,14 @@
 <body>
   <div class="logo-container" id="logoContainer">
     <div class="logo-wrapper" id="logoWrapper">
-      <img src="triangle-logo.png" alt="PLACEBO Logo" class="logo" id="logoImage" />
+      <div class="logo" id="logo"></div>
     </div>
   </div>
 
   <script>
     const wrapper = document.getElementById("logoWrapper");
     const container = document.getElementById("logoContainer");
-    const logo = document.getElementById("logoImage");
 
-    // Mouse rotate effect
     document.addEventListener("mousemove", function (e) {
       const rect = container.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
@@ -87,13 +88,6 @@
 
     document.addEventListener("mouseleave", function () {
       wrapper.style.transform = "rotateX(0deg) rotateY(0deg)";
-    });
-
-    // 🩹 iOS fix: force repaint on load
-    window.addEventListener("load", () => {
-      logo.style.display = "none";
-      void logo.offsetHeight; // trigger reflow
-      logo.style.display = "block";
     });
   </script>
 </body>
