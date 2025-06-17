@@ -24,13 +24,29 @@
     }
 
     .logo-container {
+      position: relative;
       width: clamp(150px, 40vw, 300px);
       max-width: 100vw;
+      aspect-ratio: 1 / 1;
+    }
+
+    .glow-ring {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      z-index: 0;
+      animation: ringGlow 5s ease-in-out infinite;
+      will-change: box-shadow;
     }
 
     .logo-wrapper {
+      position: relative;
       width: 100%;
-      pointer-events: none;
+      height: 100%;
+      z-index: 1;
     }
 
     .logo {
@@ -39,18 +55,14 @@
       max-width: 100vw;
       display: block;
       image-rendering: auto;
-      animation: glowBreath 6s ease-in-out infinite;
-      will-change: transform, filter;
     }
 
-    @keyframes glowBreath {
+    @keyframes ringGlow {
       0%, 100% {
-        transform: scale(1);
-        filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.15), 0 0 20px rgba(255, 255, 255, 0.05);
       }
       50% {
-        transform: scale(1.1);
-        filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.9));
+        box-shadow: 0 0 40px rgba(255, 255, 255, 0.75), 0 0 80px rgba(255, 255, 255, 0.2);
       }
     }
 
@@ -61,15 +73,15 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .logo {
+      .glow-ring {
         animation: none !important;
-        filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.3));
       }
     }
   </style>
 </head>
 <body>
   <div class="logo-container">
+    <div class="glow-ring"></div>
     <div class="logo-wrapper">
       <img src="triangle-logo-optimized.png" alt="PLACEBO Logo" class="logo" />
     </div>
