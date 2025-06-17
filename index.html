@@ -23,9 +23,6 @@
 
     .logo-wrapper {
       width: 100%;
-      will-change: transform, filter, opacity;
-      backface-visibility: hidden;
-      animation: glowPulse 6s ease-in-out infinite;
       pointer-events: none;
     }
 
@@ -33,8 +30,10 @@
       width: 100%;
       height: auto;
       display: block;
-      filter: drop-shadow(0 0 6px white);
       image-rendering: auto;
+      filter: drop-shadow(0 0 6px white);
+      will-change: transform, filter;
+      animation: glowPulse 6s ease-in-out infinite;
     }
 
     @keyframes glowPulse {
@@ -49,10 +48,8 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .logo-wrapper {
-        animation: none !important;
-      }
       .logo {
+        animation: none !important;
         filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.3));
       }
     }
