@@ -28,8 +28,6 @@
     .logo-wrapper {
       width: 100%;
       pointer-events: none;
-      animation: wrapperPulse 6s ease-in-out infinite;
-      will-change: transform, opacity;
     }
 
     .logo {
@@ -39,9 +37,11 @@
       display: block;
       image-rendering: auto;
       filter: drop-shadow(0 0 8px white);
+      will-change: transform, opacity;
+      animation: logoPulse 6s ease-in-out infinite;
     }
 
-    @keyframes wrapperPulse {
+    @keyframes logoPulse {
       0%, 100% {
         transform: scale(1);
         opacity: 0.95;
@@ -53,10 +53,8 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .logo-wrapper {
-        animation: none !important;
-      }
       .logo {
+        animation: none !important;
         filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
       }
     }
