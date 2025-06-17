@@ -34,10 +34,11 @@
       width: 100%;
       height: auto;
       display: block;
+      background-color: transparent;
       will-change: transform, filter;
     }
 
-    .pulse {
+    .glow {
       animation: glowPulse 6s ease-in-out infinite;
     }
 
@@ -72,7 +73,7 @@
     const container = document.getElementById("logoContainer");
     const logo = document.getElementById("logoImage");
 
-    // Tilt effect for desktop
+    // Tilt effect (desktop only)
     document.addEventListener("mousemove", (e) => {
       const rect = container.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
@@ -88,11 +89,13 @@
       wrapper.style.transform = "rotateX(0deg) rotateY(0deg)";
     });
 
-    // Force Safari animation to play without interaction
+    // ✅ Safari mobile animation fix
     window.addEventListener("load", () => {
-      void logo.offsetWidth; // trigger reflow
-      logo.classList.add("pulse");
-      logo.style.transform += " translateZ(0)"; // force GPU accel
+      requestAnimationFrame(() => {
+        logo.classList.add("glow");
+        void logo.offsetWidth;
+        logo.style.transform += " translateZ(0)";
+      });
     });
   </script>
 </body>
