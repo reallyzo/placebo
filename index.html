@@ -14,10 +14,13 @@
       padding: 0;
       background: #000;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       overflow: hidden;
       cursor: default;
+      color: white;
+      font-family: sans-serif;
     }
 
     .logo-container {
@@ -28,6 +31,9 @@
     .logo-wrapper {
       width: 100%;
       pointer-events: none;
+      animation: pulse 6s ease-in-out infinite;
+      will-change: transform;
+      transform: scale(1);
     }
 
     .logo {
@@ -37,25 +43,26 @@
       display: block;
       image-rendering: auto;
       filter: drop-shadow(0 0 8px white);
-      will-change: transform, opacity;
-      animation: logoPulse 6s ease-in-out infinite;
     }
 
-    @keyframes logoPulse {
+    @keyframes pulse {
       0%, 100% {
         transform: scale(1);
-        opacity: 0.95;
       }
       50% {
         transform: scale(1.1);
-        opacity: 1;
       }
     }
 
+    .coming-soon {
+      font-size: 0.8rem;
+      opacity: 0.01;
+      margin-top: 1rem;
+    }
+
     @media (prefers-reduced-motion: reduce) {
-      .logo {
+      .logo-wrapper {
         animation: none !important;
-        filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
       }
     }
   </style>
@@ -66,6 +73,6 @@
       <img src="triangle-logo-optimized.png" alt="PLACEBO Logo" class="logo" />
     </div>
   </div>
-  <span style="position: absolute; top: -9999px;">PLACEBO</span>
+  <div class="coming-soon">coming soon</div>
 </body>
 </html>
