@@ -23,6 +23,10 @@
 
     .logo-wrapper {
       width: 100%;
+      transform: scale(1);
+      will-change: transform, filter;
+      backface-visibility: hidden;
+      animation: glowPulse 6s ease-in-out infinite;
       pointer-events: none;
     }
 
@@ -32,8 +36,6 @@
       display: block;
       image-rendering: auto;
       filter: drop-shadow(0 0 6px white);
-      will-change: transform, filter;
-      animation: glowPulse 6s ease-in-out infinite;
     }
 
     @keyframes glowPulse {
@@ -48,8 +50,10 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .logo {
+      .logo-wrapper {
         animation: none !important;
+      }
+      .logo {
         filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.3));
       }
     }
