@@ -18,85 +18,44 @@
     }
 
     .logo-container {
-      width: 200px;
-      perspective: 1000px;
+      width: clamp(150px, 40vw, 300px);
     }
 
     .logo-wrapper {
       width: 100%;
-      height: 100%;
-      transition: transform 0.1s ease;
-      transform-style: preserve-3d;
-      will-change: transform;
+      will-change: transform, filter, opacity;
+      backface-visibility: hidden;
+      animation: glowFade 4s ease-in-out infinite alternate;
+      pointer-events: none;
     }
 
     .logo {
       width: 100%;
       height: auto;
       display: block;
-      background-color: transparent;
-      will-change: transform, filter;
+      filter: drop-shadow(0 0 15px #00ffe1);
+      image-rendering: auto;
     }
 
-    .glow {
-      animation: glowPulse 6s ease-in-out infinite;
-    }
-
-    @keyframes glowPulse {
-      0%, 100% {
-        filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.2));
+    @keyframes glowFade {
+      0% {
+        filter: drop-shadow(0 0 10px #00ffe1);
         transform: scale(1);
+        opacity: 0.95;
       }
-      50% {
-        filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.9));
-        transform: scale(1.15);
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .logo {
-        animation: none !important;
-        filter: drop-shadow(0 0 3px rgba(255,255,255,0.3));
+      100% {
+        filter: drop-shadow(0 0 35px #00ffe1);
+        transform: scale(1.025);
+        opacity: 1;
       }
     }
   </style>
 </head>
 <body>
-  <div class="logo-container" id="logoContainer">
-    <div class="logo-wrapper" id="logoWrapper">
-      <img src="triangle-logo-optimized.svg" alt="PLACEBO Logo" class="logo" id="logoImage" />
+  <div class="logo-container">
+    <div class="logo-wrapper">
+      <img src="triangle-logo-optimized.png" alt="PLACEBO Logo" class="logo" />
     </div>
   </div>
-
-  <script>
-    const wrapper = document.getElementById("logoWrapper");
-    const container = document.getElementById("logoContainer");
-    const logo = document.getElementById("logoImage");
-
-    // Tilt effect (desktop only)
-    document.addEventListener("mousemove", (e) => {
-      const rect = container.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      const offsetX = (e.clientX - centerX) / (rect.width / 2);
-      const offsetY = (e.clientY - centerY) / (rect.height / 2);
-      const rotateX = offsetY * -5;
-      const rotateY = offsetX * 5;
-      wrapper.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-    });
-
-    document.addEventListener("mouseleave", () => {
-      wrapper.style.transform = "rotateX(0deg) rotateY(0deg)";
-    });
-
-    // ✅ Safari mobile animation fix
-    window.addEventListener("load", () => {
-      requestAnimationFrame(() => {
-        logo.classList.add("glow");
-        void logo.offsetWidth;
-        logo.style.transform += " translateZ(0)";
-      });
-    });
-  </script>
 </body>
 </html>
