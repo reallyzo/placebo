@@ -28,8 +28,8 @@
     .logo-wrapper {
       width: 100%;
       pointer-events: none;
-      transform: scale(1);
-      will-change: transform;
+      animation: wrapperPulse 6s ease-in-out infinite;
+      will-change: transform, opacity;
     }
 
     .logo {
@@ -39,24 +39,24 @@
       display: block;
       image-rendering: auto;
       filter: drop-shadow(0 0 8px white);
-      will-change: transform, filter;
-      animation: glowPulse 6s ease-in-out infinite;
     }
 
-    @keyframes glowPulse {
+    @keyframes wrapperPulse {
       0%, 100% {
-        filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.3));
         transform: scale(1);
+        opacity: 0.95;
       }
       50% {
-        filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
         transform: scale(1.1);
+        opacity: 1;
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .logo {
+      .logo-wrapper {
         animation: none !important;
+      }
+      .logo {
         filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
       }
     }
@@ -68,5 +68,6 @@
       <img src="triangle-logo-optimized.png" alt="PLACEBO Logo" class="logo" />
     </div>
   </div>
+  <span style="position: absolute; top: -9999px;">PLACEBO</span>
 </body>
 </html>
