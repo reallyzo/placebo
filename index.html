@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -47,6 +47,21 @@
       will-change: transform, filter;
     }
 
+    .pulse {
+      animation: glowPulse 6s ease-in-out infinite;
+    }
+
+    @keyframes glowPulse {
+      0%, 100% {
+        filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.2));
+        transform: scale(1);
+      }
+      50% {
+        filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.9));
+        transform: scale(1.15);
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .logo img {
         animation: none !important;
@@ -69,8 +84,8 @@
     const container = document.getElementById("logoContainer");
     const logoImage = document.getElementById("logoImage");
 
-    // Desktop tilt effect
-    document.addEventListener("mousemove", (e) => {
+    // Cursor tilt effect (desktop only)
+    document.addEventListener("mousemove", function (e) {
       const rect = container.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
@@ -78,34 +93,16 @@
       const offsetY = (e.clientY - centerY) / (rect.height / 2);
       const rotateX = offsetY * -5;
       const rotateY = offsetX * 5;
-      wrapper.style.transform = rotateX(${rotateX}deg) rotateY(${rotateY}deg);
+      wrapper.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     });
 
     document.addEventListener("mouseleave", () => {
       wrapper.style.transform = "rotateX(0deg) rotateY(0deg)";
     });
 
-    // Inject CSS and trigger animation (Safari fix)
+    // ✅ Apply animation class on load (ensures CSS kicks in)
     window.addEventListener("load", () => {
-      const style = document.createElement("style");
-      style.textContent = 
-        @keyframes glowPulse {
-          0%, 100% {
-            filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.2));
-            transform: scale(1);
-          }
-          50% {
-            filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.9));
-            transform: scale(1.15);
-          }
-        }
-        #logoImage {
-          animation: glowPulse 6s ease-in-out infinite;
-        }
-      ;
-      document.head.appendChild(style);
-      void logoImage.offsetWidth;
-      logoImage.style.transform += " translateZ(0)";
+      logoImage.classList.add("pulse");
     });
   </script>
 </body>
