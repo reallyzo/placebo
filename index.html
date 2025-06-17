@@ -16,34 +16,41 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      cursor: default;
     }
 
     .logo-container {
       width: clamp(150px, 40vw, 300px);
-      max-width: 100vw;
+      position: relative;
     }
 
-    svg {
+    .logo-glow, .logo-core {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: auto;
+    }
+
+    .logo-glow svg path {
+      fill: white;
+      opacity: 0.6;
+      filter: blur(8px);
+      transform-origin: center;
+      animation: pulse 5s ease-in-out infinite;
+    }
+
+    .logo-core svg path {
+      fill: white;
       display: block;
     }
 
-    .glow path {
-      animation: breathe 6s ease-in-out infinite;
-      transform-origin: center;
-    }
-
-    @keyframes breathe {
+    @keyframes pulse {
       0%, 100% {
-        filter: url(#glow);
         transform: scale(1);
-        opacity: 0.95;
+        opacity: 0.5;
       }
       50% {
-        filter: url(#glow);
-        transform: scale(1.05);
+        transform: scale(1.1);
         opacity: 1;
       }
     }
@@ -51,21 +58,18 @@
 </head>
 <body>
   <div class="logo-container">
-    <svg viewBox="0 0 768 768" xmlns="http://www.w3.org/2000/svg" version="1.1">
-      <defs>
-        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-      </defs>
-      <g class="glow" fill="white">
+    <div class="logo-glow">
+      <svg viewBox="0 0 768 768" xmlns="http://www.w3.org/2000/svg" version="1.1">
         <path d="M195,384 L384,703 L573,384 L573,384 L384,66 L195,384 Z"/>
         <path d="M274,384 L384,576 L494,384 L384,192 L274,384 Z"/>
-      </g>
-    </svg>
+      </svg>
+    </div>
+    <div class="logo-core">
+      <svg viewBox="0 0 768 768" xmlns="http://www.w3.org/2000/svg" version="1.1">
+        <path d="M195,384 L384,703 L573,384 L573,384 L384,66 L195,384 Z"/>
+        <path d="M274,384 L384,576 L494,384 L384,192 L274,384 Z"/>
+      </svg>
+    </div>
   </div>
 </body>
 </html>
