@@ -32,18 +32,8 @@
 
     .logo {
       width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: transparent;
-    }
-
-    .logo img {
-      width: 100%;
       height: auto;
       display: block;
-      background-color: transparent;
-      pointer-events: none;
       will-change: transform, filter;
     }
 
@@ -63,7 +53,7 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .logo img {
+      .logo {
         animation: none !important;
         filter: drop-shadow(0 0 3px rgba(255,255,255,0.3));
       }
@@ -73,19 +63,17 @@
 <body>
   <div class="logo-container" id="logoContainer">
     <div class="logo-wrapper" id="logoWrapper">
-      <div class="logo">
-        <img src="triangle-logo-optimized.png" alt="PLACEBO Logo" id="logoImage" />
-      </div>
+      <img src="triangle-logo-optimized.svg" alt="PLACEBO Logo" class="logo" id="logoImage" />
     </div>
   </div>
 
   <script>
     const wrapper = document.getElementById("logoWrapper");
     const container = document.getElementById("logoContainer");
-    const logoImage = document.getElementById("logoImage");
+    const logo = document.getElementById("logoImage");
 
-    // Cursor tilt effect (desktop only)
-    document.addEventListener("mousemove", function (e) {
+    // Tilt effect for desktop
+    document.addEventListener("mousemove", (e) => {
       const rect = container.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
@@ -100,9 +88,11 @@
       wrapper.style.transform = "rotateX(0deg) rotateY(0deg)";
     });
 
-    // ✅ Apply animation class on load (ensures CSS kicks in)
+    // Force Safari animation to play without interaction
     window.addEventListener("load", () => {
-      logoImage.classList.add("pulse");
+      void logo.offsetWidth; // trigger reflow
+      logo.classList.add("pulse");
+      logo.style.transform += " translateZ(0)"; // force GPU accel
     });
   </script>
 </body>
