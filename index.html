@@ -116,10 +116,10 @@
         const rect = container.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
-        const offsetX = (e.clientX - centerX) / (rect.width / 2);
-        const offsetY = (e.clientY - centerY) / (rect.height / 2);
-        rotateX = offsetY * -5;
-        rotateY = offsetX * 5;
+        const offsetX = (e.clientX - centerX) / (rect.width / 4); // less aggressive
+        const offsetY = (e.clientY - centerY) / (rect.height / 4);
+        rotateX = offsetY * -3;
+        rotateY = offsetX * 3;
         updateTransform();
       });
 
@@ -134,8 +134,8 @@
     function handleOrientation(event) {
       const beta = event.beta || 0;
       const gamma = event.gamma || 0;
-      rotateX = (beta - 90) / -5;
-      rotateY = gamma / 5;
+      rotateX = (beta - 90) / -10; // smoother
+      rotateY = gamma / 10;
       updateTransform();
     }
 
