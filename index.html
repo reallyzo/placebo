@@ -18,6 +18,10 @@
       flex-direction: column;
     }
 
+    .scale-wrapper {
+      animation: breatheScale 6s ease-in-out infinite;
+    }
+
     .logo-container {
       position: relative;
       width: 200px;
@@ -41,10 +45,6 @@
 
     .logo-glow {
       animation: fadeGlow 6s ease-in-out infinite;
-    }
-
-    .breathe {
-      animation: breatheScale 6s ease-in-out infinite;
     }
 
     @keyframes breatheScale {
@@ -75,7 +75,10 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .logo-glow, .breathe {
+      .scale-wrapper {
+        animation: none;
+      }
+      .logo-glow {
         animation: none;
         opacity: 0.5;
       }
@@ -83,69 +86,7 @@
   </style>
 </head>
 <body>
-  <div class="logo-container breathe" id="logoContainer">
-    <img src="triangle-glow-style-2.png" class="logo logo-base" alt="PLACEBO Logo Base" />
-    <img src="triangle-glow-style-2-ultra.png" class="logo logo-glow" alt="PLACEBO Logo Glow" />
-  </div>
-  <button id="motionBtn">Enable Motion</button>
-
-  <script>
-    const container = document.getElementById('logoContainer');
-    const motionBtn = document.getElementById('motionBtn');
-
-    let rotateX = 0;
-    let rotateY = 0;
-
-    function updateTransform() {
-      container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-    }
-
-    // Desktop mouse tilt
-    if (window.innerWidth >= 768) {
-      document.addEventListener('mousemove', (e) => {
-        const rect = container.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const offsetX = (e.clientX - centerX) / (rect.width / 2);
-        const offsetY = (e.clientY - centerY) / (rect.height / 2);
-        rotateX = offsetY * -5;
-        rotateY = offsetX * 5;
-        updateTransform();
-      });
-
-      document.addEventListener('mouseleave', () => {
-        rotateX = 0;
-        rotateY = 0;
-        updateTransform();
-      });
-    }
-
-    // Mobile motion tilt
-    function handleOrientation(event) {
-      const beta = event.beta || 0;   // front/back
-      const gamma = event.gamma || 0; // left/right
-      rotateX = (beta - 90) / -5;
-      rotateY = gamma / 5;
-      updateTransform();
-    }
-
-    function enableMotionAccess() {
-      if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function') {
-        DeviceOrientationEvent.requestPermission()
-          .then(state => {
-            if (state === 'granted') {
-              window.addEventListener('deviceorientation', handleOrientation);
-              motionBtn.style.display = 'none';
-            }
-          })
-          .catch(console.error);
-      } else if (window.DeviceOrientationEvent) {
-        window.addEventListener('deviceorientation', handleOrientation);
-        motionBtn.style.display = 'none';
-      }
-    }
-
-    motionBtn.addEventListener('click', enableMotionAccess);
-  </script>
-</body>
-</html>
+  <div class="scale-wrapper">
+    <div class="logo-container" id="logoContainer">
+      <img src="triangle-glow-style-2.png" class="logo logo-base" alt="PLACEBO Logo Base" />
+      <img src="triangle-glow-style-2-ultra.png"
