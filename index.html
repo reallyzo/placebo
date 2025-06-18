@@ -17,6 +17,11 @@
       cursor: default;
     }
 
+    .logo-outer {
+      perspective: 1000px;
+      will-change: transform;
+    }
+
     .logo-container {
       position: relative;
       width: 200px;
@@ -26,7 +31,6 @@
       justify-content: center;
       animation: breatheScale 6s ease-in-out infinite;
       transform-style: preserve-3d;
-      will-change: transform;
     }
 
     .logo {
@@ -73,55 +77,54 @@
   </style>
 </head>
 <body>
-  <div class="logo-container" id="logoContainer">
-    <img src="triangle-glow-style-2.png" class="logo logo-base" alt="PLACEBO Logo Base" />
-    <img src="triangle-glow-style-2-ultra.png" class="logo logo-glow" alt="PLACEBO Logo Glow" />
+  <div class="logo-outer" id="logoOuter">
+    <div class="logo-container" id="logoContainer">
+      <img src="triangle-glow-style-2.png" class="logo logo-base" alt="PLACEBO Logo Base" />
+      <img src="triangle-glow-style-2-ultra.png" class="logo logo-glow" alt="PLACEBO Logo Glow" />
+    </div>
   </div>
 
   <script>
-    const container = document.getElementById('logoContainer');
+    const outer = document.getElementById('logoOuter');
 
-    // ✨ DESKTOP: Mouse-based tilt
+    // 🖱 DESKTOP Mouse tilt
     document.addEventListener('mousemove', (e) => {
       if (window.innerWidth >= 768) {
-        const rect = container.getBoundingClientRect();
+        const rect = outer.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
         const offsetX = (e.clientX - centerX) / (rect.width / 2);
         const offsetY = (e.clientY - centerY) / (rect.height / 2);
         const rotateX = offsetY * -8;
         const rotateY = offsetX * 8;
-        container.style.transform = `scale(1.15) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        outer.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
       }
     });
 
     document.addEventListener('mouseleave', () => {
       if (window.innerWidth >= 768) {
-        container.style.transform = 'scale(1.15) rotateX(0deg) rotateY(0deg)';
+        outer.style.transform = `rotateX(0deg) rotateY(0deg)`;
       }
     });
 
-    // 📱 MOBILE: Gyroscope tilt
-    if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function') {
-      // iOS
-      DeviceOrientationEvent.requestPermission()
-        .then(permissionState => {
-          if (permissionState === 'granted') {
-            window.addEventListener('deviceorientation', handleOrientation);
-          }
-        })
-        .catch(console.error);
-    } else if (window.DeviceOrientationEvent) {
-      // Android & others
-      window.addEventListener('deviceorientation', handleOrientation);
+    // 📱 MOBILE Tilt motion
+    function handleOrientation(event) {
+      const beta = event.beta || 0;
+      const gamma = event.gamma || 0;
+      const rotateX = (beta - 90) / 5;
+      const rotateY = gamma / 5;
+      outer.style.transform = `rotateX(${-rotateX}deg) rotateY(${rotateY}deg)`;
     }
 
-    function handleOrientation(event) {
-      const beta = event.beta || 0;   // front/back
-      const gamma = event.gamma || 0; // left/right
-      const rotateX = (beta - 90) / 5; // normalize range
-      const rotateY = gamma / 5;
-      container.style.transform = `scale(1.15) rotateX(${-rotateX}deg) rotateY(${rotateY}deg)`;
+    if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function') {
+      DeviceOrientationEvent.requestPermission()
+        .then(state => {
+          if (state === 'granted') {
+            window.addEventListener('deviceorientation', handleOrientation);
+          }
+        }).catch(console.error);
+    } else if (window.DeviceOrientationEvent) {
+      window.addEventListener('deviceorientation', handleOrientation);
     }
   </script>
 </body>
