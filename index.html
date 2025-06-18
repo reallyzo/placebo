@@ -2,74 +2,46 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PLACEBO</title>
   <link rel="icon" href="favicon.png" type="image/png" />
   <style>
-    html, body {
-      width: 100%;
-      height: 100%;
+    body {
       margin: 0;
-      padding: 0;
       background: #000;
       display: flex;
       align-items: center;
       justify-content: center;
+      height: 100vh;
       overflow: hidden;
+      cursor: default;
     }
 
-    .logo-container {
-      width: clamp(150px, 40vw, 300px);
-      max-width: 100vw;
-      position: relative;
-      aspect-ratio: 1 / 1;
+    .logo {
+      width: 200px;
+      height: auto;
+      animation: breathe 6s ease-in-out infinite;
     }
 
-    .logo-glow, .logo-core {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
-
-    .logo-glow svg path {
-      fill: white;
-      opacity: 0.4;
-      filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.8));
-      transform-origin: center;
-      animation: pulseGlow 4s ease-in-out infinite;
-    }
-
-    .logo-core svg path {
-      fill: white;
-    }
-
-    @keyframes pulseGlow {
+    @keyframes breathe {
       0%, 100% {
         transform: scale(1);
-        opacity: 0.4;
+        opacity: 1;
       }
       50% {
-        transform: scale(1.12);
-        opacity: 1;
+        transform: scale(1.1);
+        opacity: 0.85;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .logo {
+        animation: none;
       }
     }
   </style>
 </head>
 <body>
-  <div class="logo-container">
-    <div class="logo-glow">
-      <svg viewBox="0 0 768 768" xmlns="http://www.w3.org/2000/svg" version="1.1">
-        <path d="M195,384 L384,703 L573,384 L573,384 L384,66 L195,384 Z"/>
-      </svg>
-    </div>
-    <div class="logo-core">
-      <svg viewBox="0 0 768 768" xmlns="http://www.w3.org/2000/svg" version="1.1">
-        <path d="M195,384 L384,703 L573,384 L573,384 L384,66 L195,384 Z"/>
-        <path d="M274,384 L384,576 L494,384 L384,192 L274,384 Z"/>
-      </svg>
-    </div>
-  </div>
+  <img src="triangle-glow-style-2-ultra.png" alt="PLACEBO Logo" class="logo" />
 </body>
 </html>
