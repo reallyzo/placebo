@@ -43,7 +43,7 @@
       animation: fadeGlow 6s ease-in-out infinite;
     }
 
-    .logo-scale {
+    .breathe {
       animation: breatheScale 6s ease-in-out infinite;
     }
 
@@ -62,15 +62,10 @@
       margin-top: 20px;
       background: none;
       color: #fff;
-      font-size: 0.9rem;
+      font-weight: 400;
+      font-size: 14px;
       border: none;
       cursor: pointer;
-      text-decoration: underline;
-      opacity: 0.6;
-    }
-
-    #motionBtn:hover {
-      opacity: 1;
     }
 
     @media (max-width: 767px) {
@@ -80,7 +75,7 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .logo-scale, .logo-glow {
+      .logo-glow, .breathe {
         animation: none;
         opacity: 0.5;
       }
@@ -88,7 +83,7 @@
   </style>
 </head>
 <body>
-  <div class="logo-container logo-scale" id="logoContainer">
+  <div class="logo-container breathe" id="logoContainer">
     <img src="triangle-glow-style-2.png" class="logo logo-base" alt="PLACEBO Logo Base" />
     <img src="triangle-glow-style-2-ultra.png" class="logo logo-glow" alt="PLACEBO Logo Glow" />
   </div>
@@ -98,7 +93,14 @@
     const container = document.getElementById('logoContainer');
     const motionBtn = document.getElementById('motionBtn');
 
-    // ✨ DESKTOP Tilt (calm)
+    let rotateX = 0;
+    let rotateY = 0;
+
+    function updateTransform() {
+      container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    }
+
+    // Desktop mouse tilt
     if (window.innerWidth >= 768) {
       document.addEventListener('mousemove', (e) => {
         const rect = container.getBoundingClientRect();
@@ -106,23 +108,25 @@
         const centerY = rect.top + rect.height / 2;
         const offsetX = (e.clientX - centerX) / (rect.width / 2);
         const offsetY = (e.clientY - centerY) / (rect.height / 2);
-        const rotateX = offsetY * -5;
-        const rotateY = offsetX * 5;
-        container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        rotateX = offsetY * -5;
+        rotateY = offsetX * 5;
+        updateTransform();
       });
 
       document.addEventListener('mouseleave', () => {
-        container.style.transform = 'rotateX(0deg) rotateY(0deg)';
+        rotateX = 0;
+        rotateY = 0;
+        updateTransform();
       });
     }
 
-    // 📱 MOBILE Motion Tracking
+    // Mobile motion tilt
     function handleOrientation(event) {
-      const beta = event.beta || 0;   // front-back
-      const gamma = event.gamma || 0; // left-right
-      const rotateX = (beta - 90) / 5;
-      const rotateY = gamma / 5;
-      container.style.transform = `rotateX(${-rotateX}deg) rotateY(${rotateY}deg)`;
+      const beta = event.beta || 0;   // front/back
+      const gamma = event.gamma || 0; // left/right
+      rotateX = (beta - 90) / -5;
+      rotateY = gamma / 5;
+      updateTransform();
     }
 
     function enableMotionAccess() {
