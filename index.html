@@ -35,23 +35,23 @@
 
     .logo-glow svg path {
       fill: white;
-      opacity: 0.6;
-      filter: blur(8px);
+      opacity: 0.4;
+      filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.8));
       transform-origin: center;
-      animation: pulse 5s ease-in-out infinite;
+      animation: pulseGlow 4s ease-in-out infinite;
     }
 
     .logo-core svg path {
       fill: white;
     }
 
-    @keyframes pulse {
+    @keyframes pulseGlow {
       0%, 100% {
         transform: scale(1);
-        opacity: 0.5;
+        opacity: 0.4;
       }
       50% {
-        transform: scale(1.1);
+        transform: scale(1.12);
         opacity: 1;
       }
     }
