@@ -62,10 +62,15 @@
       margin-top: 20px;
       background: none;
       color: #fff;
-      font-weight: 400;
       font-size: 14px;
       border: none;
       cursor: pointer;
+      text-decoration: underline;
+      opacity: 0.6;
+    }
+
+    #motionBtn:hover {
+      opacity: 1;
     }
 
     @media (max-width: 767px) {
@@ -89,4 +94,68 @@
   <div class="scale-wrapper">
     <div class="logo-container" id="logoContainer">
       <img src="triangle-glow-style-2.png" class="logo logo-base" alt="PLACEBO Logo Base" />
-      <img src="triangle-glow-style-2-ultra.png"
+      <img src="triangle-glow-style-2-ultra.png" class="logo logo-glow" alt="PLACEBO Logo Glow" />
+    </div>
+  </div>
+  <button id="motionBtn">Enable Motion</button>
+
+  <script>
+    const container = document.getElementById('logoContainer');
+    const motionBtn = document.getElementById('motionBtn');
+
+    let rotateX = 0;
+    let rotateY = 0;
+
+    function updateTransform() {
+      container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    }
+
+    // Desktop mouse tilt
+    if (window.innerWidth >= 768) {
+      document.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const offsetX = (e.clientX - centerX) / (rect.width / 2);
+        const offsetY = (e.clientY - centerY) / (rect.height / 2);
+        rotateX = offsetY * -5;
+        rotateY = offsetX * 5;
+        updateTransform();
+      });
+
+      document.addEventListener('mouseleave', () => {
+        rotateX = 0;
+        rotateY = 0;
+        updateTransform();
+      });
+    }
+
+    // Mobile motion tilt
+    function handleOrientation(event) {
+      const beta = event.beta || 0;
+      const gamma = event.gamma || 0;
+      rotateX = (beta - 90) / -5;
+      rotateY = gamma / 5;
+      updateTransform();
+    }
+
+    function enableMotionAccess() {
+      if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission()
+          .then(state => {
+            if (state === 'granted') {
+              window.addEventListener('deviceorientation', handleOrientation);
+              motionBtn.style.display = 'none';
+            }
+          })
+          .catch(console.error);
+      } else if (window.DeviceOrientationEvent) {
+        window.addEventListener('deviceorientation', handleOrientation);
+        motionBtn.style.display = 'none';
+      }
+    }
+
+    motionBtn.addEventListener('click', enableMotionAccess);
+  </script>
+</body>
+</html>
