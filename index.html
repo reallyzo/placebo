@@ -17,31 +17,58 @@
       cursor: default;
     }
 
-    .logo {
+    .logo-container {
+      position: relative;
       width: 200px;
-      height: auto;
-      animation: breathe 6s ease-in-out infinite;
+      animation: breatheScale 6s ease-in-out infinite;
     }
 
-    @keyframes breathe {
+    .logo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .logo-glow {
+      animation: fadeGlow 6s ease-in-out infinite;
+    }
+
+    @keyframes breatheScale {
       0%, 100% {
         transform: scale(1);
-        opacity: 1;
       }
       50% {
         transform: scale(1.1);
-        opacity: 0.85;
+      }
+    }
+
+    @keyframes fadeGlow {
+      0%, 100% {
+        opacity: 0.1;
+      }
+      50% {
+        opacity: 1;
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .logo {
+      .logo-container {
         animation: none;
+      }
+      .logo-glow {
+        animation: none;
+        opacity: 0.5;
       }
     }
   </style>
 </head>
 <body>
-  <img src="triangle-glow-style-2-ultra.png" alt="PLACEBO Logo" class="logo" />
+  <div class="logo-container">
+    <img src="triangle-glow-style-2.png" class="logo logo-base" alt="PLACEBO Logo Base" />
+    <img src="triangle-glow-style-2-ultra.png" class="logo logo-glow" alt="PLACEBO Logo Glow" />
+  </div>
 </body>
 </html>
