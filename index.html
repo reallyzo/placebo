@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -30,6 +30,7 @@
       align-items: center;
       justify-content: center;
       transform-style: preserve-3d;
+      transform: rotateX(0deg) rotateY(0deg); /* starting transform */
       will-change: transform;
     }
 
@@ -110,9 +111,9 @@
       container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     }
 
-    // Desktop mouse tilt
+    // Only enable mouse movement on desktop
     if (window.innerWidth >= 768) {
-      document.addEventListener('mousemove', (e) => {
+      window.addEventListener('mousemove', (e) => {
         const rect = container.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
@@ -123,39 +124,41 @@
         updateTransform();
       });
 
-      document.addEventListener('mouseleave', () => {
+      window.addEventListener('mouseleave', () => {
         rotateX = 0;
         rotateY = 0;
         updateTransform();
       });
     }
 
-    // Mobile motion tilt
-    function handleOrientation(event) {
-      const beta = event.beta || 0;   // x-axis (front to back)
-      const gamma = event.gamma || 0; // y-axis (left to right)
-      rotateX = (beta - 90) / -2.5;
-      rotateY = gamma / 2.5;
-      updateTransform();
-    }
-
-    function enableMotionAccess() {
-      if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-        DeviceOrientationEvent.requestPermission()
-          .then(permissionState => {
-            if (permissionState === 'granted') {
-              window.addEventListener('deviceorientation', handleOrientation);
-              motionBtn.style.display = 'none';
-            }
-          })
-          .catch(console.error);
-      } else if (typeof DeviceOrientationEvent !== 'undefined') {
-        window.addEventListener('deviceorientation', handleOrientation);
-        motionBtn.style.display = 'none';
+    // Mobile motion tilt only on mobile
+    if (window.innerWidth < 768) {
+      function handleOrientation(event) {
+        const beta = event.beta || 0;
+        const gamma = event.gamma || 0;
+        rotateX = (beta - 90) / -2.5;
+        rotateY = gamma / 2.5;
+        updateTransform();
       }
-    }
 
-    motionBtn.addEventListener('click', enableMotionAccess);
+      function enableMotionAccess() {
+        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+          DeviceOrientationEvent.requestPermission()
+            .then(permissionState => {
+              if (permissionState === 'granted') {
+                window.addEventListener('deviceorientation', handleOrientation);
+                motionBtn.style.display = 'none';
+              }
+            })
+            .catch(console.error);
+        } else if (typeof DeviceOrientationEvent !== 'undefined') {
+          window.addEventListener('deviceorientation', handleOrientation);
+          motionBtn.style.display = 'none';
+        }
+      }
+
+      motionBtn.addEventListener('click', enableMotionAccess);
+    }
   </script>
 </body>
 </html>
