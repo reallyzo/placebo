@@ -20,7 +20,6 @@
 
     .scale-wrapper {
       animation: breatheScale 6s ease-in-out infinite;
-      transform: scale(1); /* Prevents zoom bug */
     }
 
     .logo-container {
@@ -104,6 +103,7 @@
   <script>
     const container = document.getElementById('logoContainer');
     const motionBtn = document.getElementById('motionBtn');
+
     let rotateX = 0;
     let rotateY = 0;
 
@@ -111,7 +111,7 @@
       container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     }
 
-    // Desktop movement
+    // Desktop mouse tilt - balanced
     if (window.innerWidth >= 768) {
       document.addEventListener('mousemove', (e) => {
         const rect = container.getBoundingClientRect();
@@ -119,8 +119,8 @@
         const centerY = rect.top + rect.height / 2;
         const offsetX = (e.clientX - centerX) / (rect.width / 2);
         const offsetY = (e.clientY - centerY) / (rect.height / 2);
-        rotateX = offsetY * -6;
-        rotateY = offsetX * 8;
+        rotateX = offsetY * -8;  // vertical sensitivity
+        rotateY = offsetX * 8;   // horizontal sensitivity (was 20)
         updateTransform();
       });
 
@@ -131,7 +131,7 @@
       });
     }
 
-    // Mobile motion
+    // Mobile motion tracking
     if (window.innerWidth < 768) {
       function handleOrientation(event) {
         const beta = event.beta || 0;
@@ -151,7 +151,7 @@
               }
             })
             .catch(console.error);
-        } else if (typeof DeviceOrientationEvent !== 'undefined') {
+        } else {
           window.addEventListener('deviceorientation', handleOrientation);
           motionBtn.style.display = 'none';
         }
