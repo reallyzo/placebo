@@ -19,6 +19,9 @@
     }
 
     .scale-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       animation: breatheScale 6s ease-in-out infinite;
     }
 
@@ -107,11 +110,15 @@
     let rotateX = 0;
     let rotateY = 0;
 
+    function clamp(val, min, max) {
+      return Math.max(min, Math.min(max, val));
+    }
+
     function updateTransform() {
       container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     }
 
-    // Desktop mouse tilt - balanced
+    // Desktop mouse tilt - safe range
     if (window.innerWidth >= 768) {
       document.addEventListener('mousemove', (e) => {
         const rect = container.getBoundingClientRect();
@@ -119,8 +126,8 @@
         const centerY = rect.top + rect.height / 2;
         const offsetX = (e.clientX - centerX) / (rect.width / 2);
         const offsetY = (e.clientY - centerY) / (rect.height / 2);
-        rotateX = offsetY * -8;  // vertical sensitivity
-        rotateY = offsetX * 8;   // horizontal sensitivity (was 20)
+        rotateX = clamp(offsetY * -10, -15, 15);  // more responsive vertical
+        rotateY = clamp(offsetX * 10, -15, 15);   // balanced horizontal
         updateTransform();
       });
 
@@ -131,13 +138,13 @@
       });
     }
 
-    // Mobile motion tracking
+    // Mobile motion tilt
     if (window.innerWidth < 768) {
       function handleOrientation(event) {
         const beta = event.beta || 0;
         const gamma = event.gamma || 0;
-        rotateX = (beta - 90) / -2.5;
-        rotateY = gamma / 2.5;
+        rotateX = clamp((beta - 90) / -2.5, -15, 15);
+        rotateY = clamp(gamma / 2.5, -15, 15);
         updateTransform();
       }
 
