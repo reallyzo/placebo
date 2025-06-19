@@ -20,7 +20,7 @@
 
     .scale-wrapper {
       animation: breatheScale 6s ease-in-out infinite;
-      transform: scale(1); /* prevent initial jump */
+      transform: scale(1); /* Prevents zoom bug */
     }
 
     .logo-container {
@@ -104,7 +104,6 @@
   <script>
     const container = document.getElementById('logoContainer');
     const motionBtn = document.getElementById('motionBtn');
-
     let rotateX = 0;
     let rotateY = 0;
 
@@ -112,24 +111,54 @@
       container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     }
 
-    // Desktop mouse movement – now smoother
-    document.addEventListener('mousemove', (e) => {
-      const rect = container.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      const offsetX = (e.clientX - centerX) / (rect.width / 2);
-      const offsetY = (e.clientY - centerY) / (rect.height / 2);
-      rotateX = offsetY * -6; // was -10
-      rotateY = offsetX * 8;  // was 20
-      updateTransform();
-    });
+    // Desktop movement
+    if (window.innerWidth >= 768) {
+      document.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const offsetX = (e.clientX - centerX) / (rect.width / 2);
+        const offsetY = (e.clientY - centerY) / (rect.height / 2);
+        rotateX = offsetY * -6;
+        rotateY = offsetX * 8;
+        updateTransform();
+      });
 
-    document.addEventListener('mouseleave', () => {
-      rotateX = 0;
-      rotateY = 0;
-      updateTransform();
-    });
+      document.addEventListener('mouseleave', () => {
+        rotateX = 0;
+        rotateY = 0;
+        updateTransform();
+      });
+    }
 
-    // Mobile motion tilt
+    // Mobile motion
     if (window.innerWidth < 768) {
-      function handleOrientation(eve
+      function handleOrientation(event) {
+        const beta = event.beta || 0;
+        const gamma = event.gamma || 0;
+        rotateX = (beta - 90) / -2.5;
+        rotateY = gamma / 2.5;
+        updateTransform();
+      }
+
+      function enableMotionAccess() {
+        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+          DeviceOrientationEvent.requestPermission()
+            .then(state => {
+              if (state === 'granted') {
+                window.addEventListener('deviceorientation', handleOrientation);
+                motionBtn.style.display = 'none';
+              }
+            })
+            .catch(console.error);
+        } else if (typeof DeviceOrientationEvent !== 'undefined') {
+          window.addEventListener('deviceorientation', handleOrientation);
+          motionBtn.style.display = 'none';
+        }
+      }
+
+      motionBtn.addEventListener('click', enableMotionAccess);
+    }
+  </script>
+</body>
+</html>
