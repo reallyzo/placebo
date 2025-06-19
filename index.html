@@ -30,7 +30,7 @@
       align-items: center;
       justify-content: center;
       transform-style: preserve-3d;
-      transform: rotateX(0deg) rotateY(0deg); /* starting transform */
+      transform: rotateX(0deg) rotateY(0deg);
       will-change: transform;
     }
 
@@ -111,27 +111,25 @@
       container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     }
 
-    // Only enable mouse movement on desktop
-    if (window.innerWidth >= 768) {
-      window.addEventListener('mousemove', (e) => {
-        const rect = container.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const offsetX = (e.clientX - centerX) / (rect.width / 2);
-        const offsetY = (e.clientY - centerY) / (rect.height / 2);
-        rotateX = offsetY * -10;
-        rotateY = offsetX * 20;
-        updateTransform();
-      });
+    // Always run desktop mouse movement (even on large iPads or rescaled views)
+    document.addEventListener('mousemove', (e) => {
+      const rect = container.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const offsetX = (e.clientX - centerX) / (rect.width / 2);
+      const offsetY = (e.clientY - centerY) / (rect.height / 2);
+      rotateX = offsetY * -10;
+      rotateY = offsetX * 20;
+      updateTransform();
+    });
 
-      window.addEventListener('mouseleave', () => {
-        rotateX = 0;
-        rotateY = 0;
-        updateTransform();
-      });
-    }
+    document.addEventListener('mouseleave', () => {
+      rotateX = 0;
+      rotateY = 0;
+      updateTransform();
+    });
 
-    // Mobile motion tilt only on mobile
+    // Only activate motion tracking if screen is small (i.e. mobile)
     if (window.innerWidth < 768) {
       function handleOrientation(event) {
         const beta = event.beta || 0;
@@ -144,14 +142,14 @@
       function enableMotionAccess() {
         if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
           DeviceOrientationEvent.requestPermission()
-            .then(permissionState => {
-              if (permissionState === 'granted') {
+            .then(state => {
+              if (state === 'granted') {
                 window.addEventListener('deviceorientation', handleOrientation);
                 motionBtn.style.display = 'none';
               }
             })
             .catch(console.error);
-        } else if (typeof DeviceOrientationEvent !== 'undefined') {
+        } else {
           window.addEventListener('deviceorientation', handleOrientation);
           motionBtn.style.display = 'none';
         }
