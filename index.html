@@ -110,16 +110,20 @@
       container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     }
 
-    // Desktop mouse tilt
+    // Desktop mouse tilt (clamped)
+    function clamp(val, min, max) {
+      return Math.max(min, Math.min(max, val));
+    }
+
     if (window.innerWidth >= 768) {
       document.addEventListener('mousemove', (e) => {
         const rect = container.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
-        const offsetX = (e.clientX - centerX) / (rect.width / 4); // less aggressive
-        const offsetY = (e.clientY - centerY) / (rect.height / 4);
-        rotateX = offsetY * -3;
-        rotateY = offsetX * 3;
+        const offsetX = (e.clientX - centerX) / (rect.width / 2);
+        const offsetY = (e.clientY - centerY) / (rect.height / 2);
+        rotateX = clamp(offsetY * -5, -10, 10);
+        rotateY = clamp(offsetX * 5, -10, 10);
         updateTransform();
       });
 
@@ -134,22 +138,22 @@
     function handleOrientation(event) {
       const beta = event.beta || 0;
       const gamma = event.gamma || 0;
-      rotateX = (beta - 90) / -10; // smoother
-      rotateY = gamma / 10;
+      rotateX = clamp((beta - 90) / -5, -10, 10);
+      rotateY = clamp(gamma / 5, -10, 10);
       updateTransform();
     }
 
     function enableMotionAccess() {
-      if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function') {
+      if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
         DeviceOrientationEvent.requestPermission()
-          .then(state => {
-            if (state === 'granted') {
+          .then(permissionState => {
+            if (permissionState === 'granted') {
               window.addEventListener('deviceorientation', handleOrientation);
               motionBtn.style.display = 'none';
             }
           })
           .catch(console.error);
-      } else if (window.DeviceOrientationEvent) {
+      } else {
         window.addEventListener('deviceorientation', handleOrientation);
         motionBtn.style.display = 'none';
       }
