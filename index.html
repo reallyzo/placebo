@@ -20,6 +20,7 @@
 
     .scale-wrapper {
       animation: breatheScale 6s ease-in-out infinite;
+      transform: scale(1); /* prevent initial jump */
     }
 
     .logo-container {
@@ -111,15 +112,15 @@
       container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     }
 
-    // Always run desktop mouse movement (even on large iPads or rescaled views)
+    // Desktop mouse movement – now smoother
     document.addEventListener('mousemove', (e) => {
       const rect = container.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
       const offsetX = (e.clientX - centerX) / (rect.width / 2);
       const offsetY = (e.clientY - centerY) / (rect.height / 2);
-      rotateX = offsetY * -10;
-      rotateY = offsetX * 20;
+      rotateX = offsetY * -6; // was -10
+      rotateY = offsetX * 8;  // was 20
       updateTransform();
     });
 
@@ -129,34 +130,6 @@
       updateTransform();
     });
 
-    // Only activate motion tracking if screen is small (i.e. mobile)
+    // Mobile motion tilt
     if (window.innerWidth < 768) {
-      function handleOrientation(event) {
-        const beta = event.beta || 0;
-        const gamma = event.gamma || 0;
-        rotateX = (beta - 90) / -2.5;
-        rotateY = gamma / 2.5;
-        updateTransform();
-      }
-
-      function enableMotionAccess() {
-        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-          DeviceOrientationEvent.requestPermission()
-            .then(state => {
-              if (state === 'granted') {
-                window.addEventListener('deviceorientation', handleOrientation);
-                motionBtn.style.display = 'none';
-              }
-            })
-            .catch(console.error);
-        } else {
-          window.addEventListener('deviceorientation', handleOrientation);
-          motionBtn.style.display = 'none';
-        }
-      }
-
-      motionBtn.addEventListener('click', enableMotionAccess);
-    }
-  </script>
-</body>
-</html>
+      function handleOrientation(eve
