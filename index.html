@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -110,16 +110,16 @@
       container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     }
 
-    // Desktop mouse tilt — smoother and centered
+    // Desktop mouse tilt
     if (window.innerWidth >= 768) {
       document.addEventListener('mousemove', (e) => {
         const rect = container.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
-        const offsetX = (e.clientX - centerX) / window.innerWidth;
-        const offsetY = (e.clientY - centerY) / window.innerHeight;
-        rotateX = offsetY * -30; // stronger vertical effect
-        rotateY = offsetX * 60;
+        const offsetX = (e.clientX - centerX) / (rect.width / 2);
+        const offsetY = (e.clientY - centerY) / (rect.height / 2);
+        rotateX = offsetY * -10;
+        rotateY = offsetX * 20;
         updateTransform();
       });
 
@@ -132,8 +132,8 @@
 
     // Mobile motion tilt
     function handleOrientation(event) {
-      const beta = event.beta || 0;   // x-axis (tilt front to back)
-      const gamma = event.gamma || 0; // y-axis (tilt left to right)
+      const beta = event.beta || 0;   // x-axis (front to back)
+      const gamma = event.gamma || 0; // y-axis (left to right)
       rotateX = (beta - 90) / -2.5;
       rotateY = gamma / 2.5;
       updateTransform();
