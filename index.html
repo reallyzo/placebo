@@ -127,24 +127,34 @@
       container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     }
 
-    // ✅ Force zoom + initial transform to apply cleanly
-    window.addEventListener('DOMContentLoaded', () => {
+    // ✅ Force zoom + activate motion cleanly after full load
+    window.addEventListener('load', () => {
       document.body.style.zoom = "100%";
-      requestAnimationFrame(() => {
-        container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-      });
+      setTimeout(() => {
+        rotateX = 0;
+        rotateY = 0;
+        updateTransform();
+      }, 10);
     });
 
-    // ✅ Smooth rotation on desktop
+    // ✅ Smooth rotation on desktop (with rect refresh throttle)
     if (window.innerWidth >= 768) {
+      let rect = container.getBoundingClientRect();
+      let lastRectUpdate = Date.now();
+
       document.addEventListener('mousemove', (e) => {
-        const rect = container.getBoundingClientRect();
+        const now = Date.now();
+        if (now - lastRectUpdate > 100) {
+          rect = container.getBoundingClientRect();
+          lastRectUpdate = now;
+        }
+
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
         const offsetX = (e.clientX - centerX) / (rect.width / 2);
         const offsetY = (e.clientY - centerY) / (rect.height / 2);
-        targetX = clamp(offsetY * -12, -20, 20);
-        targetY = clamp(offsetX * 12, -20, 20);
+        targetX = clamp(offsetY * -10, -20, 20); // 🎯 Reduced from 12 to 10
+        targetY = clamp(offsetX * 10, -20, 20);
       });
 
       document.addEventListener('mouseleave', () => {
