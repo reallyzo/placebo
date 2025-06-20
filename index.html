@@ -20,7 +20,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transform: scale(1); /* 🛠 fix zoom behavior */
+      transform: scale(1);
     }
 
     .scale-wrapper {
@@ -38,7 +38,7 @@
       align-items: center;
       justify-content: center;
       transform-style: preserve-3d;
-      transform: rotateX(-5deg) rotateY(5deg); /* ✨ Not flat on load */
+      transform: rotateX(0deg) rotateY(0deg); /* ✅ Flat on load */
       will-change: transform;
       transition: transform 0.12s ease-out;
     }
@@ -113,8 +113,10 @@
     const container = document.getElementById('logoContainer');
     const motionBtn = document.getElementById('motionBtn');
 
-    let rotateX = -5;
-    let rotateY = 5;
+    let rotateX = 0;
+    let rotateY = 0;
+    let targetX = 0;
+    let targetY = 0;
 
     function clamp(val, min, max) {
       return Math.max(min, Math.min(max, val));
@@ -124,12 +126,13 @@
       container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     }
 
-    // Reset zoom level on load (desktop fix)
-    window.addEventListener('load', () => {
+    window.addEventListener('DOMContentLoaded', () => {
       document.body.style.zoom = "100%";
+      requestAnimationFrame(() => {
+        container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      });
     });
 
-    // Desktop tracking
     if (window.innerWidth >= 768) {
       document.addEventListener('mousemove', (e) => {
         const rect = container.getBoundingClientRect();
@@ -137,19 +140,25 @@
         const centerY = rect.top + rect.height / 2;
         const offsetX = (e.clientX - centerX) / (rect.width / 2);
         const offsetY = (e.clientY - centerY) / (rect.height / 2);
-        rotateX = clamp(offsetY * -12, -20, 20);
-        rotateY = clamp(offsetX * 12, -20, 20);
-        updateTransform();
+        targetX = clamp(offsetY * -12, -20, 20);
+        targetY = clamp(offsetX * 12, -20, 20);
       });
 
       document.addEventListener('mouseleave', () => {
-        rotateX = -5;
-        rotateY = 5;
-        updateTransform();
+        targetX = 0;
+        targetY = 0;
       });
+
+      function animateRotation() {
+        rotateX += (targetX - rotateX) * 0.1;
+        rotateY += (targetY - rotateY) * 0.1;
+        updateTransform();
+        requestAnimationFrame(animateRotation);
+      }
+
+      animateRotation();
     }
 
-    // Mobile tilt
     if (window.innerWidth < 768) {
       function handleOrientation(event) {
         const beta = event.beta || 0;
