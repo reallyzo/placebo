@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <title>PLACEBO</title>
   <link rel="icon" href="favicon.png" type="image/png" />
   <style>
@@ -20,7 +20,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      zoom: 100%; /* 🛠️ Prevent 500% zoom */
+      transform: scale(1); /* 🛠 fix zoom behavior */
     }
 
     .scale-wrapper {
@@ -38,9 +38,9 @@
       align-items: center;
       justify-content: center;
       transform-style: preserve-3d;
-      transform: rotateX(0deg) rotateY(0deg);
+      transform: rotateX(-5deg) rotateY(5deg); /* ✨ Not flat on load */
       will-change: transform;
-      transition: transform 0.15s ease-out;
+      transition: transform 0.12s ease-out;
     }
 
     .logo {
@@ -113,8 +113,8 @@
     const container = document.getElementById('logoContainer');
     const motionBtn = document.getElementById('motionBtn');
 
-    let rotateX = 0;
-    let rotateY = 0;
+    let rotateX = -5;
+    let rotateY = 5;
 
     function clamp(val, min, max) {
       return Math.max(min, Math.min(max, val));
@@ -124,32 +124,32 @@
       container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     }
 
-    // Desktop motion
-    function enableMouseTracking() {
+    // Reset zoom level on load (desktop fix)
+    window.addEventListener('load', () => {
+      document.body.style.zoom = "100%";
+    });
+
+    // Desktop tracking
+    if (window.innerWidth >= 768) {
       document.addEventListener('mousemove', (e) => {
         const rect = container.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
         const offsetX = (e.clientX - centerX) / (rect.width / 2);
         const offsetY = (e.clientY - centerY) / (rect.height / 2);
-        rotateX = clamp(offsetY * -15, -15, 15);  // Enhanced vertical
-        rotateY = clamp(offsetX * 15, -15, 15);   // Enhanced horizontal
+        rotateX = clamp(offsetY * -12, -20, 20);
+        rotateY = clamp(offsetX * 12, -20, 20);
         updateTransform();
       });
 
       document.addEventListener('mouseleave', () => {
-        rotateX = 0;
-        rotateY = 0;
+        rotateX = -5;
+        rotateY = 5;
         updateTransform();
       });
     }
 
-    // Immediately enable desktop tracking on load
-    if (window.innerWidth >= 768) {
-      enableMouseTracking();
-    }
-
-    // Mobile motion tilt
+    // Mobile tilt
     if (window.innerWidth < 768) {
       function handleOrientation(event) {
         const beta = event.beta || 0;
@@ -160,7 +160,8 @@
       }
 
       function enableMotionAccess() {
-        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+        if (typeof DeviceOrientationEvent !== 'undefined' &&
+            typeof DeviceOrientationEvent.requestPermission === 'function') {
           DeviceOrientationEvent.requestPermission()
             .then(state => {
               if (state === 'granted') {
