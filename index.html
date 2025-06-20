@@ -20,7 +20,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transform: scale(1);
+      transform: scale(1); /* 🛠 fix zoom behavior */
     }
 
     .scale-wrapper {
@@ -113,10 +113,11 @@
     const container = document.getElementById('logoContainer');
     const motionBtn = document.getElementById('motionBtn');
 
+    // ✅ Set initial flat state
     let rotateX = 0;
     let rotateY = 0;
-    let targetX = 0;
-    let targetY = 0;
+    let targetX = rotateX;
+    let targetY = rotateY;
 
     function clamp(val, min, max) {
       return Math.max(min, Math.min(max, val));
@@ -126,6 +127,7 @@
       container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     }
 
+    // ✅ Force zoom + initial transform to apply cleanly
     window.addEventListener('DOMContentLoaded', () => {
       document.body.style.zoom = "100%";
       requestAnimationFrame(() => {
@@ -133,6 +135,7 @@
       });
     });
 
+    // ✅ Smooth rotation on desktop
     if (window.innerWidth >= 768) {
       document.addEventListener('mousemove', (e) => {
         const rect = container.getBoundingClientRect();
@@ -159,6 +162,7 @@
       animateRotation();
     }
 
+    // ✅ Mobile tilt
     if (window.innerWidth < 768) {
       function handleOrientation(event) {
         const beta = event.beta || 0;
