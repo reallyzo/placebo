@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>PLACEBO</title>
   <link rel="icon" href="favicon.png" type="image/png" />
   <style>
@@ -20,6 +20,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      zoom: 100%; /* 🛠️ Prevent 500% zoom */
     }
 
     .scale-wrapper {
@@ -39,7 +40,7 @@
       transform-style: preserve-3d;
       transform: rotateX(0deg) rotateY(0deg);
       will-change: transform;
-      transition: transform 0.1s ease-out;
+      transition: transform 0.15s ease-out;
     }
 
     .logo {
@@ -123,15 +124,16 @@
       container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     }
 
-    if (window.innerWidth >= 768) {
+    // Desktop motion
+    function enableMouseTracking() {
       document.addEventListener('mousemove', (e) => {
         const rect = container.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
         const offsetX = (e.clientX - centerX) / (rect.width / 2);
         const offsetY = (e.clientY - centerY) / (rect.height / 2);
-        rotateX = clamp(offsetY * -10, -12, 12);
-        rotateY = clamp(offsetX * 10, -12, 12);
+        rotateX = clamp(offsetY * -15, -15, 15);  // Enhanced vertical
+        rotateY = clamp(offsetX * 15, -15, 15);   // Enhanced horizontal
         updateTransform();
       });
 
@@ -142,6 +144,12 @@
       });
     }
 
+    // Immediately enable desktop tracking on load
+    if (window.innerWidth >= 768) {
+      enableMouseTracking();
+    }
+
+    // Mobile motion tilt
     if (window.innerWidth < 768) {
       function handleOrientation(event) {
         const beta = event.beta || 0;
