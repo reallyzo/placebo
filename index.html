@@ -27,6 +27,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      transform: scale(1);
     }
 
     .scale-wrapper {
@@ -271,12 +272,6 @@
   window.addEventListener('beforeunload', () => {
     sessionStorage.removeItem('zoomFixDone');
   });
-  <script>
-  if (window.innerWidth >= 768) {
-    document.body.style.zoom = "100%";
-    document.body.style.transform = "none";
-    document.documentElement.style.zoom = "100%";
-  }
 </script>
 </body>
 </html>
