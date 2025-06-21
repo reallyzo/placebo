@@ -249,9 +249,7 @@ function updateTransform() {
     motionBtn.addEventListener('click', enableMotionAccess);
   }
 
-window.addEventListener('load', () => {
-  setTimeout(desktopZoomFix, 50);  // 🔧 Add short delay
-
+// 🛠 Desktop zoom fix function
 function desktopZoomFix() {
   if (window.innerWidth >= 768) {
     const rect = container.getBoundingClientRect();
@@ -280,10 +278,15 @@ function desktopZoomFix() {
   }
 }
 
-  // Optional cleanup for next load
-  window.addEventListener('beforeunload', () => {
-    sessionStorage.removeItem('zoomFixDone');
-  });
+// ⏳ Call on load
+window.addEventListener('load', () => {
+  setTimeout(desktopZoomFix, 50);
+});
+
+// 🧼 Optional cleanup
+window.addEventListener('beforeunload', () => {
+  sessionStorage.removeItem('zoomFixDone');
+});
 </script>
 </body>
 </html>
