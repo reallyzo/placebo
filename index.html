@@ -168,15 +168,14 @@
     return Math.max(min, Math.min(max, val));
   }
 
-  function updateTransform() {
+function updateTransform() {
   container.style.transform = `
     translateX(${shiftX}px)
     translateY(${shiftY}px)
     rotateX(${rotateX}deg)
     rotateY(${rotateY}deg)
   `;
-
-  }
+}
 
   // 🎯 Desktop cursor motion
   if (window.innerWidth >= 768) {
