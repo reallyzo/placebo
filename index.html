@@ -281,6 +281,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
+  (function hardZoomShim() {
+  if (window.innerWidth >= 768) {
+    const alreadyFixed = sessionStorage.getItem('hardZoomFix');
+    const zoomRatio = window.innerWidth / screen.width;
+
+    if (!alreadyFixed && (zoomRatio < 0.6 || zoomRatio > 1.4)) {
+      // Prevents infinite flicker
+      sessionStorage.setItem('hardZoomFix', 'true');
+
+      // Resize the HTML root just slightly and then reset it (tricks browser engine)
+      const html = document.documentElement;
+      html.style.width = '99.9%';
+
+      requestAnimationFrame(() => {
+        html.style.width = '';
+      });
+
+      console.log('🔧 Zoom correction shim activated (innerWidth/screen.width =', zoomRatio.toFixed(2), ')');
+    }
+  }
+})();
 </script>
 </body>
 </html>
