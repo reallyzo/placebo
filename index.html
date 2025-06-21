@@ -274,14 +274,12 @@ if (window.innerWidth >= 768) {
   document.documentElement.style.transform = 'none';
   document.documentElement.style.transformOrigin = 'top left';
 
-  // 💥 Force reflow fix without breaking layout
-  requestAnimationFrame(() => {
-    const originalTransform = container.style.transform;
-    container.style.transform += ' scale(1.0001)';
-    setTimeout(() => {
-      container.style.transform = originalTransform;
-    }, 1);
-  });
+  // 🧩 Non-destructive reflow trigger
+  const dummy = document.createElement('div');
+  dummy.style.cssText = 'position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;';
+  document.body.appendChild(dummy);
+  void dummy.offsetWidth; // trigger reflow
+  document.body.removeChild(dummy);
 }
 
   // Optional cleanup for next load
