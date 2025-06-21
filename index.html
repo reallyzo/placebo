@@ -7,10 +7,9 @@
   <link rel="icon" href="favicon.png" type="image/png" />
   <style>
     html {
-      zoom: 100% !important;
-      transform: none !important;
-      transform-origin: top left !important;
-    }
+html {
+  /* Removed zoom + transform fix – handled via JS now */
+}
 
     html, body {
       margin: 0;
@@ -268,12 +267,11 @@
   window.addEventListener('load', () => {
     desktopZoomFix();
 
-    // ✨ Desktop-only backup fix for zoom weirdness
-    if (window.innerWidth >= 768) {
-      document.documentElement.style.zoom = '100%';
-      document.documentElement.style.transform = 'none';
-      document.documentElement.style.transformOrigin = 'top left';
-    }
+// 🧠 Optional: Apply zoom fix if layout is broken (once per session)
+if (window.devicePixelRatio > 1.15 && !sessionStorage.getItem('zoomFixDone')) {
+  sessionStorage.setItem('zoomFixDone', 'true');
+  location.reload();
+  }
   });
 
   // Optional cleanup for next load
