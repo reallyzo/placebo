@@ -249,31 +249,41 @@ rotateY += ((tiltY * 1.2) - rotateY) * 0.07;
 
   motionBtn.addEventListener('click', enableMotionAccess);
 }
-  function desktopZoomFix() {
+function desktopZoomFix() {
   if (window.innerWidth >= 768) {
     const rect = container.getBoundingClientRect();
-
     const isWayOffscreen = rect.top > window.innerHeight || rect.left > window.innerWidth;
-    const isWeirdZoom = window.devicePixelRatio > 1.5;
+    const isWeirdZoom = window.devicePixelRatio > 1.25;
 
     const alreadyFixed = sessionStorage.getItem('zoomFixDone');
 
     if ((isWayOffscreen || isWeirdZoom) && !alreadyFixed) {
       sessionStorage.setItem('zoomFixDone', 'true');
-      document.body.style.zoom = '100%';
 
+      // Force scale/zoom reset
+      document.body.style.zoom = '100%';
+      document.body.style.transform = 'scale(1)';
+      document.body.style.transformOrigin = 'top left';
+
+      // Scroll to top
       window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
 
+      // Trigger hard reflow
       setTimeout(() => {
-        container.style.transform = 'rotateX(0deg) rotateY(0deg)';
         rotateX = 0;
         rotateY = 0;
         targetX = 0;
         targetY = 0;
 
-        // Force full reload to re-init motion (this is the magic)
-        location.reload();
-      }, 150);
+        container.style.transform = 'translateX(0px) translateY(0px) rotateX(0deg) rotateY(0deg)';
+
+        // Force re-render by re-attaching the motion listener
+        const clone = container.cloneNode(true);
+        container.parentNode.replaceChild(clone, container);
+
+        // Hard reload fallback (disabled for now)
+        // location.reload();
+      }, 200);
     }
   }
 }
