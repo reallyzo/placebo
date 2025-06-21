@@ -3,13 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <style>
-  html {
-    zoom: 100% !important;
-    transform: none !important;
-    transform-origin: top left !important;
-  }
-</style>
   <title>PLACEBO</title>
   <link rel="icon" href="favicon.png" type="image/png" />
   <style>
@@ -266,12 +259,10 @@
     }
   }
 
-  window.addEventListener('load', desktopZoomFix);
+  window.addEventListener('load', () => {
+    desktopZoomFix();
 
-  // Optional cleanup for next load
-  window.addEventListener('beforeunload', () => {
-    sessionStorage.removeItem('zoomFixDone');
-  });
-</script>
-</body>
-</html>
+    // ✨ Desktop-only zoom reset (no impact on mobile)
+    if (window.innerWidth >= 768) {
+      document.documentElement.style.zoom = '100%';
+      document.documentElement.style.transform = 'none';
