@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -20,7 +20,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transform: scale(1); /* 🛠 fix zoom behavior */
+      transform: scale(1);
     }
 
     .scale-wrapper {
@@ -38,7 +38,7 @@
       align-items: center;
       justify-content: center;
       transform-style: preserve-3d;
-      transform: rotateX(0deg) rotateY(0deg); /* ✅ Flat on load */
+      transform: rotateX(0deg) rotateY(0deg);
       will-change: transform;
       transition: transform 0.12s ease-out;
     }
@@ -69,18 +69,42 @@
 
     #motionBtn {
       display: none;
-      margin-top: 20px;
       background: none;
       color: #fff;
-      font-size: 14px;
+      font-size: 12px;
       border: none;
       cursor: pointer;
       text-decoration: underline;
       opacity: 0.6;
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
     }
 
     #motionBtn:hover {
       opacity: 1;
+    }
+
+    .link-wrapper {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: #aaa;
+      font-family: sans-serif;
+      z-index: 2;
+    }
+
+    .link-wrapper a {
+      color: #aaa;
+      text-decoration: none;
+    }
+
+    .link-wrapper a:hover {
+      color: #fff;
+      text-decoration: underline;
     }
 
     @media (max-width: 767px) {
@@ -107,13 +131,19 @@
       <img src="triangle-glow-style-2-ultra.png" class="logo logo-glow" alt="PLACEBO Logo Glow" />
     </div>
   </div>
+
+  <div class="link-wrapper">
+    <a href="https://instagram.com/placebo" target="_blank">Instagram</a>
+    <a href="mailto:contact@placebomovement.com">Contact</a>
+    <a href="#">Launch Info</a>
+  </div>
+
   <button id="motionBtn">Enable Motion</button>
 
   <script>
     const container = document.getElementById('logoContainer');
     const motionBtn = document.getElementById('motionBtn');
 
-    // ✅ Set initial flat state
     let rotateX = 0;
     let rotateY = 0;
     let targetX = rotateX;
@@ -127,11 +157,9 @@
       container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     }
 
-    // ✅ Force zoom + activate motion cleanly after full load (w/ GPU warm-up trick)
     window.addEventListener('load', () => {
       document.body.style.zoom = "100%";
       setTimeout(() => {
-        // 👇 GPU wake-up micro-transform
         container.style.transform = 'rotateX(0.01deg) rotateY(0.01deg)';
         requestAnimationFrame(() => {
           rotateX = 0;
@@ -141,7 +169,6 @@
       }, 20);
     });
 
-    // ✅ Smooth rotation on desktop (with rect refresh throttle)
     if (window.innerWidth >= 768) {
       let rect = container.getBoundingClientRect();
       let lastRectUpdate = Date.now();
@@ -157,7 +184,7 @@
         const centerY = rect.top + rect.height / 2;
         const offsetX = (e.clientX - centerX) / (rect.width / 2);
         const offsetY = (e.clientY - centerY) / (rect.height / 2);
-        targetX = clamp(offsetY * -10, -20, 20); // 🎯 Reduced from 12 to 10
+        targetX = clamp(offsetY * -10, -20, 20);
         targetY = clamp(offsetX * 10, -20, 20);
       });
 
@@ -176,7 +203,6 @@
       animateRotation();
     }
 
-    // ✅ Mobile tilt
     if (window.innerWidth < 768) {
       function handleOrientation(event) {
         const beta = event.beta || 0;
