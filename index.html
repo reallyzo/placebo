@@ -268,11 +268,16 @@
 window.addEventListener('load', () => {
   desktopZoomFix();
 
-  // ✨ Desktop-only backup fix for zoom weirdness
   if (window.innerWidth >= 768) {
     document.documentElement.style.zoom = '100%';
     document.documentElement.style.transform = 'none';
     document.documentElement.style.transformOrigin = 'top left';
+
+    // 🧠 Force layout reflow via dummy element
+    const reflowDiv = document.getElementById('reflowTrigger');
+    reflowDiv.style.width = '2px'; // trigger reflow
+    void reflowDiv.offsetWidth;    // force layout read
+    reflowDiv.style.width = '1px'; // revert
   }
 });
 
@@ -280,6 +285,8 @@ window.addEventListener('load', () => {
   window.addEventListener('beforeunload', () => {
     sessionStorage.removeItem('zoomFixDone');
   });
+  <!-- Hidden reflow element to fix layout on load -->
+<div id="reflowTrigger" style="position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none;"></div>
 </script>
 </body>
 </html>
