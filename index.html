@@ -281,13 +281,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
-
-  // Reload the page if user zoom resets later
-  if (window.matchMedia('(resolution: 1dppx)').addEventListener) {
-    window.matchMedia('(resolution: 1dppx)').addEventListener('change', () => {
-      location.reload();
-    });
-  }
 </script>
 </body>
 </html>
