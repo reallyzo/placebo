@@ -6,6 +6,12 @@
   <title>PLACEBO</title>
   <link rel="icon" href="favicon.png" type="image/png" />
   <style>
+    html {
+      zoom: 100% !important;
+      transform: none !important;
+      transform-origin: top left !important;
+    }
+
     html, body {
       margin: 0;
       padding: 0;
@@ -243,44 +249,44 @@
     motionBtn.addEventListener('click', enableMotionAccess);
   }
 
-function desktopZoomFix() {
-  if (window.innerWidth >= 768) {
-    const isZoomed = Math.abs(window.devicePixelRatio - 1) > 0.15;
+  // 🛠 Desktop zoom + transform fix
+  function desktopZoomFix() {
+    if (window.innerWidth >= 768) {
+      const rect = container.getBoundingClientRect();
+      const isWayOffscreen = rect.top > window.innerHeight || rect.left > window.innerWidth;
+      const isWeirdZoom = window.devicePixelRatio > 1.25;
 
-    const rect = container.getBoundingClientRect();
-    const isOffscreen = rect.top > window.innerHeight || rect.left > window.innerWidth;
+      const alreadyFixed = sessionStorage.getItem('zoomFixDone');
 
-    const alreadyFixed = sessionStorage.getItem('zoomFixDone');
-
-    if ((isZoomed || isOffscreen) && !alreadyFixed) {
-      sessionStorage.setItem('zoomFixDone', 'true');
-      location.reload();
+      if ((isWayOffscreen || isWeirdZoom) && !alreadyFixed) {
+        sessionStorage.setItem('zoomFixDone', 'true');
+        location.replace(window.location.pathname);
+      }
     }
   }
-}
-  
-window.addEventListener('load', () => {
-  desktopZoomFix();
 
-  if (window.innerWidth >= 768) {
-    document.documentElement.style.zoom = '100%';
-    document.documentElement.style.transform = 'none';
-    document.documentElement.style.transformOrigin = 'top left';
+  window.addEventListener('load', () => {
+    desktopZoomFix();
 
-    // 🧠 Force layout reflow via dummy element
-    const reflowDiv = document.getElementById('reflowTrigger');
-    reflowDiv.style.width = '2px'; // trigger reflow
-    void reflowDiv.offsetWidth;    // force layout read
-    reflowDiv.style.width = '1px'; // revert
-  }
-});
+    // ✨ Desktop-only backup fix for zoom weirdness
+    if (window.innerWidth >= 768) {
+      document.documentElement.style.zoom = '100%';
+      document.documentElement.style.transform = 'none';
+      document.documentElement.style.transformOrigin = 'top left';
+      // 🧠 Stabilize transform layout on desktop
+setTimeout(() => {
+  const originalTransform = container.style.transform;
+  container.style.transform = originalTransform + ' scale3d(1.0001, 1.0001, 1.0001)';
+  requestAnimationFrame(() => {
+    container.style.transform = originalTransform;
+  });
+}, 200);
+  });
 
   // Optional cleanup for next load
   window.addEventListener('beforeunload', () => {
     sessionStorage.removeItem('zoomFixDone');
   });
-  <!-- Hidden reflow element to fix layout on load -->
-<div id="reflowTrigger" style="position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none;"></div>
 </script>
 </body>
 </html>
