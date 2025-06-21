@@ -249,6 +249,33 @@ rotateY += ((tiltY * 1.2) - rotateY) * 0.07;
 
   motionBtn.addEventListener('click', enableMotionAccess);
 }
+    function desktopZoomFix() {
+  if (window.innerWidth >= 768) {
+    const rect = container.getBoundingClientRect();
+
+    const isWayOffscreen = rect.top > window.innerHeight || rect.left > window.innerWidth;
+    const isWeirdZoom = window.devicePixelRatio > 1.5;
+
+    if (isWayOffscreen || isWeirdZoom) {
+      // Reset zoom to 100%
+      document.body.style.zoom = '100%';
+
+      // Scroll to center
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+
+      // Force logo to repaint/reset
+      setTimeout(() => {
+        container.style.transform = 'rotateX(0deg) rotateY(0deg)';
+        rotateX = 0;
+        rotateY = 0;
+        targetX = 0;
+        targetY = 0;
+      }, 100);
+    }
+  }
+}
+
+window.addEventListener('load', desktopZoomFix);
   </script>
 </body>
 </html>
