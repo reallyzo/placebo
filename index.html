@@ -147,147 +147,124 @@
 
   <button id="motionBtn">Enable Motion</button>
 
-  <script>
-    const container = document.getElementById('logoContainer');
-    const motionBtn = document.getElementById('motionBtn');
+<script>
+  const container = document.getElementById('logoContainer');
+  const motionBtn = document.getElementById('motionBtn');
 
-    let rotateX = 0;
-    let rotateY = 0;
-    let shiftX = 0;
-    let shiftY = 0;
-    let targetX = 0;
-    let targetY = 0;
+  let rotateX = 0;
+  let rotateY = 0;
+  let shiftX = 0;
+  let shiftY = 0;
+  let targetX = 0;
+  let targetY = 0;
 
-    function clamp(val, min, max) {
-      return Math.max(min, Math.min(max, val));
-    }
+  function clamp(val, min, max) {
+    return Math.max(min, Math.min(max, val));
+  }
 
-    function updateTransform() {
-      container.style.transform = `
-        translateX(${shiftX}px)
-        translateY(${shiftY}px)
-        rotateX(${rotateX}deg)
-        rotateY(${rotateY}deg)
-      `;
-    }
+  function updateTransform() {
+    container.style.transform = `
+      translateX(${shiftX}px)
+      translateY(${shiftY}px)
+      rotateX(${rotateX}deg)
+      rotateY(${rotateY}deg)
+    `;
+  }
 
-    window.addEventListener('load', () => {
-      document.body.style.zoom = "100%";
-      setTimeout(() => {
-        updateTransform();
-      }, 20);
-    });
+  // 🎯 Desktop cursor motion
+  if (window.innerWidth >= 768) {
+    let rect = container.getBoundingClientRect();
+    let lastRectUpdate = Date.now();
 
-    if (window.innerWidth >= 768) {
-      let rect = container.getBoundingClientRect();
-      let lastRectUpdate = Date.now();
-
-      document.addEventListener('mousemove', (e) => {
-        const now = Date.now();
-        if (now - lastRectUpdate > 100) {
-          rect = container.getBoundingClientRect();
-          lastRectUpdate = now;
-        }
-
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const offsetX = (e.clientX - centerX) / (rect.width / 2);
-        const offsetY = (e.clientY - centerY) / (rect.height / 2);
-        targetX = clamp(offsetY * -10, -20, 20);
-        targetY = clamp(offsetX * 10, -20, 20);
-      });
-
-      document.addEventListener('mouseleave', () => {
-        targetX = 0;
-        targetY = 0;
-      });
-
-      function animateDesktop() {
-        rotateX += (targetX - rotateX) * 0.1;
-        rotateY += (targetY - rotateY) * 0.1;
-        updateTransform();
-        requestAnimationFrame(animateDesktop);
+    document.addEventListener('mousemove', (e) => {
+      const now = Date.now();
+      if (now - lastRectUpdate > 100) {
+        rect = container.getBoundingClientRect();
+        lastRectUpdate = now;
       }
 
-      animateDesktop();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const offsetX = (e.clientX - centerX) / (rect.width / 2);
+      const offsetY = (e.clientY - centerY) / (rect.height / 2);
+      targetX = clamp(offsetY * -10, -20, 20);
+      targetY = clamp(offsetX * 10, -20, 20);
+    });
+
+    document.addEventListener('mouseleave', () => {
+      targetX = 0;
+      targetY = 0;
+    });
+
+    function animateDesktop() {
+      rotateX += (targetX - rotateX) * 0.1;
+      rotateY += (targetY - rotateY) * 0.1;
+      updateTransform();
+      requestAnimationFrame(animateDesktop);
     }
 
-if (window.innerWidth < 768) {
-  function handleOrientation(event) {
-    const beta = event.beta || 0;
-    const gamma = event.gamma || 0;
-
-    // Increased motion depth and sensitivity for stronger 3D effect
-const tiltX = clamp((beta - 90) / -2, -15, 15);
-const tiltY = clamp(gamma / 2, -15, 15);
-
-shiftX += ((tiltY * 0.8) - shiftX) * 0.07;
-shiftY += ((tiltX * 0.8) - shiftY) * 0.07;
-rotateX += ((tiltX * 1.2) - rotateX) * 0.07;
-rotateY += ((tiltY * 1.2) - rotateY) * 0.07;
-
-
-    updateTransform();
+    animateDesktop();
   }
 
-  function enableMotionAccess() {
-    if (typeof DeviceOrientationEvent !== 'undefined' &&
-        typeof DeviceOrientationEvent.requestPermission === 'function') {
-      DeviceOrientationEvent.requestPermission()
-        .then(state => {
-          if (state === 'granted') {
-            window.addEventListener('deviceorientation', handleOrientation);
-            motionBtn.style.display = 'none';
-          }
-        })
-        .catch(console.error);
-    } else {
-      window.addEventListener('deviceorientation', handleOrientation);
-      motionBtn.style.display = 'none';
+  // 📱 Mobile motion
+  if (window.innerWidth < 768) {
+    function handleOrientation(event) {
+      const beta = event.beta || 0;
+      const gamma = event.gamma || 0;
+
+      const tiltX = clamp((beta - 90) / -2, -15, 15);
+      const tiltY = clamp(gamma / 2, -15, 15);
+
+      shiftX += ((tiltY * 0.8) - shiftX) * 0.07;
+      shiftY += ((tiltX * 0.8) - shiftY) * 0.07;
+      rotateX += ((tiltX * 1.2) - rotateX) * 0.07;
+      rotateY += ((tiltY * 1.2) - rotateY) * 0.07;
+
+      updateTransform();
+    }
+
+    function enableMotionAccess() {
+      if (typeof DeviceOrientationEvent !== 'undefined' &&
+          typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission()
+          .then(state => {
+            if (state === 'granted') {
+              window.addEventListener('deviceorientation', handleOrientation);
+              motionBtn.style.display = 'none';
+            }
+          })
+          .catch(console.error);
+      } else {
+        window.addEventListener('deviceorientation', handleOrientation);
+        motionBtn.style.display = 'none';
+      }
+    }
+
+    motionBtn.addEventListener('click', enableMotionAccess);
+  }
+
+  // 🛠 Desktop zoom + transform fix
+  function desktopZoomFix() {
+    if (window.innerWidth >= 768) {
+      const rect = container.getBoundingClientRect();
+      const isWayOffscreen = rect.top > window.innerHeight || rect.left > window.innerWidth;
+      const isWeirdZoom = window.devicePixelRatio > 1.25;
+
+      const alreadyFixed = sessionStorage.getItem('zoomFixDone');
+
+      if ((isWayOffscreen || isWeirdZoom) && !alreadyFixed) {
+        sessionStorage.setItem('zoomFixDone', 'true');
+        location.replace(window.location.pathname);
+      }
     }
   }
 
-  motionBtn.addEventListener('click', enableMotionAccess);
-}
-function desktopZoomFix() {
-  if (window.innerWidth >= 768) {
-    const rect = container.getBoundingClientRect();
-    const isWayOffscreen = rect.top > window.innerHeight || rect.left > window.innerWidth;
-    const isWeirdZoom = window.devicePixelRatio > 1.25;
+  window.addEventListener('load', desktopZoomFix);
 
-    const alreadyFixed = sessionStorage.getItem('zoomFixDone');
-
-    if ((isWayOffscreen || isWeirdZoom) && !alreadyFixed) {
-      sessionStorage.setItem('zoomFixDone', 'true');
-
-      // Force scale/zoom reset
-      document.body.style.zoom = '100%';
-      document.body.style.transform = 'scale(1)';
-      document.body.style.transformOrigin = 'top left';
-
-      // Scroll to top
-      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-
-      // Trigger hard reflow
-      setTimeout(() => {
-        rotateX = 0;
-        rotateY = 0;
-        targetX = 0;
-        targetY = 0;
-
-        container.style.transform = 'translateX(0px) translateY(0px) rotateX(0deg) rotateY(0deg)';
-
-        // Force re-render by re-attaching the motion listener
-        const clone = container.cloneNode(true);
-        container.parentNode.replaceChild(clone, container);
-
-        // Hard reload fallback (disabled for now)
-        // location.reload();
-      }, 200);
-    }
-  }
-}
-window.addEventListener('load', desktopZoomFix);
-  </script>
+  // Optional cleanup for next load
+  window.addEventListener('beforeunload', () => {
+    sessionStorage.removeItem('zoomFixDone');
+  });
+</script>
 </body>
 </html>
