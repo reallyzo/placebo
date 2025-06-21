@@ -265,29 +265,22 @@ function updateTransform() {
     }
   }
 
-  window.addEventListener('load', () => {
-    desktopZoomFix();
+window.addEventListener('load', () => {
+  desktopZoomFix();
 
-// ✨ Desktop-only backup fix for zoom weirdness
-if (window.innerWidth >= 768) {
-  document.documentElement.style.zoom = '100%';
-  document.documentElement.style.transform = 'none';
-  document.documentElement.style.transformOrigin = 'top left';
+  if (window.innerWidth >= 768) {
+    document.documentElement.style.zoom = '100%';
+    document.documentElement.style.transform = 'none';
+    document.documentElement.style.transformOrigin = 'top left';
 
-if (window.innerWidth >= 768) {
-  document.documentElement.style.zoom = '100%';
-  document.documentElement.style.transform = 'none';
-  document.documentElement.style.transformOrigin = 'top left';
-
-  // ⏱ Delay dummy reflow to prevent breaking transforms
-  requestAnimationFrame(() => {
+    // ✅ Lightweight reflow trigger that won't break layout
     const dummy = document.createElement('div');
     dummy.style.cssText = 'position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;';
     document.body.appendChild(dummy);
     void dummy.offsetWidth;
     document.body.removeChild(dummy);
-  });
-}
+  }
+});
 
   // Optional cleanup for next load
   window.addEventListener('beforeunload', () => {
