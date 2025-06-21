@@ -273,7 +273,14 @@
       document.documentElement.style.zoom = '100%';
       document.documentElement.style.transform = 'none';
       document.documentElement.style.transformOrigin = 'top left';
-    }
+      // 🧠 Stabilize transform layout on desktop
+setTimeout(() => {
+  const originalTransform = container.style.transform;
+  container.style.transform = originalTransform + ' scale3d(1.0001, 1.0001, 1.0001)';
+  requestAnimationFrame(() => {
+    container.style.transform = originalTransform;
+  });
+}, 200);
   });
 
   // Optional cleanup for next load
