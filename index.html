@@ -274,12 +274,19 @@ if (window.innerWidth >= 768) {
   document.documentElement.style.transform = 'none';
   document.documentElement.style.transformOrigin = 'top left';
 
-  // 🧩 Non-destructive reflow trigger
-  const dummy = document.createElement('div');
-  dummy.style.cssText = 'position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;';
-  document.body.appendChild(dummy);
-  void dummy.offsetWidth; // trigger reflow
-  document.body.removeChild(dummy);
+if (window.innerWidth >= 768) {
+  document.documentElement.style.zoom = '100%';
+  document.documentElement.style.transform = 'none';
+  document.documentElement.style.transformOrigin = 'top left';
+
+  // ⏱ Delay dummy reflow to prevent breaking transforms
+  requestAnimationFrame(() => {
+    const dummy = document.createElement('div');
+    dummy.style.cssText = 'position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;';
+    document.body.appendChild(dummy);
+    void dummy.offsetWidth;
+    document.body.removeChild(dummy);
+  });
 }
 
   // Optional cleanup for next load
