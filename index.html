@@ -268,13 +268,21 @@
   window.addEventListener('load', () => {
     desktopZoomFix();
 
-    // ✨ Desktop-only backup fix for zoom weirdness
-    if (window.innerWidth >= 768) {
-      document.documentElement.style.zoom = '100%';
-      document.documentElement.style.transform = 'none';
-      document.documentElement.style.transformOrigin = 'top left';
-    }
+// ✨ Desktop-only backup fix for zoom weirdness
+if (window.innerWidth >= 768) {
+  document.documentElement.style.zoom = '100%';
+  document.documentElement.style.transform = 'none';
+  document.documentElement.style.transformOrigin = 'top left';
+
+  // 💥 Force reflow fix without breaking layout
+  requestAnimationFrame(() => {
+    const originalTransform = container.style.transform;
+    container.style.transform += ' scale(1.0001)';
+    setTimeout(() => {
+      container.style.transform = originalTransform;
+    }, 1);
   });
+}
 
   // Optional cleanup for next load
   window.addEventListener('beforeunload', () => {
