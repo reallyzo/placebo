@@ -6,12 +6,6 @@
   <title>PLACEBO</title>
   <link rel="icon" href="favicon.png" type="image/png" />
   <style>
-    html {
-      zoom: 100% !important;
-      transform: none !important;
-      transform-origin: top left !important;
-    }
-
     html, body {
       margin: 0;
       padding: 0;
@@ -249,21 +243,21 @@
     motionBtn.addEventListener('click', enableMotionAccess);
   }
 
-  // 🛠 Desktop zoom + transform fix
-  function desktopZoomFix() {
-    if (window.innerWidth >= 768) {
-      const rect = container.getBoundingClientRect();
-      const isWayOffscreen = rect.top > window.innerHeight || rect.left > window.innerWidth;
-      const isWeirdZoom = window.devicePixelRatio > 1.25;
+function desktopZoomFix() {
+  if (window.innerWidth >= 768) {
+    const isZoomed = Math.abs(window.devicePixelRatio - 1) > 0.15;
 
-      const alreadyFixed = sessionStorage.getItem('zoomFixDone');
+    const rect = container.getBoundingClientRect();
+    const isOffscreen = rect.top > window.innerHeight || rect.left > window.innerWidth;
 
-      if ((isWayOffscreen || isWeirdZoom) && !alreadyFixed) {
-        sessionStorage.setItem('zoomFixDone', 'true');
-        location.replace(window.location.pathname);
-      }
+    const alreadyFixed = sessionStorage.getItem('zoomFixDone');
+
+    if ((isZoomed || isOffscreen) && !alreadyFixed) {
+      sessionStorage.setItem('zoomFixDone', 'true');
+      location.reload();
     }
   }
+}
   
 window.addEventListener('load', () => {
   desktopZoomFix();
