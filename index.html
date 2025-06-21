@@ -212,41 +212,42 @@
       animateDesktop();
     }
 
-    if (window.innerWidth < 768) {
-      function handleOrientation(event) {
-        const beta = event.beta || 0;
-        const gamma = event.gamma || 0;
+if (window.innerWidth < 768) {
+  function handleOrientation(event) {
+    const beta = event.beta || 0;
+    const gamma = event.gamma || 0;
 
-        const tiltX = clamp((beta - 90) / -2.5, -15, 15);
-        const tiltY = clamp(gamma / 2.5, -15, 15);
+    // Increased motion depth and sensitivity for stronger 3D effect
+    const tiltX = clamp((beta - 90) / -1.25, -25, 25);
+    const tiltY = clamp(gamma / 1.25, -25, 25);
 
-        shiftX += ((tiltY * 1.5) - shiftX) * 0.05;
-        shiftY += ((tiltX * 1.5) - shiftY) * 0.05;
-        rotateX += ((tiltX * 0.5) - rotateX) * 0.05;
-        rotateY += ((tiltY * 0.5) - rotateY) * 0.05;
+    shiftX += ((tiltY * 1.5) - shiftX) * 0.05;
+    shiftY += ((tiltX * 1.5) - shiftY) * 0.05;
+    rotateX += ((tiltX * 0.5) - rotateX) * 0.05;
+    rotateY += ((tiltY * 0.5) - rotateY) * 0.05;
 
-        updateTransform();
-      }
+    updateTransform();
+  }
 
-      function enableMotionAccess() {
-        if (typeof DeviceOrientationEvent !== 'undefined' &&
-            typeof DeviceOrientationEvent.requestPermission === 'function') {
-          DeviceOrientationEvent.requestPermission()
-            .then(state => {
-              if (state === 'granted') {
-                window.addEventListener('deviceorientation', handleOrientation);
-                motionBtn.style.display = 'none';
-              }
-            })
-            .catch(console.error);
-        } else {
-          window.addEventListener('deviceorientation', handleOrientation);
-          motionBtn.style.display = 'none';
-        }
-      }
-
-      motionBtn.addEventListener('click', enableMotionAccess);
+  function enableMotionAccess() {
+    if (typeof DeviceOrientationEvent !== 'undefined' &&
+        typeof DeviceOrientationEvent.requestPermission === 'function') {
+      DeviceOrientationEvent.requestPermission()
+        .then(state => {
+          if (state === 'granted') {
+            window.addEventListener('deviceorientation', handleOrientation);
+            motionBtn.style.display = 'none';
+          }
+        })
+        .catch(console.error);
+    } else {
+      window.addEventListener('deviceorientation', handleOrientation);
+      motionBtn.style.display = 'none';
     }
+  }
+
+  motionBtn.addEventListener('click', enableMotionAccess);
+}
   </script>
 </body>
 </html>
