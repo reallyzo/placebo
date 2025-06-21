@@ -254,17 +254,33 @@
     motionBtn.addEventListener('click', enableMotionAccess);
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    if (window.innerWidth >= 768) {
-      setTimeout(() => {
-        const dummy = document.createElement('div');
-        dummy.style.cssText = 'position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;';
-        document.body.appendChild(dummy);
-        void dummy.offsetWidth;
-        document.body.removeChild(dummy);
-      }, 50);
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.innerWidth >= 768) {
+    const alreadyFixed = sessionStorage.getItem('zoomFixRun');
+    const zoomRatio = window.innerWidth / screen.width;
+
+    // Only do this ONCE if zoom is clearly off
+    if (!alreadyFixed && (zoomRatio < 0.9 || zoomRatio > 1.1)) {
+      sessionStorage.setItem('zoomFixRun', 'true');
+
+      // Subtle layout reflow that avoids transform context break
+      const reflowFix = document.createElement('div');
+      reflowFix.style.cssText = `
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        pointer-events: none;
+        z-index: -9999;
+      `;
+      document.body.appendChild(reflowFix);
+      void reflowFix.offsetHeight;
+      reflowFix.remove();
     }
-  });
+  }
+});
 
   // Reload the page if user zoom resets later
   if (window.matchMedia('(resolution: 1dppx)').addEventListener) {
