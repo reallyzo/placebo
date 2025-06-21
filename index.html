@@ -38,7 +38,6 @@
       align-items: center;
       justify-content: center;
       transform-style: preserve-3d;
-      transform: rotateX(0deg) rotateY(0deg);
       will-change: transform;
       transition: transform 0.12s ease-out;
     }
@@ -98,24 +97,20 @@
     }
 
     .link-wrapper a {
-    color: #fff;
-    text-decoration: none;
-    animation: linkGlow 6s ease-in-out infinite;
-}
-
-    @keyframes linkGlow {
-    0%, 100% { opacity: 0.8; text-shadow: 0 0 2px #fff; }
-    50% { opacity: 1; text-shadow: 0 0 8px #fff; }
-}
-
-    .link-wrapper a:hover {
       color: #fff;
-      text-decoration: underline;
-      transform: scale(1.05);
-      text-shadow: 0 0 12px #fff;
+      text-decoration: none;
+      animation: linkGlow 6s ease-in-out infinite;
       transition: transform 0.2s ease, text-shadow 0.2s ease;
     }
 
+    @keyframes linkGlow {
+      0%, 100% { opacity: 0.8; text-shadow: 0 0 2px #fff; }
+      50% { opacity: 1; text-shadow: 0 0 8px #fff; }
+    }
+
+    .link-wrapper a:hover {
+      transform: scale(1.05);
+      text-shadow: 0 0 12px #fff;
     }
 
     @media (max-width: 767px) {
@@ -143,12 +138,12 @@
     </div>
   </div>
 
-<div class="link-wrapper">
-  <a href="https://instagram.com/placeboreal" target="_blank">instagram</a>
-  <a href="https://www.tiktok.com/@placebo8026" target="_blank">tiktok</a>
-  <a href="mailto:placebocreateyourreality@gmail.com">contact</a>
-  <a href="#">launch info</a>
-</div>
+  <div class="link-wrapper">
+    <a href="https://instagram.com/placeboreal" target="_blank">instagram</a>
+    <a href="https://www.tiktok.com/@placebo8026" target="_blank">tiktok</a>
+    <a href="mailto:placebocreateyourreality@gmail.com">contact</a>
+    <a href="#">launch info</a>
+  </div>
 
   <button id="motionBtn">Enable Motion</button>
 
@@ -158,26 +153,28 @@
 
     let rotateX = 0;
     let rotateY = 0;
-    let targetX = rotateX;
-    let targetY = rotateY;
+    let shiftX = 0;
+    let shiftY = 0;
+    let targetX = 0;
+    let targetY = 0;
 
     function clamp(val, min, max) {
       return Math.max(min, Math.min(max, val));
     }
 
     function updateTransform() {
-      container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      container.style.transform = `
+        translateX(${shiftX}px)
+        translateY(${shiftY}px)
+        rotateX(${rotateX}deg)
+        rotateY(${rotateY}deg)
+      `;
     }
 
     window.addEventListener('load', () => {
       document.body.style.zoom = "100%";
       setTimeout(() => {
-        container.style.transform = 'rotateX(0.01deg) rotateY(0.01deg)';
-        requestAnimationFrame(() => {
-          rotateX = 0;
-          rotateY = 0;
-          updateTransform();
-        });
+        updateTransform();
       }, 20);
     });
 
@@ -205,22 +202,29 @@
         targetY = 0;
       });
 
-      function animateRotation() {
+      function animateDesktop() {
         rotateX += (targetX - rotateX) * 0.1;
         rotateY += (targetY - rotateY) * 0.1;
         updateTransform();
-        requestAnimationFrame(animateRotation);
+        requestAnimationFrame(animateDesktop);
       }
 
-      animateRotation();
+      animateDesktop();
     }
 
     if (window.innerWidth < 768) {
       function handleOrientation(event) {
         const beta = event.beta || 0;
         const gamma = event.gamma || 0;
-        rotateX = clamp((beta - 90) / -2.5, -15, 15);
-        rotateY = clamp(gamma / 2.5, -15, 15);
+
+        const tiltX = clamp((beta - 90) / -2.5, -15, 15);
+        const tiltY = clamp(gamma / 2.5, -15, 15);
+
+        shiftX += ((tiltY * 1.5) - shiftX) * 0.05;
+        shiftY += ((tiltX * 1.5) - shiftY) * 0.05;
+        rotateX += ((tiltX * 0.5) - rotateX) * 0.05;
+        rotateY += ((tiltY * 0.5) - rotateY) * 0.05;
+
         updateTransform();
       }
 
