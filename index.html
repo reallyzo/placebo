@@ -249,38 +249,36 @@ function updateTransform() {
     motionBtn.addEventListener('click', enableMotionAccess);
   }
 
-  // 🛠 Desktop zoom + transform fix
-  function desktopZoomFix() {
-    if (window.innerWidth >= 768) {
-      const rect = container.getBoundingClientRect();
-      const isWayOffscreen = rect.top > window.innerHeight || rect.left > window.innerWidth;
-      const isWeirdZoom = window.devicePixelRatio > 1.25;
+window.addEventListener('load', () => {
+  setTimeout(desktopZoomFix, 50);  // 🔧 Add short delay
 
-      const alreadyFixed = sessionStorage.getItem('zoomFixDone');
+function desktopZoomFix() {
+  if (window.innerWidth >= 768) {
+    const rect = container.getBoundingClientRect();
+    const isWayOffscreen = rect.top > window.innerHeight || rect.left > window.innerWidth;
+    const isWeirdZoom = window.devicePixelRatio > 1.25;
+    const alreadyFixed = sessionStorage.getItem('zoomFixDone');
 
-      if ((isWayOffscreen || isWeirdZoom) && !alreadyFixed) {
-        sessionStorage.setItem('zoomFixDone', 'true');
-        location.replace(window.location.pathname);
-      }
+    if ((isWayOffscreen || isWeirdZoom) && !alreadyFixed) {
+      sessionStorage.setItem('zoomFixDone', 'true');
+
+      // 💥 Fix zoom and layout
+      document.documentElement.style.zoom = '100%';
+      document.documentElement.style.transform = 'none';
+      document.documentElement.style.transformOrigin = 'top left';
+
+      // ✅ Trigger reflow safely
+      const dummy = document.createElement('div');
+      dummy.style.cssText = 'position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;';
+      document.body.appendChild(dummy);
+      void dummy.offsetWidth;
+      document.body.removeChild(dummy);
+
+      // 🔁 Reload the page clean
+      location.replace(window.location.pathname);
     }
   }
-
-window.addEventListener('load', () => {
-  desktopZoomFix();
-
-  if (window.innerWidth >= 768) {
-    document.documentElement.style.zoom = '100%';
-    document.documentElement.style.transform = 'none';
-    document.documentElement.style.transformOrigin = 'top left';
-
-    // ✅ Lightweight reflow trigger that won't break layout
-    const dummy = document.createElement('div');
-    dummy.style.cssText = 'position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;';
-    document.body.appendChild(dummy);
-    void dummy.offsetWidth;
-    document.body.removeChild(dummy);
-  }
-});
+}
 
   // Optional cleanup for next load
   window.addEventListener('beforeunload', () => {
