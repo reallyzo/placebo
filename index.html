@@ -264,24 +264,17 @@
       }
     }
   }
+  
+window.addEventListener('load', () => {
+  desktopZoomFix();
 
-  window.addEventListener('load', () => {
-    desktopZoomFix();
-
-    // ✨ Desktop-only backup fix for zoom weirdness
-    if (window.innerWidth >= 768) {
-      document.documentElement.style.zoom = '100%';
-      document.documentElement.style.transform = 'none';
-      document.documentElement.style.transformOrigin = 'top left';
-      // 🧠 Stabilize transform layout on desktop
-setTimeout(() => {
-  const originalTransform = container.style.transform;
-  container.style.transform = originalTransform + ' scale3d(1.0001, 1.0001, 1.0001)';
-  requestAnimationFrame(() => {
-    container.style.transform = originalTransform;
-  });
-}, 200);
-  });
+  // ✨ Desktop-only backup fix for zoom weirdness
+  if (window.innerWidth >= 768) {
+    document.documentElement.style.zoom = '100%';
+    document.documentElement.style.transform = 'none';
+    document.documentElement.style.transformOrigin = 'top left';
+  }
+});
 
   // Optional cleanup for next load
   window.addEventListener('beforeunload', () => {
