@@ -1,15 +1,29 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>PLACEBO</title>
   <link rel="icon" href="favicon.png" type="image/png" />
+
+  <!-- Immediate Zoom Reset -->
+  <script>
+    if (window.innerWidth >= 768) {
+      document.documentElement.style.zoom = '100%';
+      document.documentElement.style.transform = 'none';
+      document.documentElement.style.transformOrigin = 'top left';
+    }
+  </script>
+
   <style>
     html {
       zoom: 100% !important;
       transform: none !important;
       transform-origin: top left !important;
+      touch-action: manipulation;
+      -ms-content-zooming: none;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
     }
 
     html, body {
@@ -154,136 +168,100 @@
   <button id="motionBtn">Enable Motion</button>
 
 <script>
-  const container = document.getElementById('logoContainer');
-  const motionBtn = document.getElementById('motionBtn');
+const container = document.getElementById('logoContainer');
+const motionBtn = document.getElementById('motionBtn');
+let rotateX = 0, rotateY = 0, shiftX = 0, shiftY = 0, targetX = 0, targetY = 0;
+const clamp = (val, min, max) => Math.max(min, Math.min(max, val));
+const updateTransform = () => {
+  container.style.transform = `translateX(${shiftX}px) translateY(${shiftY}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+};
 
-  let rotateX = 0;
-  let rotateY = 0;
-  let shiftX = 0;
-  let shiftY = 0;
-  let targetX = 0;
-  let targetY = 0;
-
-  function clamp(val, min, max) {
-    return Math.max(min, Math.min(max, val));
-  }
-
-function updateTransform() {
-  container.style.transform = `
-    translateX(${shiftX}px)
-    translateY(${shiftY}px)
-    rotateX(${rotateX}deg)
-    rotateY(${rotateY}deg)
-  `;
+if (window.innerWidth >= 768) {
+  let rect = container.getBoundingClientRect(), lastRectUpdate = Date.now();
+  document.addEventListener('mousemove', (e) => {
+    if (Date.now() - lastRectUpdate > 100) {
+      rect = container.getBoundingClientRect();
+      lastRectUpdate = Date.now();
+    }
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const offsetX = (e.clientX - centerX) / (rect.width / 2);
+    const offsetY = (e.clientY - centerY) / (rect.height / 2);
+    targetX = clamp(offsetY * -10, -20, 20);
+    targetY = clamp(offsetX * 10, -20, 20);
+  });
+  document.addEventListener('mouseleave', () => { targetX = 0; targetY = 0; });
+  const animateDesktop = () => {
+    rotateX += (targetX - rotateX) * 0.1;
+    rotateY += (targetY - rotateY) * 0.1;
+    updateTransform();
+    requestAnimationFrame(animateDesktop);
+  };
+  animateDesktop();
 }
 
-  // 🎯 Desktop cursor motion
-  if (window.innerWidth >= 768) {
-    let rect = container.getBoundingClientRect();
-    let lastRectUpdate = Date.now();
-
-    document.addEventListener('mousemove', (e) => {
-      const now = Date.now();
-      if (now - lastRectUpdate > 100) {
-        rect = container.getBoundingClientRect();
-        lastRectUpdate = now;
-      }
-
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      const offsetX = (e.clientX - centerX) / (rect.width / 2);
-      const offsetY = (e.clientY - centerY) / (rect.height / 2);
-      targetX = clamp(offsetY * -10, -20, 20);
-      targetY = clamp(offsetX * 10, -20, 20);
-    });
-
-    document.addEventListener('mouseleave', () => {
-      targetX = 0;
-      targetY = 0;
-    });
-
-    function animateDesktop() {
-      rotateX += (targetX - rotateX) * 0.1;
-      rotateY += (targetY - rotateY) * 0.1;
-      updateTransform();
-      requestAnimationFrame(animateDesktop);
-    }
-
-    animateDesktop();
+if (window.innerWidth < 768) {
+  function handleOrientation(event) {
+    const beta = event.beta || 0;
+    const gamma = event.gamma || 0;
+    const tiltX = clamp((beta - 90) / -2, -15, 15);
+    const tiltY = clamp(gamma / 2, -15, 15);
+    shiftX += ((tiltY * 0.8) - shiftX) * 0.07;
+    shiftY += ((tiltX * 0.8) - shiftY) * 0.07;
+    rotateX += ((tiltX * 1.2) - rotateX) * 0.07;
+    rotateY += ((tiltY * 1.2) - rotateY) * 0.07;
+    updateTransform();
   }
-
-  // 📱 Mobile motion
-  if (window.innerWidth < 768) {
-    function handleOrientation(event) {
-      const beta = event.beta || 0;
-      const gamma = event.gamma || 0;
-
-      const tiltX = clamp((beta - 90) / -2, -15, 15);
-      const tiltY = clamp(gamma / 2, -15, 15);
-
-      shiftX += ((tiltY * 0.8) - shiftX) * 0.07;
-      shiftY += ((tiltX * 0.8) - shiftY) * 0.07;
-      rotateX += ((tiltX * 1.2) - rotateX) * 0.07;
-      rotateY += ((tiltY * 1.2) - rotateY) * 0.07;
-
-      updateTransform();
+  function enableMotionAccess() {
+    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+      DeviceOrientationEvent.requestPermission().then(state => {
+        if (state === 'granted') {
+          window.addEventListener('deviceorientation', handleOrientation);
+          motionBtn.style.display = 'none';
+        }
+      }).catch(console.error);
+    } else {
+      window.addEventListener('deviceorientation', handleOrientation);
+      motionBtn.style.display = 'none';
     }
-
-    function enableMotionAccess() {
-      if (typeof DeviceOrientationEvent !== 'undefined' &&
-          typeof DeviceOrientationEvent.requestPermission === 'function') {
-        DeviceOrientationEvent.requestPermission()
-          .then(state => {
-            if (state === 'granted') {
-              window.addEventListener('deviceorientation', handleOrientation);
-              motionBtn.style.display = 'none';
-            }
-          })
-          .catch(console.error);
-      } else {
-        window.addEventListener('deviceorientation', handleOrientation);
-        motionBtn.style.display = 'none';
-      }
-    }
-
-    motionBtn.addEventListener('click', enableMotionAccess);
   }
+  motionBtn.addEventListener('click', enableMotionAccess);
+}
 
-// 🛠 Desktop zoom fix function
+// Updated Zoom Fix using DOMContentLoaded
 function desktopZoomFix() {
   if (window.innerWidth >= 768) {
     const rect = container.getBoundingClientRect();
     const isWayOffscreen = rect.top > window.innerHeight || rect.left > window.innerWidth;
     const isWeirdZoom = window.devicePixelRatio > 1.25;
     const alreadyFixed = sessionStorage.getItem('zoomFixDone');
-
     if ((isWayOffscreen || isWeirdZoom) && !alreadyFixed) {
       sessionStorage.setItem('zoomFixDone', 'true');
-
-      // 💥 Fix zoom and layout
       document.documentElement.style.zoom = '100%';
       document.documentElement.style.transform = 'none';
       document.documentElement.style.transformOrigin = 'top left';
-
-      // ✅ Trigger reflow safely
       const dummy = document.createElement('div');
       dummy.style.cssText = 'position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;';
       document.body.appendChild(dummy);
       void dummy.offsetWidth;
       document.body.removeChild(dummy);
-
-      // 🔁 Reload the page clean
       location.replace(window.location.pathname);
     }
   }
 }
 
-// ⏳ Call on load
-window.addEventListener('load', () => {
-  setTimeout(desktopZoomFix, 50);
-});
+document.addEventListener('DOMContentLoaded', desktopZoomFix);
 
-// 🧼 Optional cleanup
+// Watch for dppx change (edge case)
+if (window.innerWidth >= 768) {
+  matchMedia('(resolution: 1dppx)').addEventListener('change', () => {
+    document.documentElement.style.zoom = '100%';
+    document.documentElement.style.transform = 'none';
+    document.documentElement.style.transformOrigin = 'top left';
+    location.reload();
+  });
+}
+
 window.addEventListener('beforeunload', () => {
   sessionStorage.removeItem('zoomFixDone');
 });
