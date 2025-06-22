@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <script>
-    // FORCE FIX ZOOM (Option C - Meta Reset)
+    // FORCE FIX ZOOM (Option C + D hybrid)
     if (window.innerWidth >= 768) {
       const zoomRatio = window.innerWidth / screen.width;
       if (!sessionStorage.getItem('metaFixRun') && (zoomRatio < 0.9 || zoomRatio > 1.1)) {
@@ -31,8 +31,17 @@
             opacity: 0;
             pointer-events: none;
           }
+          @keyframes zoomRecalc {
+            0% { transform: scale(1.0001); }
+            100% { transform: scale(1); }
+          }
         `;
         document.head.appendChild(shim);
+
+        // Animate to force re-render
+        window.addEventListener('DOMContentLoaded', () => {
+          document.body.style.animation = "zoomRecalc 0.05s ease-out 1";
+        });
 
         // Dummy trigger for reflow
         const t = document.createElement('div');
@@ -43,6 +52,7 @@
       }
     }
   </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>PLACEBO</title>
   <link rel="icon" href="favicon.png" type="image/png" />
   <style>
