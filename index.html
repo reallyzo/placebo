@@ -3,43 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <script>
-    // FORCE FIX ZOOM (Option C + E)
+    // Option G - scale flicker reset attempt
     if (window.innerWidth >= 768) {
       const zoomRatio = window.innerWidth / screen.width;
-      if (!sessionStorage.getItem('metaFixRun') && (zoomRatio < 0.9 || zoomRatio > 1.1)) {
-        sessionStorage.setItem('metaFixRun', 'true');
+      if (!sessionStorage.getItem('scaleNukeRun') && (zoomRatio < 0.9 || zoomRatio > 1.1)) {
+        sessionStorage.setItem('scaleNukeRun', 'true');
 
-        // Remove ALL viewport metas
-        document.querySelectorAll('meta[name="viewport"]').forEach(meta => meta.remove());
+        document.documentElement.style.transform = 'scale(0.999)';
+        document.documentElement.style.transformOrigin = 'top left';
 
-        // Rebuild fresh
-        const fixedMeta = document.createElement('meta');
-        fixedMeta.name = 'viewport';
-        fixedMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-        document.head.appendChild(fixedMeta);
-
-        // Subtle layout shim to avoid transform loss
-        const shim = document.createElement('style');
-        shim.textContent = `
-          html::before {
-            content: '';
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            transform: scale(0.999);
-            will-change: transform;
-            opacity: 0;
-            pointer-events: none;
-          }
-        `;
-        document.head.appendChild(shim);
-
-        // Dummy trigger for reflow
-        const t = document.createElement('div');
-        t.style.cssText = 'position: fixed; width:1px; height:1px; top:0; left:0; opacity:0; pointer-events:none; z-index:-9999;';
-        document.body.appendChild(t);
-        void t.offsetHeight;
-        t.remove();
+        setTimeout(() => {
+          document.documentElement.style.transform = '';
+          document.documentElement.style.transformOrigin = '';
+        }, 50);
       }
     }
   </script>
@@ -174,21 +150,9 @@
         opacity: 0.5;
       }
     }
-
-    #zoomAnchor {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0,0,0,0.01);
-      pointer-events: none;
-      z-index: -9999;
-    }
   </style>
 </head>
 <body>
-  <div id="zoomAnchor"></div>
   <div class="scale-wrapper">
     <div class="logo-container" id="logoContainer">
       <img src="triangle-glow-style-2.png" class="logo logo-base" alt="PLACEBO Logo Base" />
