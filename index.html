@@ -3,6 +3,48 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <script>
+  // Desktop DPI Zoom Reset Patch (non-breaking)
+  if (window.innerWidth >= 768) {
+    const zoomRatio = window.innerWidth / screen.width;
+
+    if (!sessionStorage.getItem('zoomFixApplied') && (zoomRatio < 0.9 || zoomRatio > 1.1)) {
+      sessionStorage.setItem('zoomFixApplied', 'true');
+
+      // Reset viewport settings dynamically
+      const newMeta = document.createElement('meta');
+      newMeta.name = 'viewport';
+      newMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+      document.head.appendChild(newMeta);
+
+      // Subtle CSS shim (keeps motion alive)
+      const style = document.createElement('style');
+      style.textContent = `
+        body::before {
+          content: '';
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          transform: scale(0.999);
+          will-change: transform;
+          opacity: 0;
+          pointer-events: none;
+        }
+      `;
+      document.head.appendChild(style);
+
+      // Force a clean layout recalculation without reload
+      const trigger = document.createElement('div');
+      trigger.style.cssText = `
+        position: fixed; width: 1px; height: 1px; top: 0; left: 0;
+        opacity: 0; pointer-events: none; z-index: -9999;
+      `;
+      document.body.appendChild(trigger);
+      void trigger.offsetHeight;
+      trigger.remove();
+    }
+  }
+</script>
   <title>PLACEBO</title>
   <link rel="icon" href="favicon.png" type="image/png" />
   <style>
@@ -246,31 +288,6 @@ if (window.innerWidth < 768) {
 
   motionBtn.addEventListener('click', enableMotionAccess);
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  if (window.innerWidth >= 768) {
-    const alreadyFixed = sessionStorage.getItem('zoomFixRun');
-    const zoomRatio = window.innerWidth / screen.width;
-
-    if (!alreadyFixed && (zoomRatio < 0.9 || zoomRatio > 1.1)) {
-      sessionStorage.setItem('zoomFixRun', 'true');
-      const fix = document.createElement("style");
-      fix.innerHTML = `
-        body::before {
-          content: '';
-          position: absolute;
-          width: 1px;
-          height: 1px;
-          pointer-events: none;
-          opacity: 0;
-          transform: scale(0.999);
-          will-change: transform;
-        }
-      `;
-      document.head.appendChild(fix);
-    }
-  }
-});
 </script>
 </body>
 </html>
