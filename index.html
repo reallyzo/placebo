@@ -2,25 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>PLACEBO</title>
+  <link rel="icon" href="favicon.png" type="image/png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+
   <script>
-    // FORCE FIX ZOOM (Option C + D hybrid)
-    if (window.innerWidth >= 768) {
-      const zoomRatio = window.innerWidth / screen.width;
-      if (!sessionStorage.getItem('metaFixRun') && (zoomRatio < 0.9 || zoomRatio > 1.1)) {
-        sessionStorage.setItem('metaFixRun', 'true');
+    // ✅ Option E: Canvas-based DPI Zoom Detection
+    if (window.innerWidth >= 768 && !sessionStorage.getItem('canvasDpiFixRun')) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 100;
+      canvas.height = 100;
+      const ctx = canvas.getContext('2d');
+      ctx.fillRect(0, 0, 100, 100);
+      const actualWidth = canvas.getBoundingClientRect().width;
+      
+      const dpiRatio = actualWidth / 100;
+      if (dpiRatio < 0.9 || dpiRatio > 1.1) {
+        sessionStorage.setItem('canvasDpiFixRun', 'true');
 
-        // Remove ALL viewport metas
+        // Rebuild fresh meta viewport
         document.querySelectorAll('meta[name="viewport"]').forEach(meta => meta.remove());
+        const meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+        document.head.appendChild(meta);
 
-        // Rebuild fresh
-        const fixedMeta = document.createElement('meta');
-        fixedMeta.name = 'viewport';
-        fixedMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-        document.head.appendChild(fixedMeta);
-
-        // Subtle layout shim to avoid transform loss
-        const shim = document.createElement('style');
-        shim.textContent = `
+        // Apply layout shim
+        const style = document.createElement('style');
+        style.textContent = `
           html::before {
             content: '';
             position: absolute;
@@ -31,30 +40,19 @@
             opacity: 0;
             pointer-events: none;
           }
-          @keyframes zoomRecalc {
-            0% { transform: scale(1.0001); }
-            100% { transform: scale(1); }
-          }
         `;
-        document.head.appendChild(shim);
+        document.head.appendChild(style);
 
-        // Animate to force re-render
-        window.addEventListener('DOMContentLoaded', () => {
-          document.body.style.animation = "zoomRecalc 0.05s ease-out 1";
-        });
-
-        // Dummy trigger for reflow
-        const t = document.createElement('div');
-        t.style.cssText = 'position: fixed; width:1px; height:1px; top:0; left:0; opacity:0; pointer-events:none; z-index:-9999;';
-        document.body.appendChild(t);
-        void t.offsetHeight;
-        t.remove();
+        // Trigger reflow
+        const reflow = document.createElement('div');
+        reflow.style.cssText = 'position: fixed; width:1px; height:1px; top:0; left:0; opacity:0; pointer-events:none; z-index:-9999;';
+        document.body.appendChild(reflow);
+        void reflow.offsetHeight;
+        reflow.remove();
       }
     }
   </script>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>PLACEBO</title>
-  <link rel="icon" href="favicon.png" type="image/png" />
+
   <style>
     html {
       zoom: 100% !important;
