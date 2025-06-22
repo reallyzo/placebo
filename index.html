@@ -6,12 +6,6 @@
   <title>PLACEBO</title>
   <link rel="icon" href="favicon.png" type="image/png" />
   <style>
-    html {
-      zoom: 100% !important;
-      transform: none !important;
-      transform-origin: top left !important;
-    }
-
     html, body {
       margin: 0;
       padding: 0;
@@ -135,13 +129,6 @@
       }
     }
   </style>
-  <script>
-    if (window.innerWidth >= 768) {
-      document.documentElement.style.zoom = '100%';
-      document.documentElement.style.transform = 'none';
-      document.documentElement.style.transformOrigin = 'top left';
-    }
-  </script>
 </head>
 <body>
   <div class="scale-wrapper">
@@ -184,40 +171,52 @@
     `;
   }
 
+  // ✅ Desktop motion (after layout rects are accurate)
   if (window.innerWidth >= 768) {
-    let rect = container.getBoundingClientRect();
-    let lastRectUpdate = Date.now();
-
-    document.addEventListener('mousemove', (e) => {
-      const now = Date.now();
-      if (now - lastRectUpdate > 100) {
-        rect = container.getBoundingClientRect();
-        lastRectUpdate = now;
+    function getAccurateRect(callback, attempts = 0) {
+      const rect = container.getBoundingClientRect();
+      if ((rect.width < 100 || rect.height < 100) && attempts < 10) {
+        return setTimeout(() => getAccurateRect(callback, attempts + 1), 100);
       }
-
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      const offsetX = (e.clientX - centerX) / (rect.width / 2);
-      const offsetY = (e.clientY - centerY) / (rect.height / 2);
-      targetX = clamp(offsetY * -10, -20, 20);
-      targetY = clamp(offsetX * 10, -20, 20);
-    });
-
-    document.addEventListener('mouseleave', () => {
-      targetX = 0;
-      targetY = 0;
-    });
-
-    function animateDesktop() {
-      rotateX += (targetX - rotateX) * 0.1;
-      rotateY += (targetY - rotateY) * 0.1;
-      updateTransform();
-      requestAnimationFrame(animateDesktop);
+      callback(rect);
     }
 
-    animateDesktop();
+    getAccurateRect((rect) => {
+      let lastRectUpdate = Date.now();
+
+      document.addEventListener('mousemove', (e) => {
+        const now = Date.now();
+        if (now - lastRectUpdate > 150) {
+          rect = container.getBoundingClientRect();
+          lastRectUpdate = now;
+        }
+
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const offsetX = (e.clientX - centerX) / (rect.width / 2);
+        const offsetY = (e.clientY - centerY) / (rect.height / 2);
+
+        targetX = clamp(offsetY * -10, -20, 20);
+        targetY = clamp(offsetX * 10, -20, 20);
+      });
+
+      document.addEventListener('mouseleave', () => {
+        targetX = 0;
+        targetY = 0;
+      });
+
+      function animateDesktop() {
+        rotateX += (targetX - rotateX) * 0.1;
+        rotateY += (targetY - rotateY) * 0.1;
+        updateTransform();
+        requestAnimationFrame(animateDesktop);
+      }
+
+      animateDesktop();
+    });
   }
 
+  // ✅ Mobile motion unchanged
   if (window.innerWidth < 768) {
     function handleOrientation(event) {
       const beta = event.beta || 0;
@@ -253,34 +252,6 @@
 
     motionBtn.addEventListener('click', enableMotionAccess);
   }
-
-document.addEventListener('DOMContentLoaded', () => {
-  if (window.innerWidth >= 768) {
-    const alreadyFixed = sessionStorage.getItem('zoomFixRun');
-    const zoomRatio = window.innerWidth / screen.width;
-
-    // Only do this ONCE if zoom is clearly off
-    if (!alreadyFixed && (zoomRatio < 0.9 || zoomRatio > 1.1)) {
-      sessionStorage.setItem('zoomFixRun', 'true');
-
-      // Subtle layout reflow that avoids transform context break
-      const reflowFix = document.createElement('div');
-      reflowFix.style.cssText = `
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        top: 0;
-        left: 0;
-        opacity: 0;
-        pointer-events: none;
-        z-index: -9999;
-      `;
-      document.body.appendChild(reflowFix);
-      void reflowFix.offsetHeight;
-      reflowFix.remove();
-    }
-  }
-});
 </script>
 </body>
 </html>
