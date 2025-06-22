@@ -288,6 +288,28 @@ if (window.innerWidth < 768) {
 
   motionBtn.addEventListener('click', enableMotionAccess);
 }
+  document.addEventListener('DOMContentLoaded', () => {
+  if (window.innerWidth >= 768) {
+    const zoomRatio = window.innerWidth / screen.width;
+
+    if (!sessionStorage.getItem('focusZoomFixRun') && (zoomRatio < 0.9 || zoomRatio > 1.1)) {
+      sessionStorage.setItem('focusZoomFixRun', 'true');
+
+      // 👇 Input focus-blur trick to kickstart DPI re-eval
+      const tempInput = document.createElement('input');
+      tempInput.style.position = 'absolute';
+      tempInput.style.opacity = '0';
+      tempInput.style.pointerEvents = 'none';
+      tempInput.style.zIndex = '-9999';
+      document.body.appendChild(tempInput);
+      tempInput.focus();
+      setTimeout(() => {
+        tempInput.blur();
+        tempInput.remove();
+      }, 50);
+    }
+  }
+});
 </script>
 </body>
 </html>
