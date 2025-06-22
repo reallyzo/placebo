@@ -6,6 +6,12 @@
   <title>PLACEBO</title>
   <link rel="icon" href="favicon.png" type="image/png" />
   <style>
+    html {
+      zoom: 100% !important;
+      transform: none !important;
+      transform-origin: top left !important;
+    }
+
     html, body {
       margin: 0;
       padding: 0;
@@ -129,6 +135,28 @@
       }
     }
   </style>
+  <script>
+if (window.innerWidth >= 768) {
+  document.documentElement.style.zoom = '100%';
+  document.documentElement.style.transform = 'none';
+  document.documentElement.style.transformOrigin = 'top left';
+
+  // ✨ DPI zoom bug shim without breaking motion
+  const fix = document.createElement("style");
+  fix.innerHTML = `
+    body::before {
+      content: '';
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      pointer-events: none;
+      opacity: 0;
+      transform: scale(0.999);
+      will-change: transform;
+    }
+  `;
+  document.head.appendChild(fix);
+}
   </script>
 </head>
 <body>
