@@ -191,14 +191,14 @@ if (window.innerWidth >= 768) {
     return Math.max(min, Math.min(max, val));
   }
 
-  function updateTransform() {
-    container.style.transform = 
-      translateX(${shiftX}px)
-      translateY(${shiftY}px)
-      rotateX(${rotateX}deg)
-      rotateY(${rotateY}deg)
-    ;
-  }
+function updateTransform() {
+  container.style.transform = `
+    translateX(${shiftX}px)
+    translateY(${shiftY}px)
+    rotateX(${rotateX}deg)
+    rotateY(${rotateY}deg)
+  `;
+}
 
   if (window.innerWidth >= 768) {
     let rect = container.getBoundingClientRect();
