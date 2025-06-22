@@ -3,6 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <style id="dpiFix">
+  @media (min-resolution: 1.5dppx) {
+    html::before {
+      content: '';
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      pointer-events: none;
+      opacity: 0;
+      transform: scale(0.999);
+    }
+  }
+</style>
   <title>PLACEBO</title>
   <link rel="icon" href="favicon.png" type="image/png" />
   <style>
