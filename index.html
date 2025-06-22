@@ -135,29 +135,6 @@
       }
     }
   </style>
-  <script>
-if (window.innerWidth >= 768) {
-  document.documentElement.style.zoom = '100%';
-  document.documentElement.style.transform = 'none';
-  document.documentElement.style.transformOrigin = 'top left';
-
-  // ✨ DPI zoom bug shim without breaking motion
-  const fix = document.createElement("style");
-  fix.innerHTML = `
-    body::before {
-      content: '';
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      pointer-events: none;
-      opacity: 0;
-      transform: scale(0.999);
-      will-change: transform;
-    }
-  `;
-  document.head.appendChild(fix);
-}
-  </script>
 </head>
 <body>
   <div class="scale-wrapper">
@@ -177,19 +154,19 @@ if (window.innerWidth >= 768) {
   <button id="motionBtn">Enable Motion</button>
 
 <script>
-  const container = document.getElementById('logoContainer');
-  const motionBtn = document.getElementById('motionBtn');
+const container = document.getElementById('logoContainer');
+const motionBtn = document.getElementById('motionBtn');
 
-  let rotateX = 0;
-  let rotateY = 0;
-  let shiftX = 0;
-  let shiftY = 0;
-  let targetX = 0;
-  let targetY = 0;
+let rotateX = 0;
+let rotateY = 0;
+let shiftX = 0;
+let shiftY = 0;
+let targetX = 0;
+let targetY = 0;
 
-  function clamp(val, min, max) {
-    return Math.max(min, Math.min(max, val));
-  }
+function clamp(val, min, max) {
+  return Math.max(min, Math.min(max, val));
+}
 
 function updateTransform() {
   container.style.transform = `
@@ -200,100 +177,97 @@ function updateTransform() {
   `;
 }
 
-  if (window.innerWidth >= 768) {
-    let rect = container.getBoundingClientRect();
-    let lastRectUpdate = Date.now();
+if (window.innerWidth >= 768) {
+  let rect = container.getBoundingClientRect();
+  let lastRectUpdate = Date.now();
 
-    document.addEventListener('mousemove', (e) => {
-      const now = Date.now();
-      if (now - lastRectUpdate > 100) {
-        rect = container.getBoundingClientRect();
-        lastRectUpdate = now;
-      }
-
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      const offsetX = (e.clientX - centerX) / (rect.width / 2);
-      const offsetY = (e.clientY - centerY) / (rect.height / 2);
-      targetX = clamp(offsetY * -10, -20, 20);
-      targetY = clamp(offsetX * 10, -20, 20);
-    });
-
-    document.addEventListener('mouseleave', () => {
-      targetX = 0;
-      targetY = 0;
-    });
-
-    function animateDesktop() {
-      rotateX += (targetX - rotateX) * 0.1;
-      rotateY += (targetY - rotateY) * 0.1;
-      updateTransform();
-      requestAnimationFrame(animateDesktop);
+  document.addEventListener('mousemove', (e) => {
+    const now = Date.now();
+    if (now - lastRectUpdate > 100) {
+      rect = container.getBoundingClientRect();
+      lastRectUpdate = now;
     }
 
-    animateDesktop();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const offsetX = (e.clientX - centerX) / (rect.width / 2);
+    const offsetY = (e.clientY - centerY) / (rect.height / 2);
+    targetX = clamp(offsetY * -10, -20, 20);
+    targetY = clamp(offsetX * 10, -20, 20);
+  });
+
+  document.addEventListener('mouseleave', () => {
+    targetX = 0;
+    targetY = 0;
+  });
+
+  function animateDesktop() {
+    rotateX += (targetX - rotateX) * 0.1;
+    rotateY += (targetY - rotateY) * 0.1;
+    updateTransform();
+    requestAnimationFrame(animateDesktop);
   }
 
-  if (window.innerWidth < 768) {
-    function handleOrientation(event) {
-      const beta = event.beta || 0;
-      const gamma = event.gamma || 0;
+  animateDesktop();
+}
 
-      const tiltX = clamp((beta - 90) / -2, -15, 15);
-      const tiltY = clamp(gamma / 2, -15, 15);
+if (window.innerWidth < 768) {
+  function handleOrientation(event) {
+    const beta = event.beta || 0;
+    const gamma = event.gamma || 0;
 
-      shiftX += ((tiltY * 0.8) - shiftX) * 0.07;
-      shiftY += ((tiltX * 0.8) - shiftY) * 0.07;
-      rotateX += ((tiltX * 1.2) - rotateX) * 0.07;
-      rotateY += ((tiltY * 1.2) - rotateY) * 0.07;
+    const tiltX = clamp((beta - 90) / -2, -15, 15);
+    const tiltY = clamp(gamma / 2, -15, 15);
 
-      updateTransform();
-    }
+    shiftX += ((tiltY * 0.8) - shiftX) * 0.07;
+    shiftY += ((tiltX * 0.8) - shiftY) * 0.07;
+    rotateX += ((tiltX * 1.2) - rotateX) * 0.07;
+    rotateY += ((tiltY * 1.2) - rotateY) * 0.07;
 
-    function enableMotionAccess() {
-      if (typeof DeviceOrientationEvent !== 'undefined' &&
-          typeof DeviceOrientationEvent.requestPermission === 'function') {
-        DeviceOrientationEvent.requestPermission()
-          .then(state => {
-            if (state === 'granted') {
-              window.addEventListener('deviceorientation', handleOrientation);
-              motionBtn.style.display = 'none';
-            }
-          })
-          .catch(console.error);
-      } else {
-        window.addEventListener('deviceorientation', handleOrientation);
-        motionBtn.style.display = 'none';
-      }
-    }
-
-    motionBtn.addEventListener('click', enableMotionAccess);
+    updateTransform();
   }
+
+  function enableMotionAccess() {
+    if (typeof DeviceOrientationEvent !== 'undefined' &&
+        typeof DeviceOrientationEvent.requestPermission === 'function') {
+      DeviceOrientationEvent.requestPermission()
+        .then(state => {
+          if (state === 'granted') {
+            window.addEventListener('deviceorientation', handleOrientation);
+            motionBtn.style.display = 'none';
+          }
+        })
+        .catch(console.error);
+    } else {
+      window.addEventListener('deviceorientation', handleOrientation);
+      motionBtn.style.display = 'none';
+    }
+  }
+
+  motionBtn.addEventListener('click', enableMotionAccess);
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   if (window.innerWidth >= 768) {
     const alreadyFixed = sessionStorage.getItem('zoomFixRun');
     const zoomRatio = window.innerWidth / screen.width;
 
-    // Only do this ONCE if zoom is clearly off
     if (!alreadyFixed && (zoomRatio < 0.9 || zoomRatio > 1.1)) {
       sessionStorage.setItem('zoomFixRun', 'true');
-
-      // Subtle layout reflow that avoids transform context break
-      const reflowFix = document.createElement('div');
-      reflowFix.style.cssText = 
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        top: 0;
-        left: 0;
-        opacity: 0;
-        pointer-events: none;
-        z-index: -9999;
-      ;
-      document.body.appendChild(reflowFix);
-      void reflowFix.offsetHeight;
-      reflowFix.remove();
+      const fix = document.createElement("style");
+      fix.innerHTML = `
+        body::before {
+          content: '';
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          pointer-events: none;
+          opacity: 0;
+          transform: scale(0.999);
+          will-change: transform;
+        }
+      `;
+      document.head.appendChild(fix);
     }
   }
 });
