@@ -5,18 +5,19 @@
   <title>PLACEBO</title>
   <link rel="icon" href="favicon.png" type="image/png" />
 
-  <script>
-    // FINAL ZOOM PATCH v4 – One-Time Hard Refresh for Chrome
-    if (window.innerWidth >= 768) {
-      const zoomRatio = window.innerWidth / screen.width;
-      const hasRun = sessionStorage.getItem('hardZoomFix');
+<script>
+  // FINAL ZOOM PATCH v5 - DevicePixelRatio Based Refresh
+  if (window.innerWidth >= 768) {
+    const pixelRatio = window.devicePixelRatio;
+    const hasRun = sessionStorage.getItem('pixelZoomFix');
 
-      if (!hasRun && (zoomRatio < 0.9 || zoomRatio > 1.1)) {
-        sessionStorage.setItem('hardZoomFix', 'true');
-        window.location.reload();
-      }
+    if (!hasRun && (pixelRatio !== 1)) {
+      sessionStorage.setItem('pixelZoomFix', 'true');
+      window.location.reload();
     }
-  </script>
+  }
+</script>
+
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
