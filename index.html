@@ -87,8 +87,16 @@
       pointer-events: none;
     }
 
-    .logo-glow {
-      animation: fadeGlow 6s ease-in-out infinite;
+    .glow-circle {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 70%);
+      filter: blur(40px);
+      opacity: 0.7;
+      animation: pulseGlow 6s ease-in-out infinite;
+      z-index: 0;
     }
 
     @keyframes breatheScale {
@@ -96,8 +104,8 @@
       50% { transform: scale(1.15); }
     }
 
-    @keyframes fadeGlow {
-      0%, 100% { opacity: 0.1; }
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.5; }
       50% { opacity: 1; }
     }
 
@@ -158,7 +166,7 @@
       .scale-wrapper {
         animation: none;
       }
-      .logo-glow {
+      .glow-circle {
         animation: none;
         opacity: 0.5;
       }
@@ -169,8 +177,8 @@
 
   <div class="scale-wrapper">
     <div class="logo-container" id="logoContainer">
+      <div class="glow-circle"></div>
       <img src="triangle-glow-style-2.png" class="logo logo-base" alt="PLACEBO Logo Base" />
-      <img src="triangle-glow-style-2-ultra.png" class="logo logo-glow" alt="PLACEBO Logo Glow" />
     </div>
   </div>
 
