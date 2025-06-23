@@ -148,12 +148,6 @@
       text-shadow: 0 0 12px #fff;
     }
 
-    @media (max-width: 767px) {
-      #motionBtn {
-        display: block;
-      }
-    }
-
     @media (prefers-reduced-motion: reduce) {
       .scale-wrapper {
         animation: none;
@@ -257,9 +251,11 @@
         updateTransform();
       }
 
-      function enableMotionAccess() {
-        if (typeof DeviceOrientationEvent !== 'undefined' &&
-            typeof DeviceOrientationEvent.requestPermission === 'function') {
+      // Smart button display: show ONLY if permission is required (iOS Safari mainly)
+      if (typeof DeviceOrientationEvent !== 'undefined' &&
+          typeof DeviceOrientationEvent.requestPermission === 'function') {
+        motionBtn.style.display = 'block';
+        motionBtn.addEventListener('click', () => {
           DeviceOrientationEvent.requestPermission()
             .then(state => {
               if (state === 'granted') {
@@ -268,13 +264,11 @@
               }
             })
             .catch(console.error);
-        } else {
-          window.addEventListener('deviceorientation', handleOrientation);
-          motionBtn.style.display = 'none';
-        }
+        });
+      } else {
+        // Auto-enable motion if permission isn't needed (Android, most browsers)
+        window.addEventListener('deviceorientation', handleOrientation);
       }
-
-      motionBtn.addEventListener('click', enableMotionAccess);
     }
   </script>
 </body>
