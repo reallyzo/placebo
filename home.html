@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PLACEBO</title>
+  <link rel="icon" href="favicon.png" type="image/png" />
+
+  <script>
+    // FINAL ZOOM PATCH v4 – One-Time Hard Refresh for Chrome
+    if (window.innerWidth >= 768) {
+      const zoomRatio = window.innerWidth / screen.width;
+      const hasRun = sessionStorage.getItem('hardZoomFix');
+
+      if (!hasRun && (zoomRatio < 0.9 || zoomRatio > 1.1)) {
+        sessionStorage.setItem('hardZoomFix', 'true');
+        window.location.reload();
+      }
+    }
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+  <style>
+    html {
+      zoom: 100% !important;
+      transform: none !important;
+      transform-origin: top left !important;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      height: 100%;
+      overflow: hidden;
+      cursor: default;
+    }
+
+    .desktop-logo {
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      font-family: sans-serif;
+      font-weight: bold;
+      font-size: 32px;
+      color: #fff;
+      display: none;
+      z-index: 999;
+    }
+
+    @media (min-width: 768px) {
+      .desktop-logo {
+        display: block;
+      }
+    }
+
+    .hidden-text-fix {
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+      font-size: 32px;
+      color: transparent;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .faux-navbar {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 50px;
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .faux-navbar {
+        display: block;
+      }
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transform: scale(1);
+    }
+
+    .scale-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: breatheScale 6s ease-in-out infinite;
+    }
+
+    .logo-container {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-style: preserve-3d;
+      will-change: transform;
+      transition: transform 0.12s ease-out;
+    }
+
+    .logo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: auto;
+      display: block;
+      pointer-events: none;
+    }
+
+    .logo-glow {
+      animation: fadeGlow 6s ease-in-out infinite;
+    }
+
+    @keyframes breatheScale {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    @keyframes fadeGlow {
+      0%, 100% { opacity: 0.1; }
+      50% { opacity: 1; }
+    }
+
+    #motionBtn {
+      display: none;
+      background: none;
+      color: #fff;
+      font-size: 12px;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      opacity: 0.6;
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+    }
+
+    #motionBtn:hover {
+      opacity: 1;
+    }
+
+    .link-wrapper {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: #fff;
+      font-family: sans-serif;
+      z-index: 2;
+    }
+
+    .link-wrapper a {
+      color: #fff;
+      text-decoration: none;
+      animation: linkGlow 6s ease-in-out infinite;
+      transition: transform 0.2s ease, text-shadow 0.2s ease;
+    }
+
+    @keyframes linkGlow {
+      0%, 100% { opacity: 0.8; text-shadow: 0 0 2px #fff; }
+      50% { opacity: 1; text-shadow: 0 0 8px #fff; }
+    }
+
+    .link-wrapper a:hover {
+      transform: scale(1.05);
+      text-shadow: 0 0 12px #fff;
+    }
+
+    @media (max-width: 767px) {
+      #motionBtn {
+        display: block;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .scale-wrapper {
+        animation: none;
+      }
+      .logo-glow {
+        animation: none;
+        opacity: 0.5;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Desktop Text Logo -->
+  <div class="desktop-logo">PLACEBO</div>
+
+  <!-- Hidden Text Block for Chrome Zoom Fix -->
+  <div class="hidden-text-fix">PLACEBO PLACEBO PLACEBO PLACEBO PLACEBO PLACEBO PLACEBO PLACEBO PLACEBO PLACEBO</div>
+
+  <!-- Faux Navbar Placeholder -->
+  <div class="faux-navbar"></div>
+
+  <div class="scale-wrapper">
+    <div class="logo-container" id="logoContainer">
+      <img src="triangle-glow-style-2.png" class="logo logo-base" alt="PLACEBO Logo Base" />
+      <img src="triangle-glow-style-2-ultra.png" class="logo logo-glow" alt="PLACEBO Logo Glow" />
+    </div>
+  </div>
+
+  <div class="link-wrapper">
+    <a href="https://instagram.com/placeboreal" target="_blank">instagram</a>
+    <a href="https://www.tiktok.com/@placebo8026" target="_blank">tiktok</a>
+    <a href="mailto:placebocreateyourreality@gmail.com">contact</a>
+    <a href="#">launch info</a>
+  </div>
+
+  <button id="motionBtn">Enable Motion</button>
+
+  <script>
+    const container = document.getElementById('logoContainer');
+    const motionBtn = document.getElementById('motionBtn');
+
+    let rotateX = 0;
+    let rotateY = 0;
+    let shiftX = 0;
+    let shiftY = 0;
+    let targetX = 0;
+    let targetY = 0;
+
+    function clamp(val, min, max) {
+      return Math.max(min, Math.min(max, val));
+    }
+
+    function updateTransform() {
+      container.style.transform = 
+        translateX(${shiftX}px)
+        translateY(${shiftY}px)
+        rotateX(${rotateX}deg)
+        rotateY(${rotateY}deg)
+      ;
+    }
+
+    if (window.innerWidth >= 768) {
+      let rect = container.getBoundingClientRect();
+      let lastRectUpdate = Date.now();
+
+      document.addEventListener('mousemove', (e) => {
+        const now = Date.now();
+        if (now - lastRectUpdate > 100) {
+          rect = container.getBoundingClientRect();
+          lastRectUpdate = now;
+        }
+
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const offsetX = (e.clientX - centerX) / (rect.width / 2);
+        const offsetY = (e.clientY - centerY) / (rect.height / 2);
+        targetX = clamp(offsetY * -10, -20, 20);
+        targetY = clamp(offsetX * 10, -20, 20);
+      });
+
+      document.addEventListener('mouseleave', () => {
+        targetX = 0;
+        targetY = 0;
+      });
+
+      function animateDesktop() {
+        rotateX += (targetX - rotateX) * 0.1;
+        rotateY += (targetY - rotateY) * 0.1;
+        updateTransform();
+        requestAnimationFrame(animateDesktop);
+      }
+
+      animateDesktop();
+    }
+
+    if (window.innerWidth < 768) {
+      function handleOrientation(event) {
+        const beta = event.beta || 0;
+        const gamma = event.gamma || 0;
+
+        const tiltX = clamp((beta - 90) / -2, -15, 15);
+        const tiltY = clamp(gamma / 2, -15, 15);
+
+        shiftX += ((tiltY * 0.8) - shiftX) * 0.07;
+        shiftY += ((tiltX * 0.8) - shiftY) * 0.07;
+        rotateX += ((tiltX * 1.2) - rotateX) * 0.07;
+        rotateY += ((tiltY * 1.2) - rotateY) * 0.07;
+
+        updateTransform();
+      }
+
+      function enableMotionAccess() {
+        if (typeof DeviceOrientationEvent !== 'undefined' &&
+            typeof DeviceOrientationEvent.requestPermission === 'function') {
+          DeviceOrientationEvent.requestPermission()
+            .then(state => {
+              if (state === 'granted') {
+                window.addEventListener('deviceorientation', handleOrientation);
+                motionBtn.style.display = 'none';
+              }
+            })
+            .catch(console.error);
+        } else {
+          window.addEventListener('deviceorientation', handleOrientation);
+          motionBtn.style.display = 'none';
+        }
+      }
+
+      motionBtn.addEventListener('click', enableMotionAccess);
+    }
+  </script>
+</body>
+</html>
