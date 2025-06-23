@@ -2,60 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>PLACEBO</title>
   <link rel="icon" href="favicon.png" type="image/png" />
-
-  <script>
-    // FINAL ZOOM PATCH v2 – Sandbox IFrame Strategy
-    if (window.innerWidth >= 768) {
-      const zoomRatio = window.innerWidth / screen.width;
-      const hasRun = sessionStorage.getItem('iframeZoomFix');
-
-      if (!hasRun && (zoomRatio < 0.9 || zoomRatio > 1.1)) {
-        sessionStorage.setItem('iframeZoomFix', 'true');
-
-        const iframe = document.createElement('iframe');
-        iframe.style.cssText = 'width:0;height:0;opacity:0;position:absolute;z-index:-9999;pointer-events:none';
-        document.body.appendChild(iframe);
-
-        iframe.onload = () => {
-          try {
-            const doc = iframe.contentWindow.document;
-            const fixedMeta = doc.createElement('meta');
-            fixedMeta.name = 'viewport';
-            fixedMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-            doc.head.appendChild(fixedMeta);
-
-            const shimStyle = doc.createElement('style');
-            shimStyle.textContent = `
-              html::before {
-                content: ''; display: block; position: absolute;
-                width: 1px; height: 1px;
-                transform: scale(1);
-                will-change: transform;
-                opacity: 0; pointer-events: none;
-              }
-            `;
-            doc.head.appendChild(shimStyle);
-
-            // Inject into main doc
-            document.querySelectorAll('meta[name="viewport"]').forEach(m => m.remove());
-            document.head.appendChild(fixedMeta.cloneNode(true));
-            document.head.appendChild(shimStyle.cloneNode(true));
-
-            iframe.remove();
-          } catch (err) {
-            console.error('Zoom fix iframe error:', err);
-          }
-        };
-
-        iframe.srcdoc = '<!DOCTYPE html><html><head></head><body></body></html>';
-      }
-    }
-  </script>
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
-
   <style>
     html {
       zoom: 100% !important;
@@ -186,7 +135,34 @@
       }
     }
   </style>
+
+  <script>
+    if (window.innerWidth >= 768) {
+      // Force meta reset
+      document.querySelectorAll('meta[name="viewport"]').forEach(meta => meta.remove());
+
+      const meta = document.createElement('meta');
+      meta.name = 'viewport';
+      meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+      document.head.appendChild(meta);
+
+      // Enforce zoom properties
+      document.documentElement.style.zoom = '100%';
+      document.documentElement.style.transform = 'none';
+      document.documentElement.style.transformOrigin = 'top left';
+
+      // Soft layout trigger
+      window.addEventListener('load', () => {
+        const trigger = document.createElement('div');
+        trigger.style.cssText = 'position:fixed; width:1px; height:1px; top:0; left:0; opacity:0; pointer-events:none; z-index:-9999;';
+        document.body.appendChild(trigger);
+        void trigger.offsetHeight;
+        trigger.remove();
+      });
+    }
+  </script>
 </head>
+
 <body>
   <div class="scale-wrapper">
     <div class="logo-container" id="logoContainer">
@@ -204,99 +180,99 @@
 
   <button id="motionBtn">Enable Motion</button>
 
-  <script>
-    const container = document.getElementById('logoContainer');
-    const motionBtn = document.getElementById('motionBtn');
+<script>
+const container = document.getElementById('logoContainer');
+const motionBtn = document.getElementById('motionBtn');
 
-    let rotateX = 0;
-    let rotateY = 0;
-    let shiftX = 0;
-    let shiftY = 0;
-    let targetX = 0;
-    let targetY = 0;
+let rotateX = 0;
+let rotateY = 0;
+let shiftX = 0;
+let shiftY = 0;
+let targetX = 0;
+let targetY = 0;
 
-    function clamp(val, min, max) {
-      return Math.max(min, Math.min(max, val));
+function clamp(val, min, max) {
+  return Math.max(min, Math.min(max, val));
+}
+
+function updateTransform() {
+  container.style.transform = `
+    translateX(${shiftX}px)
+    translateY(${shiftY}px)
+    rotateX(${rotateX}deg)
+    rotateY(${rotateY}deg)
+  `;
+}
+
+if (window.innerWidth >= 768) {
+  let rect = container.getBoundingClientRect();
+  let lastRectUpdate = Date.now();
+
+  document.addEventListener('mousemove', (e) => {
+    const now = Date.now();
+    if (now - lastRectUpdate > 100) {
+      rect = container.getBoundingClientRect();
+      lastRectUpdate = now;
     }
 
-    function updateTransform() {
-      container.style.transform = `
-        translateX(${shiftX}px)
-        translateY(${shiftY}px)
-        rotateX(${rotateX}deg)
-        rotateY(${rotateY}deg)
-      `;
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const offsetX = (e.clientX - centerX) / (rect.width / 2);
+    const offsetY = (e.clientY - centerY) / (rect.height / 2);
+    targetX = clamp(offsetY * -10, -20, 20);
+    targetY = clamp(offsetX * 10, -20, 20);
+  });
+
+  document.addEventListener('mouseleave', () => {
+    targetX = 0;
+    targetY = 0;
+  });
+
+  function animateDesktop() {
+    rotateX += (targetX - rotateX) * 0.1;
+    rotateY += (targetY - rotateY) * 0.1;
+    updateTransform();
+    requestAnimationFrame(animateDesktop);
+  }
+
+  animateDesktop();
+}
+
+if (window.innerWidth < 768) {
+  function handleOrientation(event) {
+    const beta = event.beta || 0;
+    const gamma = event.gamma || 0;
+
+    const tiltX = clamp((beta - 90) / -2, -15, 15);
+    const tiltY = clamp(gamma / 2, -15, 15);
+
+    shiftX += ((tiltY * 0.8) - shiftX) * 0.07;
+    shiftY += ((tiltX * 0.8) - shiftY) * 0.07;
+    rotateX += ((tiltX * 1.2) - rotateX) * 0.07;
+    rotateY += ((tiltY * 1.2) - rotateY) * 0.07;
+
+    updateTransform();
+  }
+
+  function enableMotionAccess() {
+    if (typeof DeviceOrientationEvent !== 'undefined' &&
+        typeof DeviceOrientationEvent.requestPermission === 'function') {
+      DeviceOrientationEvent.requestPermission()
+        .then(state => {
+          if (state === 'granted') {
+            window.addEventListener('deviceorientation', handleOrientation);
+            motionBtn.style.display = 'none';
+          }
+        })
+        .catch(console.error);
+    } else {
+      window.addEventListener('deviceorientation', handleOrientation);
+      motionBtn.style.display = 'none';
     }
+  }
 
-    if (window.innerWidth >= 768) {
-      let rect = container.getBoundingClientRect();
-      let lastRectUpdate = Date.now();
-
-      document.addEventListener('mousemove', (e) => {
-        const now = Date.now();
-        if (now - lastRectUpdate > 100) {
-          rect = container.getBoundingClientRect();
-          lastRectUpdate = now;
-        }
-
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const offsetX = (e.clientX - centerX) / (rect.width / 2);
-        const offsetY = (e.clientY - centerY) / (rect.height / 2);
-        targetX = clamp(offsetY * -10, -20, 20);
-        targetY = clamp(offsetX * 10, -20, 20);
-      });
-
-      document.addEventListener('mouseleave', () => {
-        targetX = 0;
-        targetY = 0;
-      });
-
-      function animateDesktop() {
-        rotateX += (targetX - rotateX) * 0.1;
-        rotateY += (targetY - rotateY) * 0.1;
-        updateTransform();
-        requestAnimationFrame(animateDesktop);
-      }
-
-      animateDesktop();
-    }
-
-    if (window.innerWidth < 768) {
-      function handleOrientation(event) {
-        const beta = event.beta || 0;
-        const gamma = event.gamma || 0;
-
-        const tiltX = clamp((beta - 90) / -2, -15, 15);
-        const tiltY = clamp(gamma / 2, -15, 15);
-
-        shiftX += ((tiltY * 0.8) - shiftX) * 0.07;
-        shiftY += ((tiltX * 0.8) - shiftY) * 0.07;
-        rotateX += ((tiltX * 1.2) - rotateX) * 0.07;
-        rotateY += ((tiltY * 1.2) - rotateY) * 0.07;
-
-        updateTransform();
-      }
-
-      function enableMotionAccess() {
-        if (typeof DeviceOrientationEvent !== 'undefined' &&
-            typeof DeviceOrientationEvent.requestPermission === 'function') {
-          DeviceOrientationEvent.requestPermission()
-            .then(state => {
-              if (state === 'granted') {
-                window.addEventListener('deviceorientation', handleOrientation);
-                motionBtn.style.display = 'none';
-              }
-            })
-            .catch(console.error);
-        } else {
-          window.addEventListener('deviceorientation', handleOrientation);
-          motionBtn.style.display = 'none';
-        }
-      }
-
-      motionBtn.addEventListener('click', enableMotionAccess);
-    }
-  </script>
+  motionBtn.addEventListener('click', enableMotionAccess);
+}
+</script>
 </body>
 </html>
