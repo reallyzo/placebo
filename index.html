@@ -6,14 +6,28 @@
   <link rel="icon" href="favicon.png" type="image/png" />
 
   <script>
-    // FINAL ZOOM PATCH v4 – One-Time Hard Refresh for Chrome
+    // FINAL ZOOM PATCH v5 – Delayed Meta Reset (Virtual Reload)
     if (window.innerWidth >= 768) {
       const zoomRatio = window.innerWidth / screen.width;
-      const hasRun = sessionStorage.getItem('hardZoomFix');
+      const hasRun = sessionStorage.getItem('softZoomFix');
 
       if (!hasRun && (zoomRatio < 0.9 || zoomRatio > 1.1)) {
-        sessionStorage.setItem('hardZoomFix', 'true');
-        window.location.reload();
+        sessionStorage.setItem('softZoomFix', 'true');
+
+        setTimeout(() => {
+          document.querySelectorAll('meta[name="viewport"]').forEach(m => m.remove());
+
+          const newMeta = document.createElement('meta');
+          newMeta.name = 'viewport';
+          newMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+          document.head.appendChild(newMeta);
+
+          const shim = document.createElement('div');
+          shim.style.cssText = 'position: fixed; width: 1px; height: 1px; top: 0; left: 0; opacity: 0; pointer-events: none;';
+          document.body.appendChild(shim);
+          void shim.offsetHeight;
+          shim.remove();
+        }, 100);
       }
     }
   </script>
