@@ -2,47 +2,266 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Page Not Found | PLACEBO</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 – PLACEBO</title>
+  <link rel="icon" href="favicon.png" type="image/png" />
+
+  <!-- Chrome Zoom Patch -->
+  <script>
+    if (window.innerWidth >= 768) {
+      const zoomRatio = window.innerWidth / screen.width;
+      const hasRun = sessionStorage.getItem('softZoomFix');
+
+      if (!hasRun && (zoomRatio < 0.9 || zoomRatio > 1.1)) {
+        sessionStorage.setItem('softZoomFix', 'true');
+
+        setTimeout(() => {
+          document.querySelectorAll('meta[name="viewport"]').forEach(m => m.remove());
+
+          const newMeta = document.createElement('meta');
+          newMeta.name = 'viewport';
+          newMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+          document.head.appendChild(newMeta);
+
+          const shim = document.createElement('div');
+          shim.style.cssText = 'position: fixed; width: 1px; height: 1px; top: 0; left: 0; opacity: 0; pointer-events: none;';
+          document.body.appendChild(shim);
+          void shim.offsetHeight;
+          shim.remove();
+        }, 100);
+      }
+    }
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
   <style>
+    html {
+      zoom: 100% !important;
+      transform: none !important;
+      transform-origin: top left !important;
+    }
+
     html, body {
       margin: 0;
       padding: 0;
       background: #000;
-      color: #fff;
-      font-family: sans-serif;
+      height: 100%;
+      overflow: hidden;
+      cursor: default;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
-      height: 100vh;
+      justify-content: center;
+      color: white;
+      font-family: sans-serif;
       text-align: center;
     }
-    h1 {
-      font-size: 80px;
-      margin: 0;
-    }
-    p {
-      font-size: 20px;
-      margin: 10px 0 30px 0;
-    }
-    a {
-      color: #fff;
-      text-decoration: underline;
-      font-size: 18px;
-    }
-    .breathe {
+
+    .scale-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       animation: breatheScale 6s ease-in-out infinite;
     }
+
     @keyframes breatheScale {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
+      50% { transform: scale(1.15); }
+    }
+
+    .logo-container {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-style: preserve-3d;
+      will-change: transform;
+      transition: transform 0.12s ease-out;
+    }
+
+    .logo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: auto;
+      display: block;
+      pointer-events: none;
+    }
+
+    .logo-glow {
+      animation: fadeGlow 6s ease-in-out infinite;
+    }
+
+    @keyframes fadeGlow {
+      0%, 100% { opacity: 0.1; }
+      50% { opacity: 1; }
+    }
+
+    h1 {
+      margin-top: 20px;
+      font-size: 24px;
+      font-weight: normal;
+      opacity: 0.8;
+    }
+
+    p {
+      margin-top: 4px;
+      font-size: 16px;
+      opacity: 0.7;
+    }
+
+    a {
+      margin-top: 10px;
+      color: #fff;
+      text-decoration: underline;
+      opacity: 0.7;
+      font-size: 14px;
+      transition: opacity 0.3s ease;
+      display: inline-block;
+    }
+
+    a:hover {
+      opacity: 1;
+    }
+
+    #motionBtn {
+      display: none;
+      background: none;
+      color: #fff;
+      font-size: 12px;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      opacity: 0.6;
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+    }
+
+    #motionBtn:hover {
+      opacity: 1;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .scale-wrapper {
+        animation: none;
+      }
+      .logo-glow {
+        animation: none;
+        opacity: 0.5;
+      }
     }
   </style>
 </head>
 <body>
-  <h1 class="breathe">404</h1>
-  <p>you’re lost, but not alone.</p>
-  <a href="/">go back home</a>
+
+  <div class="scale-wrapper">
+    <div class="logo-container" id="logoContainer">
+      <img src="triangle-glow-style-2.png" class="logo logo-base" alt="PLACEBO Logo Base" />
+      <img src="triangle-glow-style-2-ultra.png" class="logo logo-glow" alt="PLACEBO Logo Glow" />
+    </div>
+  </div>
+
+  <h1>404</h1>
+  <p>you've wandered beyond.</p>
+  <a href="/">take me home</a>
+
+  <button id="motionBtn">Enable Motion</button>
+
+  <script>
+    const container = document.getElementById('logoContainer');
+    const motionBtn = document.getElementById('motionBtn');
+
+    let rotateX = 0;
+    let rotateY = 0;
+    let shiftX = 0;
+    let shiftY = 0;
+    let targetX = 0;
+    let targetY = 0;
+
+    function clamp(val, min, max) {
+      return Math.max(min, Math.min(max, val));
+    }
+
+    function updateTransform() {
+      container.style.transform = `
+        translateX(${shiftX}px)
+        translateY(${shiftY}px)
+        rotateX(${rotateX}deg)
+        rotateY(${rotateY}deg)
+      `;
+    }
+
+    if (window.innerWidth >= 768) {
+      let rect = container.getBoundingClientRect();
+      let lastRectUpdate = Date.now();
+
+      document.addEventListener('mousemove', (e) => {
+        const now = Date.now();
+        if (now - lastRectUpdate > 100) {
+          rect = container.getBoundingClientRect();
+          lastRectUpdate = now;
+        }
+
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const offsetX = (e.clientX - centerX) / (rect.width / 2);
+        const offsetY = (e.clientY - centerY) / (rect.height / 2);
+        targetX = clamp(offsetY * -10, -20, 20);
+        targetY = clamp(offsetX * 10, -20, 20);
+      });
+
+      document.addEventListener('mouseleave', () => {
+        targetX = 0;
+        targetY = 0;
+      });
+
+      function animateDesktop() {
+        rotateX += (targetX - rotateX) * 0.1;
+        rotateY += (targetY - rotateY) * 0.1;
+        updateTransform();
+        requestAnimationFrame(animateDesktop);
+      }
+
+      animateDesktop();
+    }
+
+    if (window.innerWidth < 768) {
+      function handleOrientation(event) {
+        const beta = event.beta || 0;
+        const gamma = event.gamma || 0;
+
+        const tiltX = clamp((beta - 90) / -2, -15, 15);
+        const tiltY = clamp(gamma / 2, -15, 15);
+
+        shiftX += ((tiltY * 0.8) - shiftX) * 0.07;
+        shiftY += ((tiltX * 0.8) - shiftY) * 0.07;
+        rotateX += ((tiltX * 1.2) - rotateX) * 0.07;
+        rotateY += ((tiltY * 1.2) - rotateY) * 0.07;
+
+        updateTransform();
+      }
+
+      if (typeof DeviceOrientationEvent !== 'undefined' &&
+          typeof DeviceOrientationEvent.requestPermission === 'function') {
+        motionBtn.style.display = 'block';
+        motionBtn.addEventListener('click', () => {
+          DeviceOrientationEvent.requestPermission()
+            .then(state => {
+              if (state === 'granted') {
+                window.addEventListener('deviceorientation', handleOrientation);
+                motionBtn.style.display = 'none';
+              }
+            })
+            .catch(console.error);
+        });
+      } else {
+        window.addEventListener('deviceorientation', handleOrientation);
+      }
+    }
+  </script>
 </body>
 </html>
