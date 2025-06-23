@@ -64,20 +64,6 @@
       user-select: none;
     }
 
-    .faux-navbar {
-      position: absolute;
-      top: 0;
-      width: 100%;
-      height: 50px;
-      display: none;
-    }
-
-    @media (min-width: 768px) {
-      .faux-navbar {
-        display: block;
-      }
-    }
-
     body {
       display: flex;
       flex-direction: column;
@@ -201,9 +187,6 @@
   <!-- Hidden Text Block for Chrome Zoom Fix -->
   <div class="hidden-text-fix">PLACEBO PLACEBO PLACEBO PLACEBO PLACEBO PLACEBO PLACEBO PLACEBO PLACEBO PLACEBO</div>
 
-  <!-- Faux Navbar Placeholder -->
-  <div class="faux-navbar"></div>
-
   <div class="scale-wrapper">
     <div class="logo-container" id="logoContainer">
       <img src="triangle-glow-style-2.png" class="logo logo-base" alt="PLACEBO Logo Base" />
@@ -236,12 +219,12 @@
     }
 
     function updateTransform() {
-      container.style.transform = 
+      container.style.transform = `
         translateX(${shiftX}px)
         translateY(${shiftY}px)
         rotateX(${rotateX}deg)
         rotateY(${rotateY}deg)
-      ;
+      `;
     }
 
     if (window.innerWidth >= 768) {
