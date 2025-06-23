@@ -5,19 +5,18 @@
   <title>PLACEBO</title>
   <link rel="icon" href="favicon.png" type="image/png" />
 
-<script>
-  // FINAL ZOOM PATCH v5 - DevicePixelRatio Based Refresh
-  if (window.innerWidth >= 768) {
-    const pixelRatio = window.devicePixelRatio;
-    const hasRun = sessionStorage.getItem('pixelZoomFix');
+  <script>
+    // FINAL ZOOM PATCH v4 – One-Time Hard Refresh for Chrome
+    if (window.innerWidth >= 768) {
+      const zoomRatio = window.innerWidth / screen.width;
+      const hasRun = sessionStorage.getItem('hardZoomFix');
 
-    if (!hasRun && (pixelRatio !== 1)) {
-      sessionStorage.setItem('pixelZoomFix', 'true');
-      window.location.reload();
+      if (!hasRun && (zoomRatio < 0.9 || zoomRatio > 1.1)) {
+        sessionStorage.setItem('hardZoomFix', 'true');
+        window.location.reload();
+      }
     }
-  }
-</script>
-
+  </script>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
@@ -35,6 +34,24 @@
       height: 100%;
       overflow: hidden;
       cursor: default;
+    }
+
+    .desktop-logo {
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      font-family: sans-serif;
+      font-weight: bold;
+      font-size: 32px;
+      color: #fff;
+      display: none;
+      z-index: 999;
+    }
+
+    @media (min-width: 768px) {
+      .desktop-logo {
+        display: block;
+      }
     }
 
     body {
@@ -153,6 +170,10 @@
   </style>
 </head>
 <body>
+
+  <!-- Desktop Text Logo -->
+  <div class="desktop-logo">PLACEBO</div>
+
   <div class="scale-wrapper">
     <div class="logo-container" id="logoContainer">
       <img src="triangle-glow-style-2.png" class="logo logo-base" alt="PLACEBO Logo Base" />
