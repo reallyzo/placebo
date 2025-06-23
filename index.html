@@ -64,6 +64,20 @@
       user-select: none;
     }
 
+    .faux-navbar {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 50px;
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .faux-navbar {
+        display: block;
+      }
+    }
+
     body {
       display: flex;
       flex-direction: column;
@@ -186,6 +200,9 @@
 
   <!-- Hidden Text Block for Chrome Zoom Fix -->
   <div class="hidden-text-fix">PLACEBO PLACEBO PLACEBO PLACEBO PLACEBO PLACEBO PLACEBO PLACEBO PLACEBO PLACEBO</div>
+
+  <!-- Faux Navbar Placeholder -->
+  <div class="faux-navbar"></div>
 
   <div class="scale-wrapper">
     <div class="logo-container" id="logoContainer">
