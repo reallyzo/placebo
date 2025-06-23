@@ -13,17 +13,45 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-direction: column;
       color: #fff;
       font-family: sans-serif;
     }
+
+    .spinner {
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid #fff;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 12px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      font-size: 16px;
+      opacity: 0.8;
+    }
   </style>
   <script>
-    setTimeout(() => {
-      window.location.href = 'home.html';
-    }, 50); // short delay to allow viewport to settle
+    if (!sessionStorage.getItem('redirectedOnce')) {
+      sessionStorage.setItem('redirectedOnce', 'true');
+      setTimeout(() => {
+        window.location.href = 'home.html';
+      }, 100); // Short delay to settle viewport
+    } else {
+      // If they hit back, don't re-redirect
+      console.log('Page loaded from back navigation, staying on index.');
+    }
   </script>
 </head>
 <body>
-  Loading...
+  <div class="spinner"></div>
+  <div class="loading-text">loading...</div>
 </body>
 </html>
