@@ -6,61 +6,14 @@
   <link rel="icon" href="favicon.png" type="image/png" />
 
   <script>
-    // FINAL ZOOM PATCH v3 - IFrame + Dynamic Meta Combo
+    // FINAL ZOOM PATCH v4 – One-Time Hard Refresh for Chrome
     if (window.innerWidth >= 768) {
       const zoomRatio = window.innerWidth / screen.width;
-      const hasRun = sessionStorage.getItem('iframeZoomFix');
+      const hasRun = sessionStorage.getItem('hardZoomFix');
 
       if (!hasRun && (zoomRatio < 0.9 || zoomRatio > 1.1)) {
-        sessionStorage.setItem('iframeZoomFix', 'true');
-
-        const iframe = document.createElement('iframe');
-        iframe.style.cssText = 'width:0;height:0;opacity:0;position:absolute;z-index:-9999;pointer-events:none';
-        document.body.appendChild(iframe);
-
-        iframe.onload = () => {
-          try {
-            const doc = iframe.contentWindow.document;
-            const fixedMeta = doc.createElement('meta');
-            fixedMeta.name = 'viewport';
-            fixedMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-            doc.head.appendChild(fixedMeta);
-
-            const shimStyle = doc.createElement('style');
-            shimStyle.textContent = `
-              html::before {
-                content: ''; display: block; position: absolute;
-                width: 1px; height: 1px;
-                transform: scale(1);
-                will-change: transform;
-                opacity: 0; pointer-events: none;
-              }
-            `;
-            doc.head.appendChild(shimStyle);
-
-            document.querySelectorAll('meta[name="viewport"]').forEach(m => m.remove());
-            document.head.appendChild(fixedMeta.cloneNode(true));
-            document.head.appendChild(shimStyle.cloneNode(true));
-
-            iframe.remove();
-
-            // Additional dynamic meta injection directly
-            const meta = document.createElement('meta');
-            meta.name = 'viewport';
-            meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-            document.head.appendChild(meta);
-
-            const trigger = document.createElement('div');
-            trigger.style.cssText = 'position: fixed; width:1px; height:1px; top:0; left:0; opacity:0; pointer-events:none; z-index:-9999;';
-            document.body.appendChild(trigger);
-            void trigger.offsetHeight;
-            trigger.remove();
-          } catch (err) {
-            console.error('Zoom fix iframe error:', err);
-          }
-        };
-
-        iframe.srcdoc = '<!DOCTYPE html><html><head></head><body></body></html>';
+        sessionStorage.setItem('hardZoomFix', 'true');
+        window.location.reload();
       }
     }
   </script>
