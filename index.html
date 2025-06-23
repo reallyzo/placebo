@@ -50,34 +50,6 @@
       cursor: default;
     }
 
-    .desktop-logo {
-      position: absolute;
-      top: 10px;
-      left: 20px;
-      font-family: sans-serif;
-      font-weight: bold;
-      font-size: 32px;
-      color: #fff;
-      display: none;
-      z-index: 999;
-    }
-
-    @media (min-width: 768px) {
-      .desktop-logo {
-        display: block;
-      }
-    }
-
-    .hidden-text-fix {
-      position: absolute;
-      top: -9999px;
-      left: -9999px;
-      font-size: 32px;
-      color: transparent;
-      pointer-events: none;
-      user-select: none;
-    }
-
     body {
       display: flex;
       flex-direction: column;
@@ -194,12 +166,6 @@
   </style>
 </head>
 <body>
-
-  <!-- Desktop Text Logo -->
-  <div class="desktop-logo">PLACEBO</div>
-
-  <!-- Hidden Text Block for Chrome Zoom Fix -->
-  <div class="hidden-text-fix">PLACEBO PLACEBO PLACEBO PLACEBO PLACEBO PLACEBO PLACEBO PLACEBO PLACEBO PLACEBO</div>
 
   <div class="scale-wrapper">
     <div class="logo-container" id="logoContainer">
