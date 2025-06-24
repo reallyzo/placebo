@@ -185,13 +185,19 @@
     ];
 
     let rotateX = 0, rotateY = 0;
+    let shiftX = 0, shiftY = 0;
 
     function clamp(val, min, max) {
       return Math.max(min, Math.min(max, val));
     }
 
     function updateTransform() {
-      container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      container.style.transform = `
+        translateX(${shiftX}px)
+        translateY(${shiftY}px)
+        rotateX(${rotateX}deg)
+        rotateY(${rotateY}deg)
+      `;
 
       links.forEach(link => {
         link.el.style.transform = `translate(${link.shiftX}px, ${link.shiftY}px)`;
@@ -247,31 +253,35 @@
     }
 
     if (window.innerWidth < 768) {
-let baselineBeta = null;
-let baselineGamma = null;
+      let baselineBeta = null;
+      let baselineGamma = null;
 
-function handleOrientation(event) {
-  const beta = event.beta || 0;
-  const gamma = event.gamma || 0;
+      function handleOrientation(event) {
+        const beta = event.beta || 0;
+        const gamma = event.gamma || 0;
 
-  // Set baselines on the first call
-  if (baselineBeta === null) baselineBeta = beta;
-  if (baselineGamma === null) baselineGamma = gamma;
+        // Set baselines on the first call
+        if (baselineBeta === null) baselineBeta = beta;
+        if (baselineGamma === null) baselineGamma = gamma;
 
-  // Calculate relative tilt from starting position
-  const relativeTiltX = clamp((beta - baselineBeta) / -2, -15, 15);
-  const relativeTiltY = clamp((gamma - baselineGamma) / 2, -15, 15);
+        // Calculate relative tilt from starting position
+        const relativeTiltX = clamp((beta - baselineBeta) / -2, -15, 15);
+        const relativeTiltY = clamp((gamma - baselineGamma) / 2, -15, 15);
 
-  rotateX += ((relativeTiltX * 1.2) - rotateX) * 0.07;
-  rotateY += ((relativeTiltY * 1.2) - rotateY) * 0.07;
+        rotateX += ((relativeTiltX * 1.2) - rotateX) * 0.07;
+        rotateY += ((relativeTiltY * 1.2) - rotateY) * 0.07;
 
-  links.forEach(link => {
-    link.shiftX += ((relativeTiltY * link.factor * 0.5) - link.shiftX) * 0.07;
-    link.shiftY += ((relativeTiltX * link.factor * 0.5) - link.shiftY) * 0.07;
-  });
+        // Add floating shift for logo
+        shiftX += ((relativeTiltY * 0.8) - shiftX) * 0.07;
+        shiftY += ((relativeTiltX * 0.8) - shiftY) * 0.07;
 
-  updateTransform();
-}
+        links.forEach(link => {
+          link.shiftX += ((relativeTiltY * link.factor * 0.5) - link.shiftX) * 0.07;
+          link.shiftY += ((relativeTiltX * link.factor * 0.5) - link.shiftY) * 0.07;
+        });
+
+        updateTransform();
+      }
 
       if (typeof DeviceOrientationEvent !== 'undefined' &&
         typeof DeviceOrientationEvent.requestPermission === 'function') {
