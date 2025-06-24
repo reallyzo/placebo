@@ -40,6 +40,9 @@
       zoom: 100% !important;
       transform: none !important;
       transform-origin: top left !important;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
     }
 
     html, body {
@@ -56,6 +59,9 @@
       color: white;
       font-family: sans-serif;
       text-align: center;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
     }
 
     .scale-wrapper {
@@ -117,28 +123,28 @@
       transition: transform 0.12s ease-out;
     }
 
-  /* Updated glow effect */
-  @keyframes linkGlow {
-    0%, 100% { opacity: 0.9; text-shadow: 0 0 1px #fff; }
-    50% { opacity: 1; text-shadow: 0 0 3px #fff; }
-  }
+    /* Updated sharper glow */
+    @keyframes linkGlow {
+      0%, 100% { opacity: 0.95; text-shadow: 0 0 0.5px #fff; }
+      50% { opacity: 1; text-shadow: 0 0 0.7px #fff; }
+    }
 
-  #textLink {
-    text-decoration: none;
-    font-size: 14px;
-    color: white;
-    display: inline-block;
-    opacity: 0.9;
-    animation: linkGlow 6s ease-in-out infinite;
-    transition: transform 0.2s ease, text-shadow 0.2s ease;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-  }
+    #textLink {
+      text-decoration: none;
+      font-size: 14px;
+      color: white;
+      display: inline-block;
+      opacity: 0.95;
+      animation: linkGlow 6s ease-in-out infinite;
+      transition: transform 0.2s ease, text-shadow 0.2s ease;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
 
-  #textLink:hover {
-    transform: scale(1.05);
-    text-shadow: 0 0 6px #fff;
-  }
+    #textLink:hover {
+      transform: scale(1.05);
+      text-shadow: 0 0 3px #fff;
+    }
 
     #motionBtn {
       display: none;
