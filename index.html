@@ -39,6 +39,9 @@
       zoom: 100% !important;
       transform: none !important;
       transform-origin: top left !important;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
     }
 
     html, body {
@@ -55,6 +58,9 @@
       color: white;
       font-family: sans-serif;
       text-align: center;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
     }
 
     .scale-wrapper {
@@ -130,26 +136,26 @@
       z-index: 2;
     }
 
-  /* Updated glow effect */
-  @keyframes linkGlow {
-    0%, 100% { opacity: 0.9; text-shadow: 0 0 1px #fff; }
-    50% { opacity: 1; text-shadow: 0 0 3px #fff; }
-  }
+    /* Updated sharper glow */
+    @keyframes linkGlow {
+      0%, 100% { opacity: 0.95; text-shadow: 0 0 0.5px #fff; }
+      50% { opacity: 1; text-shadow: 0 0 0.7px #fff; }
+    }
 
-  .link-wrapper a {
-    color: #fff;
-    text-decoration: none;
-    animation: linkGlow 6s ease-in-out infinite;
-    transition: transform 0.2s ease, text-shadow 0.2s ease;
-    will-change: transform;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-  }
+    .link-wrapper a {
+      color: #fff;
+      text-decoration: none;
+      animation: linkGlow 6s ease-in-out infinite;
+      transition: transform 0.2s ease, text-shadow 0.2s ease;
+      will-change: transform;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
 
-  .link-wrapper a:hover {
-    transform: scale(1.05);
-    text-shadow: 0 0 6px #fff;
-  }
+    .link-wrapper a:hover {
+      transform: scale(1.05);
+      text-shadow: 0 0 3px #fff;
+    }
 
     @media (prefers-reduced-motion: reduce) {
       .scale-wrapper { animation: none; }
@@ -263,18 +269,15 @@
         const beta = event.beta || 0;
         const gamma = event.gamma || 0;
 
-        // Set baselines on the first call
         if (baselineBeta === null) baselineBeta = beta;
         if (baselineGamma === null) baselineGamma = gamma;
 
-        // Calculate relative tilt from starting position
         const relativeTiltX = clamp((beta - baselineBeta) / -2, -15, 15);
         const relativeTiltY = clamp((gamma - baselineGamma) / 2, -15, 15);
 
         rotateX += ((relativeTiltX * 1.2) - rotateX) * 0.07;
         rotateY += ((relativeTiltY * 1.2) - rotateY) * 0.07;
 
-        // Add floating shift for logo
         shiftX += ((relativeTiltY * 0.8) - shiftX) * 0.07;
         shiftY += ((relativeTiltX * 0.8) - shiftY) * 0.07;
 
