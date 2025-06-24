@@ -34,123 +34,132 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
-  <style>
-    html {
-      zoom: 100% !important;
-      transform: none !important;
-      transform-origin: top left !important;
-    }
+<style>
+  html {
+    zoom: 100% !important;
+    transform: none !important;
+    transform-origin: top left !important;
+  }
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: #000;
-      height: 100%;
-      overflow: hidden;
-      cursor: default;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-family: sans-serif;
-      text-align: center;
-    }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #000;
+    height: 100%;
+    overflow: hidden;
+    cursor: default;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: sans-serif;
+    text-align: center;
+  }
 
+  .scale-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: breatheScale 6s ease-in-out infinite;
+  }
+
+  @keyframes breatheScale {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+
+  .logo-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-style: preserve-3d;
+    will-change: transform;
+    transition: transform 0.12s ease-out;
+  }
+
+  .logo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    display: block;
+    pointer-events: none;
+  }
+
+  .logo-glow {
+    animation: fadeGlow 6s ease-in-out infinite;
+  }
+
+  @keyframes fadeGlow {
+    0%, 100% { opacity: 0.1; }
+    50% { opacity: 1; }
+  }
+
+  .floating-text {
+    will-change: transform;
+    transition: transform 0.12s ease-out;
+  }
+
+  h1, p {
+    color: white;
+    margin: 8px 0;
+    font-weight: normal;
+  }
+
+  /* Updated LINK STYLE with hover animation and glow */
+  #textLink {
+    text-decoration: none;
+    font-size: 14px;
+    color: white;
+    display: inline-block;
+    opacity: 0.9;
+    animation: linkGlow 6s ease-in-out infinite;
+    transition: transform 0.2s ease, text-shadow 0.2s ease;
+  }
+
+  @keyframes linkGlow {
+    0%, 100% { opacity: 0.8; text-shadow: 0 0 2px #fff; }
+    50% { opacity: 1; text-shadow: 0 0 8px #fff; }
+  }
+
+  #textLink:hover {
+    transform: scale(1.05);
+    text-shadow: 0 0 12px #fff;
+  }
+
+  #motionBtn {
+    display: none;
+    background: none;
+    color: #fff;
+    font-size: 12px;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    opacity: 0.6;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+  }
+
+  #motionBtn:hover {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
     .scale-wrapper {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      animation: breatheScale 6s ease-in-out infinite;
+      animation: none;
     }
-
-    @keyframes breatheScale {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.15); }
-    }
-
-    .logo-container {
-      position: relative;
-      width: 200px;
-      height: 200px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transform-style: preserve-3d;
-      will-change: transform;
-      transition: transform 0.12s ease-out;
-    }
-
-    .logo {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: auto;
-      display: block;
-      pointer-events: none;
-    }
-
     .logo-glow {
-      animation: fadeGlow 6s ease-in-out infinite;
+      animation: none;
+      opacity: 0.5;
     }
-
-    @keyframes fadeGlow {
-      0%, 100% { opacity: 0.1; }
-      50% { opacity: 1; }
-    }
-
-    .floating-text {
-      will-change: transform;
-      transition: transform 0.12s ease-out;
-    }
-
-    h1, p, a {
-      color: white;
-      margin: 8px 0;
-      font-weight: normal;
-    }
-
-    a {
-      text-decoration: underline;
-      font-size: 14px;
-      transition: opacity 0.3s ease;
-      display: inline-block;
-      opacity: 0.9;
-    }
-
-    a:hover {
-      opacity: 1;
-    }
-
-    #motionBtn {
-      display: none;
-      background: none;
-      color: #fff;
-      font-size: 12px;
-      border: none;
-      cursor: pointer;
-      text-decoration: underline;
-      opacity: 0.6;
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-    }
-
-    #motionBtn:hover {
-      opacity: 1;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .scale-wrapper {
-        animation: none;
-      }
-      .logo-glow {
-        animation: none;
-        opacity: 0.5;
-      }
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
 
