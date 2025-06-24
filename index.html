@@ -247,23 +247,31 @@
     }
 
     if (window.innerWidth < 768) {
-      function handleOrientation(event) {
-        const beta = event.beta || 0;
-        const gamma = event.gamma || 0;
+let baselineBeta = null;
+let baselineGamma = null;
 
-        const tiltX = clamp((beta - 90) / -2, -15, 15);
-        const tiltY = clamp(gamma / 2, -15, 15);
+function handleOrientation(event) {
+  const beta = event.beta || 0;
+  const gamma = event.gamma || 0;
 
-        rotateX += ((tiltX * 1.2) - rotateX) * 0.07;
-        rotateY += ((tiltY * 1.2) - rotateY) * 0.07;
+  // Set baselines on the first call
+  if (baselineBeta === null) baselineBeta = beta;
+  if (baselineGamma === null) baselineGamma = gamma;
 
-        links.forEach(link => {
-          link.shiftX += ((tiltY * link.factor * 0.5) - link.shiftX) * 0.07;
-          link.shiftY += ((tiltX * link.factor * 0.5) - link.shiftY) * 0.07;
-        });
+  // Calculate relative tilt from starting position
+  const relativeTiltX = clamp((beta - baselineBeta) / -2, -15, 15);
+  const relativeTiltY = clamp((gamma - baselineGamma) / 2, -15, 15);
 
-        updateTransform();
-      }
+  rotateX += ((relativeTiltX * 1.2) - rotateX) * 0.07;
+  rotateY += ((relativeTiltY * 1.2) - rotateY) * 0.07;
+
+  links.forEach(link => {
+    link.shiftX += ((relativeTiltY * link.factor * 0.5) - link.shiftX) * 0.07;
+    link.shiftY += ((relativeTiltX * link.factor * 0.5) - link.shiftY) * 0.07;
+  });
+
+  updateTransform();
+}
 
       if (typeof DeviceOrientationEvent !== 'undefined' &&
         typeof DeviceOrientationEvent.requestPermission === 'function') {
