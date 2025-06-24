@@ -186,8 +186,7 @@
     const textMessage = document.getElementById('textMessage');
     const textLinkWrapper = document.getElementById('textLinkWrapper');
 
-    let rotateX = 0, rotateY = 0, shiftX = 0, shiftY = 0;
-    let targetX = 0, targetY = 0;
+    let rotateX = 0, rotateY = 0;
 
     let textOffsets = {
       text404: { shiftX: 0, shiftY: 0, targetX: 0, targetY: 0 },
@@ -201,8 +200,6 @@
 
     function updateTransform() {
       container.style.transform = `
-        translateX(${shiftX}px)
-        translateY(${shiftY}px)
         rotateX(${rotateX}deg)
         rotateY(${rotateY}deg)
       `;
@@ -228,8 +225,11 @@
         const offsetX = (e.clientX - centerX) / (rect.width / 2);
         const offsetY = (e.clientY - centerY) / (rect.height / 2);
 
-        targetX = clamp(offsetY * -10, -20, 20);
-        targetY = clamp(offsetX * 10, -20, 20);
+        let targetX = clamp(offsetY * -10, -20, 20);
+        let targetY = clamp(offsetX * 10, -20, 20);
+
+        rotateX += (targetX - rotateX) * 0.1;
+        rotateY += (targetY - rotateY) * 0.1;
 
         textOffsets.text404.targetX = clamp(offsetX * 3, -3, 3);
         textOffsets.text404.targetY = clamp(offsetY * 3, -3, 3);
@@ -242,9 +242,6 @@
       });
 
       document.addEventListener('mouseleave', () => {
-        targetX = 0;
-        targetY = 0;
-
         for (let key in textOffsets) {
           textOffsets[key].targetX = 0;
           textOffsets[key].targetY = 0;
@@ -252,11 +249,6 @@
       });
 
       function animateDesktop() {
-        rotateX += (targetX - rotateX) * 0.1;
-        rotateY += (targetY - rotateY) * 0.1;
-        shiftX += (targetY * 0.4 - shiftX) * 0.1;
-        shiftY += (targetX * 0.4 - shiftY) * 0.1;
-
         for (let key in textOffsets) {
           let item = textOffsets[key];
           item.shiftX += (item.targetX - item.shiftX) * 0.05;
