@@ -168,120 +168,140 @@
   <button id="motionBtn">Enable Motion</button>
 
   <script>
-    const container = document.getElementById('logoContainer');
-    const motionBtn = document.getElementById('motionBtn');
-    const text404 = document.getElementById('text404');
-    const textMessage = document.getElementById('textMessage');
-    const textLink = document.getElementById('textLink');
+  const container = document.getElementById('logoContainer');
+  const motionBtn = document.getElementById('motionBtn');
+  const text404 = document.getElementById('text404');
+  const textMessage = document.getElementById('textMessage');
+  const textLink = document.getElementById('textLink');
 
-    let rotateX = 0, rotateY = 0, shiftX = 0, shiftY = 0;
-    let targetX = 0, targetY = 0;
+  let rotateX = 0, rotateY = 0, shiftX = 0, shiftY = 0;
+  let targetX = 0, targetY = 0;
 
-    let textShiftX = 0, textShiftY = 0;
-    let textTargetX = 0, textTargetY = 0;
+  let textOffsets = {
+    text404: { shiftX: 0, shiftY: 0, targetX: 0, targetY: 0 },
+    textMessage: { shiftX: 0, shiftY: 0, targetX: 0, targetY: 0 },
+    textLink: { shiftX: 0, shiftY: 0, targetX: 0, targetY: 0 }
+  };
 
-    function clamp(val, min, max) {
-      return Math.max(min, Math.min(max, val));
+  function clamp(val, min, max) {
+    return Math.max(min, Math.min(max, val));
+  }
+
+  function updateTransform() {
+    container.style.transform = `
+      translateX(${shiftX}px)
+      translateY(${shiftY}px)
+      rotateX(${rotateX}deg)
+      rotateY(${rotateY}deg)
+    `;
+
+    text404.style.transform = `translate(${textOffsets.text404.shiftX}px, ${textOffsets.text404.shiftY}px)`;
+    textMessage.style.transform = `translate(${textOffsets.textMessage.shiftX}px, ${textOffsets.textMessage.shiftY}px)`;
+    textLink.style.transform = `translate(${textOffsets.textLink.shiftX}px, ${textOffsets.textLink.shiftY}px)`;
+  }
+
+  if (window.innerWidth >= 768) {
+    let rect = container.getBoundingClientRect();
+    let lastRectUpdate = Date.now();
+
+    document.addEventListener('mousemove', (e) => {
+      const now = Date.now();
+      if (now - lastRectUpdate > 100) {
+        rect = container.getBoundingClientRect();
+        lastRectUpdate = now;
+      }
+
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const offsetX = (e.clientX - centerX) / (rect.width / 2);
+      const offsetY = (e.clientY - centerY) / (rect.height / 2);
+
+      // Logo targets
+      targetX = clamp(offsetY * -10, -20, 20);
+      targetY = clamp(offsetX * 10, -20, 20);
+
+      // Text targets (subtle and independent)
+      textOffsets.text404.targetX = clamp(offsetX * 5, -5, 5);
+      textOffsets.text404.targetY = clamp(offsetY * 5, -5, 5);
+
+      textOffsets.textMessage.targetX = clamp(offsetX * 7, -7, 7);
+      textOffsets.textMessage.targetY = clamp(offsetY * 7, -7, 7);
+
+      textOffsets.textLink.targetX = clamp(offsetX * 6, -6, 6);
+      textOffsets.textLink.targetY = clamp(offsetY * 6, -6, 6);
+    });
+
+    document.addEventListener('mouseleave', () => {
+      targetX = 0;
+      targetY = 0;
+
+      for (let key in textOffsets) {
+        textOffsets[key].targetX = 0;
+        textOffsets[key].targetY = 0;
+      }
+    });
+
+    function animateDesktop() {
+      rotateX += (targetX - rotateX) * 0.1;
+      rotateY += (targetY - rotateY) * 0.1;
+      shiftX += (targetY * 0.4 - shiftX) * 0.1;
+      shiftY += (targetX * 0.4 - shiftY) * 0.1;
+
+      for (let key in textOffsets) {
+        let item = textOffsets[key];
+        item.shiftX += (item.targetX - item.shiftX) * 0.05;
+        item.shiftY += (item.targetY - item.shiftY) * 0.05;
+      }
+
+      updateTransform();
+      requestAnimationFrame(animateDesktop);
     }
 
-    function updateTransform() {
-      container.style.transform = `
-        translateX(${shiftX}px)
-        translateY(${shiftY}px)
-        rotateX(${rotateX}deg)
-        rotateY(${rotateY}deg)
-      `;
+    animateDesktop();
+  }
 
-      const textTransform = `
-        translateX(${textShiftX}px)
-        translateY(${textShiftY}px)
-      `;
-      text404.style.transform = textTransform;
-      textMessage.style.transform = textTransform;
-      textLink.style.transform = textTransform;
+  if (window.innerWidth < 768) {
+    function handleOrientation(event) {
+      const beta = event.beta || 0;
+      const gamma = event.gamma || 0;
+
+      const tiltX = clamp((beta - 90) / -2, -15, 15);
+      const tiltY = clamp(gamma / 2, -15, 15);
+
+      shiftX += ((tiltY * 0.8) - shiftX) * 0.07;
+      shiftY += ((tiltX * 0.8) - shiftY) * 0.07;
+      rotateX += ((tiltX * 1.2) - rotateX) * 0.07;
+      rotateY += ((tiltY * 1.2) - rotateY) * 0.07;
+
+      textOffsets.text404.shiftX += ((tiltY * 0.5) - textOffsets.text404.shiftX) * 0.07;
+      textOffsets.text404.shiftY += ((tiltX * 0.5) - textOffsets.text404.shiftY) * 0.07;
+
+      textOffsets.textMessage.shiftX += ((tiltY * 0.7) - textOffsets.textMessage.shiftX) * 0.07;
+      textOffsets.textMessage.shiftY += ((tiltX * 0.7) - textOffsets.textMessage.shiftY) * 0.07;
+
+      textOffsets.textLink.shiftX += ((tiltY * 0.6) - textOffsets.textLink.shiftX) * 0.07;
+      textOffsets.textLink.shiftY += ((tiltX * 0.6) - textOffsets.textLink.shiftY) * 0.07;
+
+      updateTransform();
     }
 
-    if (window.innerWidth >= 768) {
-      let rect = container.getBoundingClientRect();
-      let lastRectUpdate = Date.now();
-
-      document.addEventListener('mousemove', (e) => {
-        const now = Date.now();
-        if (now - lastRectUpdate > 100) {
-          rect = container.getBoundingClientRect();
-          lastRectUpdate = now;
-        }
-
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const offsetX = (e.clientX - centerX) / (rect.width / 2);
-        const offsetY = (e.clientY - centerY) / (rect.height / 2);
-        targetX = clamp(offsetY * -10, -20, 20);
-        targetY = clamp(offsetX * 10, -20, 20);
-
-        textTargetX = clamp(offsetX * 5, -10, 10);
-        textTargetY = clamp(offsetY * 5, -10, 10);
+    if (typeof DeviceOrientationEvent !== 'undefined' &&
+        typeof DeviceOrientationEvent.requestPermission === 'function') {
+      motionBtn.style.display = 'block';
+      motionBtn.addEventListener('click', () => {
+        DeviceOrientationEvent.requestPermission()
+          .then(state => {
+            if (state === 'granted') {
+              window.addEventListener('deviceorientation', handleOrientation);
+              motionBtn.style.display = 'none';
+            }
+          })
+          .catch(console.error);
       });
-
-      document.addEventListener('mouseleave', () => {
-        targetX = 0;
-        targetY = 0;
-        textTargetX = 0;
-        textTargetY = 0;
-      });
-
-      function animateDesktop() {
-        rotateX += (targetX - rotateX) * 0.1;
-        rotateY += (targetY - rotateY) * 0.1;
-        shiftX += (targetY * 0.4 - shiftX) * 0.1;
-        shiftY += (targetX * 0.4 - shiftY) * 0.1;
-
-        textShiftX += (textTargetX - textShiftX) * 0.1;
-        textShiftY += (textTargetY - textShiftY) * 0.1;
-
-        updateTransform();
-        requestAnimationFrame(animateDesktop);
-      }
-
-      animateDesktop();
+    } else {
+      window.addEventListener('deviceorientation', handleOrientation);
     }
-
-    if (window.innerWidth < 768) {
-      function handleOrientation(event) {
-        const beta = event.beta || 0;
-        const gamma = event.gamma || 0;
-
-        const tiltX = clamp((beta - 90) / -2, -15, 15);
-        const tiltY = clamp(gamma / 2, -15, 15);
-
-        shiftX += ((tiltY * 0.8) - shiftX) * 0.07;
-        shiftY += ((tiltX * 0.8) - shiftY) * 0.07;
-        rotateX += ((tiltX * 1.2) - rotateX) * 0.07;
-        rotateY += ((tiltY * 1.2) - rotateY) * 0.07;
-
-        textShiftX += ((tiltY * 0.5) - textShiftX) * 0.07;
-        textShiftY += ((tiltX * 0.5) - textShiftY) * 0.07;
-
-        updateTransform();
-      }
-
-      if (typeof DeviceOrientationEvent !== 'undefined' &&
-          typeof DeviceOrientationEvent.requestPermission === 'function') {
-        motionBtn.style.display = 'block';
-        motionBtn.addEventListener('click', () => {
-          DeviceOrientationEvent.requestPermission()
-            .then(state => {
-              if (state === 'granted') {
-                window.addEventListener('deviceorientation', handleOrientation);
-                motionBtn.style.display = 'none';
-              }
-            })
-            .catch(console.error);
-        });
-      } else {
-        window.addEventListener('deviceorientation', handleOrientation);
-      }
-    }
-  </script>
+  }
+</script>
 </body>
 </html>
