@@ -100,27 +100,23 @@
       50% { opacity: 1; }
     }
 
-    h1 {
-      margin-top: 20px;
-      font-size: 24px;
-      font-weight: normal;
-      opacity: 0.8;
+    .floating-text {
+      will-change: transform;
+      transition: transform 0.12s ease-out;
     }
 
-    p {
-      margin-top: 4px;
-      font-size: 16px;
-      opacity: 0.7;
+    h1, p, a {
+      color: white;
+      margin: 8px 0;
+      font-weight: normal;
     }
 
     a {
-      margin-top: 10px;
-      color: #fff;
       text-decoration: underline;
-      opacity: 0.7;
       font-size: 14px;
       transition: opacity 0.3s ease;
       display: inline-block;
+      opacity: 0.9;
     }
 
     a:hover {
@@ -165,22 +161,24 @@
     </div>
   </div>
 
-  <h1>404</h1>
-  <p>you've wandered beyond.</p>
-  <a href="/">take me home</a>
+  <h1 class="floating-text" id="text404">404</h1>
+  <p class="floating-text" id="textMessage">you've wandered beyond.</p>
+  <a class="floating-text" id="textLink" href="/">take me home</a>
 
   <button id="motionBtn">Enable Motion</button>
 
   <script>
     const container = document.getElementById('logoContainer');
     const motionBtn = document.getElementById('motionBtn');
+    const text404 = document.getElementById('text404');
+    const textMessage = document.getElementById('textMessage');
+    const textLink = document.getElementById('textLink');
 
-    let rotateX = 0;
-    let rotateY = 0;
-    let shiftX = 0;
-    let shiftY = 0;
-    let targetX = 0;
-    let targetY = 0;
+    let rotateX = 0, rotateY = 0, shiftX = 0, shiftY = 0;
+    let targetX = 0, targetY = 0;
+
+    let textShiftX = 0, textShiftY = 0;
+    let textTargetX = 0, textTargetY = 0;
 
     function clamp(val, min, max) {
       return Math.max(min, Math.min(max, val));
@@ -193,6 +191,14 @@
         rotateX(${rotateX}deg)
         rotateY(${rotateY}deg)
       `;
+
+      const textTransform = `
+        translateX(${textShiftX}px)
+        translateY(${textShiftY}px)
+      `;
+      text404.style.transform = textTransform;
+      textMessage.style.transform = textTransform;
+      textLink.style.transform = textTransform;
     }
 
     if (window.innerWidth >= 768) {
@@ -212,16 +218,27 @@
         const offsetY = (e.clientY - centerY) / (rect.height / 2);
         targetX = clamp(offsetY * -10, -20, 20);
         targetY = clamp(offsetX * 10, -20, 20);
+
+        textTargetX = clamp(offsetX * 5, -10, 10);
+        textTargetY = clamp(offsetY * 5, -10, 10);
       });
 
       document.addEventListener('mouseleave', () => {
         targetX = 0;
         targetY = 0;
+        textTargetX = 0;
+        textTargetY = 0;
       });
 
       function animateDesktop() {
         rotateX += (targetX - rotateX) * 0.1;
         rotateY += (targetY - rotateY) * 0.1;
+        shiftX += (targetY * 0.4 - shiftX) * 0.1;
+        shiftY += (targetX * 0.4 - shiftY) * 0.1;
+
+        textShiftX += (textTargetX - textShiftX) * 0.1;
+        textShiftY += (textTargetY - textShiftY) * 0.1;
+
         updateTransform();
         requestAnimationFrame(animateDesktop);
       }
@@ -241,6 +258,9 @@
         shiftY += ((tiltX * 0.8) - shiftY) * 0.07;
         rotateX += ((tiltX * 1.2) - rotateX) * 0.07;
         rotateY += ((tiltY * 1.2) - rotateY) * 0.07;
+
+        textShiftX += ((tiltY * 0.5) - textShiftX) * 0.07;
+        textShiftY += ((tiltX * 0.5) - textShiftY) * 0.07;
 
         updateTransform();
       }
