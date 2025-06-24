@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>404 – PLACEBO</title>
@@ -34,133 +35,163 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
-<style>
-  html {
-    zoom: 100% !important;
-    transform: none !important;
-    transform-origin: top left !important;
-  }
+  <style>
+    html {
+      zoom: 100% !important;
+      transform: none !important;
+      transform-origin: top left !important;
+    }
 
-  html, body {
-    margin: 0;
-    padding: 0;
-    background: #000;
-    height: 100%;
-    overflow: hidden;
-    cursor: default;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-family: sans-serif;
-    text-align: center;
-  }
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      height: 100%;
+      overflow: hidden;
+      cursor: default;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-family: sans-serif;
+      text-align: center;
+    }
 
-  .scale-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation: breatheScale 6s ease-in-out infinite;
-  }
-
-  @keyframes breatheScale {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.15); }
-  }
-
-  .logo-container {
-    position: relative;
-    width: 200px;
-    height: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transform-style: preserve-3d;
-    will-change: transform;
-    transition: transform 0.12s ease-out;
-  }
-
-  .logo {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: auto;
-    display: block;
-    pointer-events: none;
-  }
-
-  .logo-glow {
-    animation: fadeGlow 6s ease-in-out infinite;
-  }
-
-  @keyframes fadeGlow {
-    0%, 100% { opacity: 0.1; }
-    50% { opacity: 1; }
-  }
-
-  .floating-text {
-    will-change: transform;
-    transition: transform 0.12s ease-out;
-  }
-
-  h1, p {
-    color: white;
-    margin: 8px 0;
-    font-weight: normal;
-  }
-
-  /* Updated LINK STYLE with hover animation and glow */
-  #textLink {
-    text-decoration: none;
-    font-size: 14px;
-    color: white;
-    display: inline-block;
-    opacity: 0.9;
-    animation: linkGlow 6s ease-in-out infinite;
-    transition: transform 0.2s ease, text-shadow 0.2s ease;
-  }
-
-  @keyframes linkGlow {
-    0%, 100% { opacity: 0.8; text-shadow: 0 0 2px #fff; }
-    50% { opacity: 1; text-shadow: 0 0 8px #fff; }
-  }
-
-  #textLink:hover {
-    transform: scale(1.05);
-    text-shadow: 0 0 12px #fff;
-  }
-
-  #motionBtn {
-    display: none;
-    background: none;
-    color: #fff;
-    font-size: 12px;
-    border: none;
-    cursor: pointer;
-    text-decoration: underline;
-    opacity: 0.6;
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-  }
-
-  #motionBtn:hover {
-    opacity: 1;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
     .scale-wrapper {
-      animation: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: breatheScale 6s ease-in-out infinite;
     }
+
+    @keyframes breatheScale {
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.15);
+      }
+    }
+
+    .logo-container {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-style: preserve-3d;
+      will-change: transform;
+      transition: transform 0.12s ease-out;
+    }
+
+    .logo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: auto;
+      display: block;
+      pointer-events: none;
+    }
+
     .logo-glow {
-      animation: none;
-      opacity: 0.5;
+      animation: fadeGlow 6s ease-in-out infinite;
     }
-  }
-</style>
+
+    @keyframes fadeGlow {
+      0%,
+      100% {
+        opacity: 0.1;
+      }
+
+      50% {
+        opacity: 1;
+      }
+    }
+
+    .floating-text {
+      will-change: transform;
+      transition: transform 0.12s ease-out;
+    }
+
+    h1,
+    p {
+      color: white;
+      margin: 8px 0;
+      font-weight: normal;
+    }
+
+    /* Link container for floating motion */
+    #textLinkWrapper {
+      will-change: transform;
+      transition: transform 0.12s ease-out;
+    }
+
+    /* Link style and hover animation */
+    #textLink {
+      text-decoration: none;
+      font-size: 14px;
+      color: white;
+      display: inline-block;
+      opacity: 0.9;
+      animation: linkGlow 6s ease-in-out infinite;
+      transition: transform 0.2s ease, text-shadow 0.2s ease;
+    }
+
+    @keyframes linkGlow {
+      0%,
+      100% {
+        opacity: 0.8;
+        text-shadow: 0 0 2px #fff;
+      }
+
+      50% {
+        opacity: 1;
+        text-shadow: 0 0 8px #fff;
+      }
+    }
+
+    #textLink:hover {
+      transform: scale(1.05);
+      text-shadow: 0 0 12px #fff;
+    }
+
+    #motionBtn {
+      display: none;
+      background: none;
+      color: #fff;
+      font-size: 12px;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      opacity: 0.6;
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+    }
+
+    #motionBtn:hover {
+      opacity: 1;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .scale-wrapper {
+        animation: none;
+      }
+
+      .logo-glow {
+        animation: none;
+        opacity: 0.5;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
   <div class="scale-wrapper">
@@ -172,145 +203,142 @@
 
   <h1 class="floating-text" id="text404">404</h1>
   <p class="floating-text" id="textMessage">you've wandered beyond.</p>
-  <a class="floating-text" id="textLink" href="/">take me home</a>
+  <div id="textLinkWrapper" class="floating-text">
+    <a id="textLink" href="/">take me home</a>
+  </div>
 
   <button id="motionBtn">Enable Motion</button>
 
   <script>
-  const container = document.getElementById('logoContainer');
-  const motionBtn = document.getElementById('motionBtn');
-  const text404 = document.getElementById('text404');
-  const textMessage = document.getElementById('textMessage');
-  const textLink = document.getElementById('textLink');
+    const container = document.getElementById('logoContainer');
+    const motionBtn = document.getElementById('motionBtn');
+    const text404 = document.getElementById('text404');
+    const textMessage = document.getElementById('textMessage');
+    const textLinkWrapper = document.getElementById('textLinkWrapper');
 
-  let rotateX = 0, rotateY = 0, shiftX = 0, shiftY = 0;
-  let targetX = 0, targetY = 0;
+    let rotateX = 0,
+      rotateY = 0;
 
-  let textOffsets = {
-    text404: { shiftX: 0, shiftY: 0, targetX: 0, targetY: 0 },
-    textMessage: { shiftX: 0, shiftY: 0, targetX: 0, targetY: 0 },
-    textLink: { shiftX: 0, shiftY: 0, targetX: 0, targetY: 0 }
-  };
+    let textOffsets = {
+      text404: { shiftX: 0, shiftY: 0, targetX: 0, targetY: 0 },
+      textMessage: { shiftX: 0, shiftY: 0, targetX: 0, targetY: 0 },
+      textLinkWrapper: { shiftX: 0, shiftY: 0, targetX: 0, targetY: 0 }
+    };
 
-  function clamp(val, min, max) {
-    return Math.max(min, Math.min(max, val));
-  }
-
-  function updateTransform() {
-    container.style.transform = `
-      translateX(${shiftX}px)
-      translateY(${shiftY}px)
-      rotateX(${rotateX}deg)
-      rotateY(${rotateY}deg)
-    `;
-
-    text404.style.transform = `translate(${textOffsets.text404.shiftX}px, ${textOffsets.text404.shiftY}px)`;
-    textMessage.style.transform = `translate(${textOffsets.textMessage.shiftX}px, ${textOffsets.textMessage.shiftY}px)`;
-    textLink.style.transform = `translate(${textOffsets.textLink.shiftX}px, ${textOffsets.textLink.shiftY}px)`;
-  }
-
-  if (window.innerWidth >= 768) {
-    let rect = container.getBoundingClientRect();
-    let lastRectUpdate = Date.now();
-
-    document.addEventListener('mousemove', (e) => {
-      const now = Date.now();
-      if (now - lastRectUpdate > 100) {
-        rect = container.getBoundingClientRect();
-        lastRectUpdate = now;
-      }
-
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      const offsetX = (e.clientX - centerX) / (rect.width / 2);
-      const offsetY = (e.clientY - centerY) / (rect.height / 2);
-
-      // Logo targets
-      targetX = clamp(offsetY * -10, -20, 20);
-      targetY = clamp(offsetX * 10, -20, 20);
-
-      // Text targets (subtle and independent)
-      textOffsets.text404.targetX = clamp(offsetX * 5, -5, 5);
-      textOffsets.text404.targetY = clamp(offsetY * 5, -5, 5);
-
-      textOffsets.textMessage.targetX = clamp(offsetX * 7, -7, 7);
-      textOffsets.textMessage.targetY = clamp(offsetY * 7, -7, 7);
-
-      textOffsets.textLink.targetX = clamp(offsetX * 6, -6, 6);
-      textOffsets.textLink.targetY = clamp(offsetY * 6, -6, 6);
-    });
-
-    document.addEventListener('mouseleave', () => {
-      targetX = 0;
-      targetY = 0;
-
-      for (let key in textOffsets) {
-        textOffsets[key].targetX = 0;
-        textOffsets[key].targetY = 0;
-      }
-    });
-
-    function animateDesktop() {
-      rotateX += (targetX - rotateX) * 0.1;
-      rotateY += (targetY - rotateY) * 0.1;
-      shiftX += (targetY * 0.4 - shiftX) * 0.1;
-      shiftY += (targetX * 0.4 - shiftY) * 0.1;
-
-      for (let key in textOffsets) {
-        let item = textOffsets[key];
-        item.shiftX += (item.targetX - item.shiftX) * 0.05;
-        item.shiftY += (item.targetY - item.shiftY) * 0.05;
-      }
-
-      updateTransform();
-      requestAnimationFrame(animateDesktop);
+    function clamp(val, min, max) {
+      return Math.max(min, Math.min(max, val));
     }
 
-    animateDesktop();
-  }
+    function updateTransform() {
+      // Logo rotation only
+      container.style.transform = `
+        rotateX(${rotateX}deg)
+        rotateY(${rotateY}deg)
+      `;
 
-  if (window.innerWidth < 768) {
-    function handleOrientation(event) {
-      const beta = event.beta || 0;
-      const gamma = event.gamma || 0;
-
-      const tiltX = clamp((beta - 90) / -2, -15, 15);
-      const tiltY = clamp(gamma / 2, -15, 15);
-
-      shiftX += ((tiltY * 0.8) - shiftX) * 0.07;
-      shiftY += ((tiltX * 0.8) - shiftY) * 0.07;
-      rotateX += ((tiltX * 1.2) - rotateX) * 0.07;
-      rotateY += ((tiltY * 1.2) - rotateY) * 0.07;
-
-      textOffsets.text404.shiftX += ((tiltY * 0.5) - textOffsets.text404.shiftX) * 0.07;
-      textOffsets.text404.shiftY += ((tiltX * 0.5) - textOffsets.text404.shiftY) * 0.07;
-
-      textOffsets.textMessage.shiftX += ((tiltY * 0.7) - textOffsets.textMessage.shiftX) * 0.07;
-      textOffsets.textMessage.shiftY += ((tiltX * 0.7) - textOffsets.textMessage.shiftY) * 0.07;
-
-      textOffsets.textLink.shiftX += ((tiltY * 0.6) - textOffsets.textLink.shiftX) * 0.07;
-      textOffsets.textLink.shiftY += ((tiltX * 0.6) - textOffsets.textLink.shiftY) * 0.07;
-
-      updateTransform();
+      text404.style.transform = `translate(${textOffsets.text404.shiftX}px, ${textOffsets.text404.shiftY}px)`;
+      textMessage.style.transform = `translate(${textOffsets.textMessage.shiftX}px, ${textOffsets.textMessage.shiftY}px)`;
+      textLinkWrapper.style.transform = `translate(${textOffsets.textLinkWrapper.shiftX}px, ${textOffsets.textLinkWrapper.shiftY}px)`;
     }
 
-    if (typeof DeviceOrientationEvent !== 'undefined' &&
-        typeof DeviceOrientationEvent.requestPermission === 'function') {
-      motionBtn.style.display = 'block';
-      motionBtn.addEventListener('click', () => {
-        DeviceOrientationEvent.requestPermission()
-          .then(state => {
-            if (state === 'granted') {
-              window.addEventListener('deviceorientation', handleOrientation);
-              motionBtn.style.display = 'none';
-            }
-          })
-          .catch(console.error);
+    if (window.innerWidth >= 768) {
+      let rect = container.getBoundingClientRect();
+      let lastRectUpdate = Date.now();
+
+      document.addEventListener('mousemove', (e) => {
+        const now = Date.now();
+        if (now - lastRectUpdate > 100) {
+          rect = container.getBoundingClientRect();
+          lastRectUpdate = now;
+        }
+
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const offsetX = (e.clientX - centerX) / (rect.width / 2);
+        const offsetY = (e.clientY - centerY) / (rect.height / 2);
+
+        // Logo targets
+        let targetX = clamp(offsetY * -10, -20, 20);
+        let targetY = clamp(offsetX * 10, -20, 20);
+
+        // Text targets
+        textOffsets.text404.targetX = clamp(offsetX * 5, -5, 5);
+        textOffsets.text404.targetY = clamp(offsetY * 5, -5, 5);
+
+        textOffsets.textMessage.targetX = clamp(offsetX * 7, -7, 7);
+        textOffsets.textMessage.targetY = clamp(offsetY * 7, -7, 7);
+
+        textOffsets.textLinkWrapper.targetX = clamp(offsetX * 6, -6, 6);
+        textOffsets.textLinkWrapper.targetY = clamp(offsetY * 6, -6, 6);
+
+        // Smooth logo rotation
+        rotateX += (targetX - rotateX) * 0.1;
+        rotateY += (targetY - rotateY) * 0.1;
       });
-    } else {
-      window.addEventListener('deviceorientation', handleOrientation);
+
+      document.addEventListener('mouseleave', () => {
+        for (let key in textOffsets) {
+          textOffsets[key].targetX = 0;
+          textOffsets[key].targetY = 0;
+        }
+      });
+
+      function animateDesktop() {
+        for (let key in textOffsets) {
+          let item = textOffsets[key];
+          item.shiftX += (item.targetX - item.shiftX) * 0.05;
+          item.shiftY += (item.targetY - item.shiftY) * 0.05;
+        }
+
+        updateTransform();
+        requestAnimationFrame(animateDesktop);
+      }
+
+      animateDesktop();
     }
-  }
-</script>
+
+    if (window.innerWidth < 768) {
+      function handleOrientation(event) {
+        const beta = event.beta || 0;
+        const gamma = event.gamma || 0;
+
+        const tiltX = clamp((beta - 90) / -2, -15, 15);
+        const tiltY = clamp(gamma / 2, -15, 15);
+
+        rotateX += ((tiltX * 1.2) - rotateX) * 0.07;
+        rotateY += ((tiltY * 1.2) - rotateY) * 0.07;
+
+        textOffsets.text404.shiftX += ((tiltY * 0.5) - textOffsets.text404.shiftX) * 0.07;
+        textOffsets.text404.shiftY += ((tiltX * 0.5) - textOffsets.text404.shiftY) * 0.07;
+
+        textOffsets.textMessage.shiftX += ((tiltY * 0.7) - textOffsets.textMessage.shiftX) * 0.07;
+        textOffsets.textMessage.shiftY += ((tiltX * 0.7) - textOffsets.textMessage.shiftY) * 0.07;
+
+        textOffsets.textLinkWrapper.shiftX += ((tiltY * 0.6) - textOffsets.textLinkWrapper.shiftX) * 0.07;
+        textOffsets.textLinkWrapper.shiftY += ((tiltX * 0.6) - textOffsets.textLinkWrapper.shiftY) * 0.07;
+
+        updateTransform();
+      }
+
+      if (typeof DeviceOrientationEvent !== 'undefined' &&
+        typeof DeviceOrientationEvent.requestPermission === 'function') {
+        motionBtn.style.display = 'block';
+        motionBtn.addEventListener('click', () => {
+          DeviceOrientationEvent.requestPermission()
+            .then(state => {
+              if (state === 'granted') {
+                window.addEventListener('deviceorientation', handleOrientation);
+                motionBtn.style.display = 'none';
+              }
+            })
+            .catch(console.error);
+        });
+      } else {
+        window.addEventListener('deviceorientation', handleOrientation);
+      }
+    }
+  </script>
+
 </body>
+
 </html>
