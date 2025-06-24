@@ -186,7 +186,7 @@
     const textMessage = document.getElementById('textMessage');
     const textLinkWrapper = document.getElementById('textLinkWrapper');
 
-    let rotateX = 0, rotateY = 0;
+    let rotateX = 0, rotateY = 0, shiftX = 0, shiftY = 0;
 
     let textOffsets = {
       text404: { shiftX: 0, shiftY: 0, targetX: 0, targetY: 0 },
@@ -200,6 +200,8 @@
 
     function updateTransform() {
       container.style.transform = `
+        translateX(${shiftX}px)
+        translateY(${shiftY}px)
         rotateX(${rotateX}deg)
         rotateY(${rotateY}deg)
       `;
@@ -225,13 +227,13 @@
         const offsetX = (e.clientX - centerX) / (rect.width / 2);
         const offsetY = (e.clientY - centerY) / (rect.height / 2);
 
-        let targetX = clamp(offsetY * -6, -15, 15); // Less sensitive rotation
-        let targetY = clamp(offsetX * 6, -15, 15);  // Less sensitive rotation
+        let targetX = clamp(offsetY * -6, -15, 15);
+        let targetY = clamp(offsetX * 6, -15, 15);
 
         rotateX += (targetX - rotateX) * 0.08;
         rotateY += (targetY - rotateY) * 0.08;
 
-        textOffsets.text404.targetX = clamp(offsetX * 2, -2, 2); // Less text movement
+        textOffsets.text404.targetX = clamp(offsetX * 2, -2, 2);
         textOffsets.text404.targetY = clamp(offsetY * 2, -2, 2);
 
         textOffsets.textMessage.targetX = clamp(offsetX * 3, -3, 3);
@@ -263,38 +265,40 @@
     }
 
     if (window.innerWidth < 768) {
-function handleOrientation(event) {
-  const beta = event.beta || 0;
-  const gamma = event.gamma || 0;
+      let baselineBeta = null;
+      let baselineGamma = null;
 
-  // Set baselines on the first call
-  if (baselineBeta === null) baselineBeta = beta;
-  if (baselineGamma === null) baselineGamma = gamma;
+      function handleOrientation(event) {
+        const beta = event.beta || 0;
+        const gamma = event.gamma || 0;
 
-  // Calculate relative tilt from starting position
-  const relativeTiltX = clamp((beta - baselineBeta) / -2, -15, 15);
-  const relativeTiltY = clamp((gamma - baselineGamma) / 2, -15, 15);
+        if (baselineBeta === null) baselineBeta = beta;
+        if (baselineGamma === null) baselineGamma = gamma;
 
-  shiftX += ((relativeTiltY * 0.8) - shiftX) * 0.07;
-  shiftY += ((relativeTiltX * 0.8) - shiftY) * 0.07;
-  rotateX += ((relativeTiltX * 1.2) - rotateX) * 0.07;
-  rotateY += ((relativeTiltY * 1.2) - rotateY) * 0.07;
+        const relativeTiltX = clamp((beta - baselineBeta) / -2, -15, 15);
+        const relativeTiltY = clamp((gamma - baselineGamma) / 2, -15, 15);
 
-  textOffsets.text404.shiftX += ((relativeTiltY * 0.3) - textOffsets.text404.shiftX) * 0.07;
-  textOffsets.text404.shiftY += ((relativeTiltX * 0.3) - textOffsets.text404.shiftY) * 0.07;
+        shiftX += ((relativeTiltY * 0.8) - shiftX) * 0.07;
+        shiftY += ((relativeTiltX * 0.8) - shiftY) * 0.07;
+        rotateX += ((relativeTiltX * 1.2) - rotateX) * 0.07;
+        rotateY += ((relativeTiltY * 1.2) - rotateY) * 0.07;
 
-  textOffsets.textMessage.shiftX += ((relativeTiltY * 0.4) - textOffsets.textMessage.shiftX) * 0.07;
-  textOffsets.textMessage.shiftY += ((relativeTiltX * 0.4) - textOffsets.textMessage.shiftY) * 0.07;
+        textOffsets.text404.shiftX += ((relativeTiltY * 0.3) - textOffsets.text404.shiftX) * 0.07;
+        textOffsets.text404.shiftY += ((relativeTiltX * 0.3) - textOffsets.text404.shiftY) * 0.07;
 
-  textOffsets.textLinkWrapper.shiftX += ((relativeTiltY * 0.35) - textOffsets.textLinkWrapper.shiftX) * 0.07;
-  textOffsets.textLinkWrapper.shiftY += ((relativeTiltX * 0.35) - textOffsets.textLinkWrapper.shiftY) * 0.07;
+        textOffsets.textMessage.shiftX += ((relativeTiltY * 0.4) - textOffsets.textMessage.shiftX) * 0.07;
+        textOffsets.textMessage.shiftY += ((relativeTiltX * 0.4) - textOffsets.textMessage.shiftY) * 0.07;
 
-  updateTransform();
-}
+        textOffsets.textLinkWrapper.shiftX += ((relativeTiltY * 0.35) - textOffsets.textLinkWrapper.shiftX) * 0.07;
+        textOffsets.textLinkWrapper.shiftY += ((relativeTiltX * 0.35) - textOffsets.textLinkWrapper.shiftY) * 0.07;
+
+        updateTransform();
+      }
 
       window.addEventListener('deviceorientation', handleOrientation);
     }
   </script>
 
 </body>
+
 </html>
