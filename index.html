@@ -136,7 +136,6 @@
       z-index: 2;
     }
 
-    /* Updated sharper glow */
     @keyframes linkGlow {
       0%, 100% { opacity: 0.95; text-shadow: 0 0 0.5px #fff; }
       50% { opacity: 1; text-shadow: 0 0 0.7px #fff; }
@@ -209,7 +208,8 @@
       `;
 
       links.forEach(link => {
-        link.el.style.transform = `translate(${link.shiftX}px, ${link.shiftY}px)`;
+        // Use style.translate instead of transform so scale hover can work
+        link.el.style.translate = `${link.shiftX}px ${link.shiftY}px`;
       });
     }
 
