@@ -225,20 +225,20 @@
         const offsetX = (e.clientX - centerX) / (rect.width / 2);
         const offsetY = (e.clientY - centerY) / (rect.height / 2);
 
-        let targetX = clamp(offsetY * -10, -20, 20);
-        let targetY = clamp(offsetX * 10, -20, 20);
+        let targetX = clamp(offsetY * -6, -15, 15); // Less sensitive rotation
+        let targetY = clamp(offsetX * 6, -15, 15);  // Less sensitive rotation
 
-        rotateX += (targetX - rotateX) * 0.1;
-        rotateY += (targetY - rotateY) * 0.1;
+        rotateX += (targetX - rotateX) * 0.08;
+        rotateY += (targetY - rotateY) * 0.08;
 
-        textOffsets.text404.targetX = clamp(offsetX * 3, -3, 3);
-        textOffsets.text404.targetY = clamp(offsetY * 3, -3, 3);
+        textOffsets.text404.targetX = clamp(offsetX * 2, -2, 2); // Less text movement
+        textOffsets.text404.targetY = clamp(offsetY * 2, -2, 2);
 
-        textOffsets.textMessage.targetX = clamp(offsetX * 4, -4, 4);
-        textOffsets.textMessage.targetY = clamp(offsetY * 4, -4, 4);
+        textOffsets.textMessage.targetX = clamp(offsetX * 3, -3, 3);
+        textOffsets.textMessage.targetY = clamp(offsetY * 3, -3, 3);
 
-        textOffsets.textLinkWrapper.targetX = clamp(offsetX * 3.5, -3.5, 3.5);
-        textOffsets.textLinkWrapper.targetY = clamp(offsetY * 3.5, -3.5, 3.5);
+        textOffsets.textLinkWrapper.targetX = clamp(offsetX * 2.5, -2.5, 2.5);
+        textOffsets.textLinkWrapper.targetY = clamp(offsetY * 2.5, -2.5, 2.5);
       });
 
       document.addEventListener('mouseleave', () => {
