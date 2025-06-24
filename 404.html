@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <title>404 – PLACEBO</title>
@@ -42,8 +41,7 @@
       transform-origin: top left !important;
     }
 
-    html,
-    body {
+    html, body {
       margin: 0;
       padding: 0;
       background: #000;
@@ -67,14 +65,8 @@
     }
 
     @keyframes breatheScale {
-      0%,
-      100% {
-        transform: scale(1);
-      }
-
-      50% {
-        transform: scale(1.15);
-      }
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
     }
 
     .logo-container {
@@ -104,14 +96,8 @@
     }
 
     @keyframes fadeGlow {
-      0%,
-      100% {
-        opacity: 0.1;
-      }
-
-      50% {
-        opacity: 1;
-      }
+      0%, 100% { opacity: 0.1; }
+      50% { opacity: 1; }
     }
 
     .floating-text {
@@ -119,20 +105,17 @@
       transition: transform 0.12s ease-out;
     }
 
-    h1,
-    p {
+    h1, p {
       color: white;
       margin: 8px 0;
       font-weight: normal;
     }
 
-    /* Link container for floating motion */
     #textLinkWrapper {
       will-change: transform;
       transition: transform 0.12s ease-out;
     }
 
-    /* Link style and hover animation */
     #textLink {
       text-decoration: none;
       font-size: 14px;
@@ -144,16 +127,8 @@
     }
 
     @keyframes linkGlow {
-      0%,
-      100% {
-        opacity: 0.8;
-        text-shadow: 0 0 2px #fff;
-      }
-
-      50% {
-        opacity: 1;
-        text-shadow: 0 0 8px #fff;
-      }
+      0%, 100% { opacity: 0.8; text-shadow: 0 0 2px #fff; }
+      50% { opacity: 1; text-shadow: 0 0 8px #fff; }
     }
 
     #textLink:hover {
@@ -180,14 +155,8 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .scale-wrapper {
-        animation: none;
-      }
-
-      .logo-glow {
-        animation: none;
-        opacity: 0.5;
-      }
+      .scale-wrapper { animation: none; }
+      .logo-glow { animation: none; opacity: 0.5; }
     }
   </style>
 </head>
@@ -216,8 +185,7 @@
     const textMessage = document.getElementById('textMessage');
     const textLinkWrapper = document.getElementById('textLinkWrapper');
 
-    let rotateX = 0,
-      rotateY = 0;
+    let rotateX = 0, rotateY = 0;
 
     let textOffsets = {
       text404: { shiftX: 0, shiftY: 0, targetX: 0, targetY: 0 },
@@ -230,7 +198,6 @@
     }
 
     function updateTransform() {
-      // Logo rotation only
       container.style.transform = `
         rotateX(${rotateX}deg)
         rotateY(${rotateY}deg)
@@ -257,21 +224,18 @@
         const offsetX = (e.clientX - centerX) / (rect.width / 2);
         const offsetY = (e.clientY - centerY) / (rect.height / 2);
 
-        // Logo targets
         let targetX = clamp(offsetY * -10, -20, 20);
         let targetY = clamp(offsetX * 10, -20, 20);
 
-        // Text targets
-        textOffsets.text404.targetX = clamp(offsetX * 5, -5, 5);
-        textOffsets.text404.targetY = clamp(offsetY * 5, -5, 5);
+        textOffsets.text404.targetX = clamp(offsetX * 3, -3, 3);
+        textOffsets.text404.targetY = clamp(offsetY * 3, -3, 3);
 
-        textOffsets.textMessage.targetX = clamp(offsetX * 7, -7, 7);
-        textOffsets.textMessage.targetY = clamp(offsetY * 7, -7, 7);
+        textOffsets.textMessage.targetX = clamp(offsetX * 4, -4, 4);
+        textOffsets.textMessage.targetY = clamp(offsetY * 4, -4, 4);
 
-        textOffsets.textLinkWrapper.targetX = clamp(offsetX * 6, -6, 6);
-        textOffsets.textLinkWrapper.targetY = clamp(offsetY * 6, -6, 6);
+        textOffsets.textLinkWrapper.targetX = clamp(offsetX * 3.5, -3.5, 3.5);
+        textOffsets.textLinkWrapper.targetY = clamp(offsetY * 3.5, -3.5, 3.5);
 
-        // Smooth logo rotation
         rotateX += (targetX - rotateX) * 0.1;
         rotateY += (targetY - rotateY) * 0.1;
       });
@@ -308,14 +272,14 @@
         rotateX += ((tiltX * 1.2) - rotateX) * 0.07;
         rotateY += ((tiltY * 1.2) - rotateY) * 0.07;
 
-        textOffsets.text404.shiftX += ((tiltY * 0.5) - textOffsets.text404.shiftX) * 0.07;
-        textOffsets.text404.shiftY += ((tiltX * 0.5) - textOffsets.text404.shiftY) * 0.07;
+        textOffsets.text404.shiftX += ((tiltY * 0.3) - textOffsets.text404.shiftX) * 0.07;
+        textOffsets.text404.shiftY += ((tiltX * 0.3) - textOffsets.text404.shiftY) * 0.07;
 
-        textOffsets.textMessage.shiftX += ((tiltY * 0.7) - textOffsets.textMessage.shiftX) * 0.07;
-        textOffsets.textMessage.shiftY += ((tiltX * 0.7) - textOffsets.textMessage.shiftY) * 0.07;
+        textOffsets.textMessage.shiftX += ((tiltY * 0.4) - textOffsets.textMessage.shiftX) * 0.07;
+        textOffsets.textMessage.shiftY += ((tiltX * 0.4) - textOffsets.textMessage.shiftY) * 0.07;
 
-        textOffsets.textLinkWrapper.shiftX += ((tiltY * 0.6) - textOffsets.textLinkWrapper.shiftX) * 0.07;
-        textOffsets.textLinkWrapper.shiftY += ((tiltX * 0.6) - textOffsets.textLinkWrapper.shiftY) * 0.07;
+        textOffsets.textLinkWrapper.shiftX += ((tiltY * 0.35) - textOffsets.textLinkWrapper.shiftX) * 0.07;
+        textOffsets.textLinkWrapper.shiftY += ((tiltX * 0.35) - textOffsets.textLinkWrapper.shiftY) * 0.07;
 
         updateTransform();
       }
@@ -340,5 +304,4 @@
   </script>
 
 </body>
-
 </html>
