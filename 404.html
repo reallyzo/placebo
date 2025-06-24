@@ -263,29 +263,34 @@
     }
 
     if (window.innerWidth < 768) {
-      function handleOrientation(event) {
-        const beta = event.beta || 0;
-        const gamma = event.gamma || 0;
+function handleOrientation(event) {
+  const beta = event.beta || 0;
+  const gamma = event.gamma || 0;
 
-        const tiltX = clamp((beta - 90) / -2, -15, 15);
-        const tiltY = clamp(gamma / 2, -15, 15);
+  // Set baselines on the first call
+  if (baselineBeta === null) baselineBeta = beta;
+  if (baselineGamma === null) baselineGamma = gamma;
 
-        shiftX += ((tiltY * 0.8) - shiftX) * 0.07;
-        shiftY += ((tiltX * 0.8) - shiftY) * 0.07;
-        rotateX += ((tiltX * 1.2) - rotateX) * 0.07;
-        rotateY += ((tiltY * 1.2) - rotateY) * 0.07;
+  // Calculate relative tilt from starting position
+  const relativeTiltX = clamp((beta - baselineBeta) / -2, -15, 15);
+  const relativeTiltY = clamp((gamma - baselineGamma) / 2, -15, 15);
 
-        textOffsets.text404.shiftX += ((tiltY * 0.3) - textOffsets.text404.shiftX) * 0.07;
-        textOffsets.text404.shiftY += ((tiltX * 0.3) - textOffsets.text404.shiftY) * 0.07;
+  shiftX += ((relativeTiltY * 0.8) - shiftX) * 0.07;
+  shiftY += ((relativeTiltX * 0.8) - shiftY) * 0.07;
+  rotateX += ((relativeTiltX * 1.2) - rotateX) * 0.07;
+  rotateY += ((relativeTiltY * 1.2) - rotateY) * 0.07;
 
-        textOffsets.textMessage.shiftX += ((tiltY * 0.4) - textOffsets.textMessage.shiftX) * 0.07;
-        textOffsets.textMessage.shiftY += ((tiltX * 0.4) - textOffsets.textMessage.shiftY) * 0.07;
+  textOffsets.text404.shiftX += ((relativeTiltY * 0.3) - textOffsets.text404.shiftX) * 0.07;
+  textOffsets.text404.shiftY += ((relativeTiltX * 0.3) - textOffsets.text404.shiftY) * 0.07;
 
-        textOffsets.textLinkWrapper.shiftX += ((tiltY * 0.35) - textOffsets.textLinkWrapper.shiftX) * 0.07;
-        textOffsets.textLinkWrapper.shiftY += ((tiltX * 0.35) - textOffsets.textLinkWrapper.shiftY) * 0.07;
+  textOffsets.textMessage.shiftX += ((relativeTiltY * 0.4) - textOffsets.textMessage.shiftX) * 0.07;
+  textOffsets.textMessage.shiftY += ((relativeTiltX * 0.4) - textOffsets.textMessage.shiftY) * 0.07;
 
-        updateTransform();
-      }
+  textOffsets.textLinkWrapper.shiftX += ((relativeTiltY * 0.35) - textOffsets.textLinkWrapper.shiftX) * 0.07;
+  textOffsets.textLinkWrapper.shiftY += ((relativeTiltX * 0.35) - textOffsets.textLinkWrapper.shiftY) * 0.07;
+
+  updateTransform();
+}
 
       window.addEventListener('deviceorientation', handleOrientation);
     }
