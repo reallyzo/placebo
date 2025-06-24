@@ -128,8 +128,6 @@
       color: #fff;
       font-family: sans-serif;
       z-index: 2;
-      will-change: transform;
-      transition: transform 0.12s ease-out;
     }
 
     .link-wrapper a {
@@ -137,6 +135,7 @@
       text-decoration: none;
       animation: linkGlow 6s ease-in-out infinite;
       transition: transform 0.2s ease, text-shadow 0.2s ease;
+      will-change: transform;
     }
 
     @keyframes linkGlow {
@@ -165,11 +164,11 @@
     </div>
   </div>
 
-  <div class="link-wrapper" id="linkWrapper">
-    <a href="https://instagram.com/placeboreal" target="_blank">instagram</a>
-    <a href="https://www.tiktok.com/@placebo8026" target="_blank">tiktok</a>
-    <a href="mailto:placebocreateyourreality@gmail.com">contact</a>
-    <a href="#">launch info</a>
+  <div class="link-wrapper">
+    <a id="link1" href="https://instagram.com/placeboreal" target="_blank">instagram</a>
+    <a id="link2" href="https://www.tiktok.com/@placebo8026" target="_blank">tiktok</a>
+    <a id="link3" href="mailto:placebocreateyourreality@gmail.com">contact</a>
+    <a id="link4" href="#">launch info</a>
   </div>
 
   <button id="motionBtn">Enable Motion</button>
@@ -177,21 +176,26 @@
   <script>
     const container = document.getElementById('logoContainer');
     const motionBtn = document.getElementById('motionBtn');
-    const linkWrapper = document.getElementById('linkWrapper');
+
+    const links = [
+      { el: document.getElementById('link1'), shiftX: 0, shiftY: 0, targetX: 0, targetY: 0, factor: 2 },
+      { el: document.getElementById('link2'), shiftX: 0, shiftY: 0, targetX: 0, targetY: 0, factor: 3 },
+      { el: document.getElementById('link3'), shiftX: 0, shiftY: 0, targetX: 0, targetY: 0, factor: 2.5 },
+      { el: document.getElementById('link4'), shiftX: 0, shiftY: 0, targetX: 0, targetY: 0, factor: 3.2 }
+    ];
 
     let rotateX = 0, rotateY = 0;
-    let textOffset = { shiftX: 0, shiftY: 0, targetX: 0, targetY: 0 };
 
     function clamp(val, min, max) {
       return Math.max(min, Math.min(max, val));
     }
 
     function updateTransform() {
-      container.style.transform = `
-        rotateX(${rotateX}deg)
-        rotateY(${rotateY}deg)
-      `;
-      linkWrapper.style.transform = `translate(${textOffset.shiftX}px, ${textOffset.shiftY}px)`;
+      container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+
+      links.forEach(link => {
+        link.el.style.transform = `translate(${link.shiftX}px, ${link.shiftY}px)`;
+      });
     }
 
     if (window.innerWidth >= 768) {
@@ -216,18 +220,24 @@
         rotateX += (targetX - rotateX) * 0.08;
         rotateY += (targetY - rotateY) * 0.08;
 
-        textOffset.targetX = clamp(offsetX * 3, -3, 3);
-        textOffset.targetY = clamp(offsetY * 3, -3, 3);
+        links.forEach(link => {
+          link.targetX = clamp(offsetX * link.factor, -link.factor, link.factor);
+          link.targetY = clamp(offsetY * link.factor, -link.factor, link.factor);
+        });
       });
 
       document.addEventListener('mouseleave', () => {
-        textOffset.targetX = 0;
-        textOffset.targetY = 0;
+        links.forEach(link => {
+          link.targetX = 0;
+          link.targetY = 0;
+        });
       });
 
       function animateDesktop() {
-        textOffset.shiftX += (textOffset.targetX - textOffset.shiftX) * 0.05;
-        textOffset.shiftY += (textOffset.targetY - textOffset.shiftY) * 0.05;
+        links.forEach(link => {
+          link.shiftX += (link.targetX - link.shiftX) * 0.05;
+          link.shiftY += (link.targetY - link.shiftY) * 0.05;
+        });
 
         updateTransform();
         requestAnimationFrame(animateDesktop);
@@ -247,8 +257,10 @@
         rotateX += ((tiltX * 1.2) - rotateX) * 0.07;
         rotateY += ((tiltY * 1.2) - rotateY) * 0.07;
 
-        textOffset.shiftX += ((tiltY * 0.3) - textOffset.shiftX) * 0.07;
-        textOffset.shiftY += ((tiltX * 0.3) - textOffset.shiftY) * 0.07;
+        links.forEach(link => {
+          link.shiftX += ((tiltY * link.factor * 0.5) - link.shiftX) * 0.07;
+          link.shiftY += ((tiltX * link.factor * 0.5) - link.shiftY) * 0.07;
+        });
 
         updateTransform();
       }
