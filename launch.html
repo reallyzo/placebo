@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Launch Info – PLACEBO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <link rel="icon" href="favicon.png" type="image/png" />
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      color: #fff;
+      font-family: sans-serif;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    .content {
+      padding: 40px 20px;
+      max-width: 800px;
+      width: 100%;
+    }
+
+    .fade-line {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      will-change: opacity, transform;
+      margin: 20px 0;
+      font-size: 16px;
+    }
+
+    .fade-line.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes breathe {
+      0%, 100% { background-color: #000; }
+      50% { background-color: #111; }
+    }
+
+    body {
+      animation: breathe 12s ease-in-out infinite;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="content" id="content">
+    <div class="fade-line">It’s not a product.</div>
+    <div class="fade-line">It’s not a pill.</div>
+    <div class="fade-line">It’s not a program.</div>
+    <div class="fade-line">It’s belief.</div>
+    <div class="fade-line">Everything you need is already within.</div>
+    <div class="fade-line">The placebo effect is real.</div>
+    <div class="fade-line">Science proved it.</div>
+    <div class="fade-line">Your mind can heal.</div>
+    <div class="fade-line">Your mind can create.</div>
+    <div class="fade-line">Your mind can transform.</div>
+    <div class="fade-line">Just because it believes it can.</div>
+    <div class="fade-line">Take control.</div>
+    <div class="fade-line">Harness the power of your mind.</div>
+    <div class="fade-line">You are the catalyst.</div>
+    <div class="fade-line">You are the effect.</div>
+    <div class="fade-line">So wear it.</div>
+    <div class="fade-line">Live it.</div>
+    <div class="fade-line">Feel it.</div>
+    <div class="fade-line">And let the world wonder how you did it.</div>
+    <div class="fade-line">Hold on to your dreams like your life depends on it.</div>
+    <div class="fade-line">Because it does.</div>
+    <div class="fade-line">PLACEBO.</div>
+    <div class="fade-line">The mind is the medicine.</div>
+    <div class="fade-line">The effect is you.</div>
+    <div class="fade-line">#PLACEBOEFFECT</div>
+  </div>
+
+  <script>
+    const lines = document.querySelectorAll('.fade-line');
+
+    function checkVisibility() {
+      lines.forEach(line => {
+        const rect = line.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 50) {
+          line.classList.add('visible');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', checkVisibility);
+    window.addEventListener('load', checkVisibility);
+  </script>
+
+</body>
+
+</html>
