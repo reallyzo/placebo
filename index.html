@@ -261,53 +261,57 @@
       animateDesktop();
     }
 
-    if (window.innerWidth < 768) {
-      let baselineBeta = null;
-      let baselineGamma = null;
+  if (window.innerWidth < 768) {
+    let baselineBeta = null;
+    let baselineGamma = null;
 
-      function handleOrientation(event) {
-        const beta = event.beta || 0;
-        const gamma = event.gamma || 0;
+    function handleOrientation(event) {
+      const beta = event.beta || 0;
+      const gamma = event.gamma || 0;
 
-        if (baselineBeta === null) baselineBeta = beta;
-        if (baselineGamma === null) baselineGamma = gamma;
+      // Soft recenter when extreme tilt is detected
+      if (baselineBeta === null) baselineBeta = beta;
+      if (baselineGamma === null) baselineGamma = gamma;
 
-        const relativeTiltX = clamp((beta - baselineBeta) / -2, -15, 15);
-        const relativeTiltY = clamp((gamma - baselineGamma) / 2, -15, 15);
-
-        rotateX += ((relativeTiltX * 1.2) - rotateX) * 0.07;
-        rotateY += ((relativeTiltY * 1.2) - rotateY) * 0.07;
-
-        shiftX += ((relativeTiltY * 0.8) - shiftX) * 0.07;
-        shiftY += ((relativeTiltX * 0.8) - shiftY) * 0.07;
-
-        links.forEach(link => {
-          link.shiftX += ((relativeTiltY * link.factor * 0.5) - link.shiftX) * 0.07;
-          link.shiftY += ((relativeTiltX * link.factor * 0.5) - link.shiftY) * 0.07;
-        });
-
-        updateTransform();
+      if (Math.abs(beta - baselineBeta) > 45 || Math.abs(gamma - baselineGamma) > 45) {
+        baselineBeta = beta;
+        baselineGamma = gamma;
       }
 
-      if (typeof DeviceOrientationEvent !== 'undefined' &&
-        typeof DeviceOrientationEvent.requestPermission === 'function') {
-        motionBtn.style.display = 'block';
-        motionBtn.addEventListener('click', () => {
-          DeviceOrientationEvent.requestPermission()
-            .then(state => {
-              if (state === 'granted') {
-                window.addEventListener('deviceorientation', handleOrientation);
-                motionBtn.style.display = 'none';
-              }
-            })
-            .catch(console.error);
-        });
-      } else {
-        window.addEventListener('deviceorientation', handleOrientation);
-      }
+      const relativeTiltX = clamp((beta - baselineBeta) / -2, -12, 12);
+      const relativeTiltY = clamp((gamma - baselineGamma) / 2, -12, 12);
+
+      rotateX += ((relativeTiltX * 1.1) - rotateX) * 0.07;
+      rotateY += ((relativeTiltY * 1.1) - rotateY) * 0.07;
+
+      shiftX += ((relativeTiltY * 0.7) - shiftX) * 0.07;
+      shiftY += ((relativeTiltX * 0.7) - shiftY) * 0.07;
+
+      links.forEach(link => {
+        link.shiftX += ((relativeTiltY * 1.5) - link.shiftX) * 0.07;
+        link.shiftY += ((relativeTiltX * 1.5) - link.shiftY) * 0.07;
+      });
+
+      updateTransform();
     }
-  </script>
 
+    if (typeof DeviceOrientationEvent !== 'undefined' &&
+      typeof DeviceOrientationEvent.requestPermission === 'function') {
+      motionBtn.style.display = 'block';
+      motionBtn.addEventListener('click', () => {
+        DeviceOrientationEvent.requestPermission()
+          .then(state => {
+            if (state === 'granted') {
+              window.addEventListener('deviceorientation', handleOrientation);
+              motionBtn.style.display = 'none';
+            }
+          })
+          .catch(console.error);
+      });
+    } else {
+      window.addEventListener('deviceorientation', handleOrientation);
+    }
+  }
+</script>
 </body>
-
 </html>
