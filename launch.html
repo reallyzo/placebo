@@ -8,6 +8,10 @@
   <link rel="icon" href="favicon.png" type="image/png" />
 
   <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
     html, body {
       margin: 0;
       padding: 0;
@@ -27,7 +31,7 @@
     }
 
     .content {
-      padding: 40px 20px;
+      padding: 80px 20px;
       max-width: 800px;
       width: 100%;
     }
@@ -35,15 +39,20 @@
     .fade-line {
       opacity: 0;
       transform: translateY(30px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-      will-change: opacity, transform;
-      margin: 20px 0;
-      font-size: 16px;
+      transition: opacity 0.8s ease, transform 0.8s ease, transform 0.2s ease, text-shadow 0.2s ease, font-size 0.2s ease;
+      will-change: opacity, transform, font-size;
+      margin: 100px 0; /* Larger spacing to prevent showing all at once */
+      font-size: 24px; /* Larger base text */
     }
 
     .fade-line.visible {
       opacity: 1;
       transform: translateY(0);
+    }
+
+    .fade-line.active {
+      font-size: 30px;
+      text-shadow: 0 0 3px #fff;
     }
 
     @keyframes breathe {
@@ -55,20 +64,22 @@
       animation: breathe 12s ease-in-out infinite;
     }
 
-    /* Back button style */
+    @keyframes linkGlow {
+      0%, 100% { opacity: 0.95; text-shadow: 0 0 0.5px #fff; }
+      50% { opacity: 1; text-shadow: 0 0 0.7px #fff; }
+    }
+
     .back-button {
       display: inline-block;
       margin-top: 40px;
-      padding: 8px 16px;
       color: white;
       text-decoration: none;
-      border: 1px solid white;
-      border-radius: 4px;
       opacity: 0;
       transform: translateY(30px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
+      transition: opacity 0.8s ease, transform 0.8s ease, transform 0.2s ease, text-shadow 0.2s ease;
       will-change: opacity, transform;
       font-size: 14px;
+      animation: linkGlow 6s ease-in-out infinite;
     }
 
     .back-button.visible {
@@ -77,9 +88,9 @@
     }
 
     .back-button:hover {
-      background-color: white;
-      color: black;
-      cursor: pointer;
+      transform: scale(1.05);
+      text-shadow: 0 0 3px #fff;
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -126,11 +137,35 @@
         const rect = line.getBoundingClientRect();
         if (rect.top < window.innerHeight - 50) {
           line.classList.add('visible');
+        } else {
+          line.classList.remove('visible');
+        }
+
+        // Highlight the line closest to the center
+        const centerY = window.innerHeight / 2;
+        const distanceToCenter = Math.abs(rect.top + rect.height / 2 - centerY);
+        line.dataset.distance = distanceToCenter;
+      });
+
+      // Find the closest line to center
+      let activeLine = null;
+      let minDistance = Infinity;
+      lines.forEach(line => {
+        const distance = parseFloat(line.dataset.distance);
+        if (distance < minDistance) {
+          minDistance = distance;
+          activeLine = line;
         }
       });
 
-      // Show back button when scrolled halfway
-      if (window.scrollY + window.innerHeight > document.body.scrollHeight * 0.5) {
+      lines.forEach(line => line.classList.remove('active'));
+      if (activeLine) {
+        activeLine.classList.add('active');
+      }
+
+      // Show back button when visible
+      const btnRect = backBtn.getBoundingClientRect();
+      if (btnRect.top < window.innerHeight - 50) {
         backBtn.classList.add('visible');
       }
     }
