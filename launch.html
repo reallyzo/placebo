@@ -8,10 +8,6 @@
   <link rel="icon" href="favicon.png" type="image/png" />
 
   <style>
-    html {
-      scroll-behavior: smooth;
-    }
-
     html, body {
       margin: 0;
       padding: 0;
@@ -31,9 +27,13 @@
     }
 
     .content {
-      padding: 100vh 20px 80px; /* Start with the first line centered */
+      padding: 0 20px;
       max-width: 800px;
       width: 100%;
+    }
+
+    .spacer {
+      height: 50vh; /* Space before the first line to center it */
     }
 
     .fade-line {
@@ -41,22 +41,13 @@
       transform: translateY(30px);
       transition: opacity 0.6s ease, transform 0.6s ease;
       will-change: opacity, transform, font-size;
-      margin: 120px 0; /* Creates nice breathing room */
+      margin: 120px 0;
       font-size: 16px;
     }
 
     .fade-line.visible {
       opacity: 1;
       transform: translateY(0);
-    }
-
-    @keyframes breathe {
-      0%, 100% { background-color: #000; }
-      50% { background-color: #111; }
-    }
-
-    body {
-      animation: breathe 12s ease-in-out infinite;
     }
 
     @keyframes linkGlow {
@@ -92,6 +83,8 @@
 
 <body>
 
+  <div class="spacer"></div> <!-- Pushes first line to center on load -->
+
   <div class="content" id="content">
     <div class="fade-line">It’s not a product.</div>
     <div class="fade-line">It’s not a pill.</div>
@@ -119,8 +112,7 @@
     <div class="fade-line">The effect is you.</div>
     <div class="fade-line">#PLACEBOEFFECT</div>
 
-    <!-- Back button -->
-    <a href="index.html" class="back-button" id="backBtn">back to home</a>
+    <a href="index.html" class="back-button" id="backBtn">Back to Home</a>
   </div>
 
   <script>
@@ -142,12 +134,11 @@
         const distance = Math.abs((rect.top + rect.height / 2) - centerY);
 
         // Scale calculation
-        const scale = Math.max(1, 1.8 - distance / 300); // Adjust "1.8" for max size and "300" for spread
-        line.style.fontSize = `${16 * scale}px`; // Base size is 16px, scales up smoothly
-        line.style.opacity = scale > 1.05 ? 1 : 0.7; // Slight fade if it's far
+        const scale = Math.max(1, 1.8 - distance / 300);
+        line.style.fontSize = `${16 * scale}px`;
+        line.style.opacity = scale > 1.05 ? 1 : 0.7;
       });
 
-      // Show back button when visible
       const btnRect = backBtn.getBoundingClientRect();
       if (btnRect.top < window.innerHeight - 50) {
         backBtn.classList.add('visible');
@@ -155,7 +146,10 @@
     }
 
     window.addEventListener('scroll', checkVisibility);
-    window.addEventListener('load', checkVisibility);
+    window.addEventListener('load', () => {
+      checkVisibility();
+      window.scrollTo({ top: 0, behavior: 'instant' }); // Always start at top
+    });
   </script>
 
 </body>
