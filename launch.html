@@ -43,22 +43,29 @@
       transition: width 0.2s ease;
     }
 
-    .content {
-      padding: 0 20px;
-      max-width: 800px;
+    .viewport {
+      position: relative;
       width: 100%;
+      max-width: 800px;
+      height: 100vh;
+      overflow: hidden;
     }
 
-    .spacer {
-      height: 50vh;
+    .content {
+      padding: 0 20px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
     }
 
     .fade-line {
       opacity: 0;
       transform: translateY(30px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
+      transition: opacity 0.6s ease, transform 0.6s ease, font-size 0.6s ease;
       will-change: opacity, transform, font-size;
-      margin: 120px 0;
+      margin: 100px 0;
       font-size: 16px;
     }
 
@@ -95,46 +102,66 @@
       text-shadow: 0 0 3px #fff;
       text-decoration: underline;
     }
+
+    /* Optional top/bottom gradient mask for a smoother window effect */
+    .viewport::before, .viewport::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 15%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .viewport::before {
+      top: 0;
+      background: linear-gradient(to bottom, #000, transparent);
+    }
+
+    .viewport::after {
+      bottom: 0;
+      background: linear-gradient(to top, #000, transparent);
+    }
   </style>
 </head>
 
 <body>
 
-  <!-- Progress Bar -->
   <div class="progress-container">
     <div class="progress-bar" id="progressBar"></div>
   </div>
 
-  <div class="spacer"></div>
+  <div class="viewport">
+    <div class="content" id="content">
+      <div class="fade-line">It’s not a product.</div>
+      <div class="fade-line">It’s not a pill.</div>
+      <div class="fade-line">It’s not a program.</div>
+      <div class="fade-line">It’s belief.</div>
+      <div class="fade-line">Everything you need is already within.</div>
+      <div class="fade-line">The placebo effect is real.</div>
+      <div class="fade-line">Science proved it.</div>
+      <div class="fade-line">Your mind can heal.</div>
+      <div class="fade-line">Your mind can create.</div>
+      <div class="fade-line">Your mind can transform.</div>
+      <div class="fade-line">Just because it believes it can.</div>
+      <div class="fade-line">Take control.</div>
+      <div class="fade-line">Harness the power of your mind.</div>
+      <div class="fade-line">You are the catalyst.</div>
+      <div class="fade-line">You are the effect.</div>
+      <div class="fade-line">So wear it.</div>
+      <div class="fade-line">Live it.</div>
+      <div class="fade-line">Feel it.</div>
+      <div class="fade-line">And let the world wonder how you did it.</div>
+      <div class="fade-line">Hold on to your dreams like your life depends on it.</div>
+      <div class="fade-line">Because it does.</div>
+      <div class="fade-line">PLACEBO.</div>
+      <div class="fade-line">The mind is the medicine.</div>
+      <div class="fade-line">The effect is you.</div>
+      <div class="fade-line">#PLACEBOEFFECT</div>
 
-  <div class="content" id="content">
-    <div class="fade-line">It’s not a product.</div>
-    <div class="fade-line">It’s not a pill.</div>
-    <div class="fade-line">It’s not a program.</div>
-    <div class="fade-line">It’s belief.</div>
-    <div class="fade-line">Everything you need is already within.</div>
-    <div class="fade-line">The placebo effect is real.</div>
-    <div class="fade-line">Science proved it.</div>
-    <div class="fade-line">Your mind can heal.</div>
-    <div class="fade-line">Your mind can create.</div>
-    <div class="fade-line">Your mind can transform.</div>
-    <div class="fade-line">Just because it believes it can.</div>
-    <div class="fade-line">Take control.</div>
-    <div class="fade-line">Harness the power of your mind.</div>
-    <div class="fade-line">You are the catalyst.</div>
-    <div class="fade-line">You are the effect.</div>
-    <div class="fade-line">So wear it.</div>
-    <div class="fade-line">Live it.</div>
-    <div class="fade-line">Feel it.</div>
-    <div class="fade-line">And let the world wonder how you did it.</div>
-    <div class="fade-line">Hold on to your dreams like your life depends on it.</div>
-    <div class="fade-line">Because it does.</div>
-    <div class="fade-line">PLACEBO.</div>
-    <div class="fade-line">The mind is the medicine.</div>
-    <div class="fade-line">The effect is you.</div>
-    <div class="fade-line">#PLACEBOEFFECT</div>
-
-    <a href="index.html" class="back-button" id="backBtn">Back to Home</a>
+      <a href="index.html" class="back-button" id="backBtn">Back to Home</a>
+    </div>
   </div>
 
   <script>
@@ -142,22 +169,25 @@
     const backBtn = document.getElementById('backBtn');
     const progressBar = document.getElementById('progressBar');
 
+    let offsetY = 0;
+
     function checkVisibility() {
+      offsetY = window.scrollY;
+
       lines.forEach(line => {
         const rect = line.getBoundingClientRect();
+        const centerY = window.innerHeight / 2;
+        const distance = Math.abs((rect.top + rect.height / 2) - centerY);
 
-        if (rect.top < window.innerHeight - 50) {
+        if (rect.top + rect.height / 2 < centerY + 10) {
           line.classList.add('visible');
         } else {
           line.classList.remove('visible');
         }
 
-        const centerY = window.innerHeight / 2;
-        const distance = Math.abs((rect.top + rect.height / 2) - centerY);
-
         const scale = Math.max(1, 1.8 - distance / 300);
         line.style.fontSize = `${16 * scale}px`;
-        line.style.opacity = scale > 1.05 ? 1 : 0.7;
+        line.style.opacity = scale > 1.05 ? 1 : 0.5;
       });
 
       const btnRect = backBtn.getBoundingClientRect();
