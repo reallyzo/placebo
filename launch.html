@@ -54,6 +54,33 @@
     body {
       animation: breathe 12s ease-in-out infinite;
     }
+
+    /* Back button style */
+    .back-button {
+      display: inline-block;
+      margin-top: 40px;
+      padding: 8px 16px;
+      color: white;
+      text-decoration: none;
+      border: 1px solid white;
+      border-radius: 4px;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      will-change: opacity, transform;
+      font-size: 14px;
+    }
+
+    .back-button.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .back-button:hover {
+      background-color: white;
+      color: black;
+      cursor: pointer;
+    }
   </style>
 </head>
 
@@ -85,10 +112,14 @@
     <div class="fade-line">The mind is the medicine.</div>
     <div class="fade-line">The effect is you.</div>
     <div class="fade-line">#PLACEBOEFFECT</div>
+
+    <!-- Back button -->
+    <a href="index.html" class="back-button" id="backBtn">Back to Home</a>
   </div>
 
   <script>
     const lines = document.querySelectorAll('.fade-line');
+    const backBtn = document.getElementById('backBtn');
 
     function checkVisibility() {
       lines.forEach(line => {
@@ -97,6 +128,11 @@
           line.classList.add('visible');
         }
       });
+
+      // Show back button when scrolled halfway
+      if (window.scrollY + window.innerHeight > document.body.scrollHeight * 0.5) {
+        backBtn.classList.add('visible');
+      }
     }
 
     window.addEventListener('scroll', checkVisibility);
