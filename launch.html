@@ -15,9 +15,11 @@
       color: #fff;
       font-family: sans-serif;
       text-align: center;
-      min-height: 100vh;
+      height: 100vh;
       overflow-x: hidden;
+      overflow-y: scroll;
       scroll-behavior: smooth;
+      scroll-snap-type: y mandatory;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       text-rendering: optimizeLegibility;
@@ -45,21 +47,22 @@
       max-width: 800px;
       margin: 0 auto;
       position: relative;
-      padding-top: 50vh; /* pushes first line to center */
     }
 
     .fade-line {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.6s ease, transform 0.6s ease, font-size 0.6s ease;
-      will-change: opacity, transform, font-size;
-      margin: 100px 0;
-      font-size: 16px;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      scroll-snap-align: center;
+      font-size: 24px;
+      opacity: 0.5;
+      transition: font-size 0.6s ease, opacity 0.6s ease;
     }
 
-    .fade-line.visible {
+    .fade-line.active {
+      font-size: 36px;
       opacity: 1;
-      transform: translateY(0);
     }
 
     @keyframes linkGlow {
@@ -78,6 +81,11 @@
       will-change: opacity, transform;
       font-size: 14px;
       animation: linkGlow 6s ease-in-out infinite;
+      scroll-snap-align: center;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .back-button.visible {
@@ -165,34 +173,30 @@
     const backBtn = document.getElementById('backBtn');
     const progressBar = document.getElementById('progressBar');
 
-function checkVisibility() {
-  lines.forEach(line => {
-    const rect = line.getBoundingClientRect();
-    const centerY = window.innerHeight / 2;
-    const distance = (rect.top + rect.height / 2) - centerY;
+    function updateActiveLine() {
+      let closestLine = null;
+      let minDistance = Infinity;
+      const centerY = window.innerHeight / 2;
 
-    if (distance < 10) { // Only show lines that have crossed the center
-      line.classList.add('visible');
-    } else {
-      line.classList.remove('visible');
+      lines.forEach(line => {
+        const rect = line.getBoundingClientRect();
+        const distance = Math.abs((rect.top + rect.height / 2) - centerY);
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestLine = line;
+        }
+      });
+
+      lines.forEach(line => line.classList.remove('active'));
+      if (closestLine) closestLine.classList.add('active');
+
+      const btnRect = backBtn.getBoundingClientRect();
+      if (btnRect.top < window.innerHeight - 50) {
+        backBtn.classList.add('visible');
+      }
+
+      updateProgressBar();
     }
-
-    if (distance < 0) { // Scale only the lines above or at the center
-      const scale = Math.max(1, 1.8 - Math.abs(distance) / 300);
-      line.style.fontSize = `${16 * scale}px`;
-      line.style.opacity = scale > 1.05 ? 1 : 0.5;
-    } else { // Hide lines below the center
-      line.style.opacity = 0;
-    }
-  });
-
-  const btnRect = backBtn.getBoundingClientRect();
-  if (btnRect.top < window.innerHeight - 50) {
-    backBtn.classList.add('visible');
-  }
-
-  updateProgressBar();
-}
 
     function updateProgressBar() {
       const scrollTop = window.scrollY;
@@ -201,10 +205,9 @@ function checkVisibility() {
       progressBar.style.width = `${scrolled}%`;
     }
 
-    window.addEventListener('scroll', checkVisibility);
+    window.addEventListener('scroll', updateActiveLine);
     window.addEventListener('load', () => {
-      window.scrollTo({ top: window.innerHeight / 2, behavior: 'instant' });
-      checkVisibility();
+      updateActiveLine();
     });
   </script>
 
