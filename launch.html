@@ -165,30 +165,34 @@
     const backBtn = document.getElementById('backBtn');
     const progressBar = document.getElementById('progressBar');
 
-    function checkVisibility() {
-      lines.forEach(line => {
-        const rect = line.getBoundingClientRect();
-        const centerY = window.innerHeight / 2;
-        const distance = Math.abs((rect.top + rect.height / 2) - centerY);
+function checkVisibility() {
+  lines.forEach(line => {
+    const rect = line.getBoundingClientRect();
+    const centerY = window.innerHeight / 2;
+    const distance = (rect.top + rect.height / 2) - centerY;
 
-        if (rect.top + rect.height / 2 < centerY + 10) {
-          line.classList.add('visible');
-        } else {
-          line.classList.remove('visible');
-        }
-
-        const scale = Math.max(1, 1.8 - distance / 300);
-        line.style.fontSize = `${16 * scale}px`;
-        line.style.opacity = scale > 1.05 ? 1 : 0.5;
-      });
-
-      const btnRect = backBtn.getBoundingClientRect();
-      if (btnRect.top < window.innerHeight - 50) {
-        backBtn.classList.add('visible');
-      }
-
-      updateProgressBar();
+    if (distance < 10) { // Only show lines that have crossed the center
+      line.classList.add('visible');
+    } else {
+      line.classList.remove('visible');
     }
+
+    if (distance < 0) { // Scale only the lines above or at the center
+      const scale = Math.max(1, 1.8 - Math.abs(distance) / 300);
+      line.style.fontSize = `${16 * scale}px`;
+      line.style.opacity = scale > 1.05 ? 1 : 0.5;
+    } else { // Hide lines below the center
+      line.style.opacity = 0;
+    }
+  });
+
+  const btnRect = backBtn.getBoundingClientRect();
+  if (btnRect.top < window.innerHeight - 50) {
+    backBtn.classList.add('visible');
+  }
+
+  updateProgressBar();
+}
 
     function updateProgressBar() {
       const scrollTop = window.scrollY;
