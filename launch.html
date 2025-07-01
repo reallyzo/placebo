@@ -45,6 +45,7 @@
       max-width: 800px;
       margin: 0 auto;
       position: relative;
+      padding-top: 50vh; /* pushes first line to center */
     }
 
     .fade-line {
@@ -198,7 +199,7 @@
 
     window.addEventListener('scroll', checkVisibility);
     window.addEventListener('load', () => {
-      window.scrollTo({ top: 0, behavior: 'instant' });
+      window.scrollTo({ top: window.innerHeight / 2, behavior: 'instant' });
       checkVisibility();
     });
   </script>
