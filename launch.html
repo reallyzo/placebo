@@ -173,30 +173,23 @@
     const backBtn = document.getElementById('backBtn');
     const progressBar = document.getElementById('progressBar');
 
-    function updateActiveLine() {
-      let closestLine = null;
-      let minDistance = Infinity;
-      const centerY = window.innerHeight / 2;
+    // IntersectionObserver for snap detection
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.6 // Trigger when 60% of the line is visible
+    };
 
-      lines.forEach(line => {
-        const rect = line.getBoundingClientRect();
-        const distance = Math.abs((rect.top + rect.height / 2) - centerY);
-        if (distance < minDistance) {
-          minDistance = distance;
-          closestLine = line;
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          lines.forEach(line => line.classList.remove('active'));
+          entry.target.classList.add('active');
         }
       });
+    }, observerOptions);
 
-      lines.forEach(line => line.classList.remove('active'));
-      if (closestLine) closestLine.classList.add('active');
-
-      const btnRect = backBtn.getBoundingClientRect();
-      if (btnRect.top < window.innerHeight - 50) {
-        backBtn.classList.add('visible');
-      }
-
-      updateProgressBar();
-    }
+    lines.forEach(line => observer.observe(line));
 
     function updateProgressBar() {
       const scrollTop = window.scrollY;
@@ -205,9 +198,9 @@
       progressBar.style.width = `${scrolled}%`;
     }
 
-    window.addEventListener('scroll', updateActiveLine);
+    window.addEventListener('scroll', updateProgressBar);
     window.addEventListener('load', () => {
-      updateActiveLine();
+      updateProgressBar();
     });
   </script>
 
