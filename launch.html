@@ -71,34 +71,29 @@ body {
       50% { opacity: 1; text-shadow: 0 0 0.7px #fff; }
     }
 
-    .back-button {
-      display: inline-block;
-      margin: 40px 0 100px 0;
-      color: white;
-      text-decoration: none;
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.8s ease, transform 0.8s ease, transform 0.2s ease, text-shadow 0.2s ease;
-      will-change: opacity, transform;
-      font-size: 14px;
-      animation: linkGlow 6s ease-in-out infinite;
-      scroll-snap-align: center;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+.back-button {
+  position: fixed; /* Keep it always visible */
+  bottom: 40px; /* Distance from the bottom */
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  font-size: 14px;
+  animation: linkGlow 6s ease-in-out infinite;
+  cursor: pointer;
+}
 
-    .back-button.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+.back-button.visible {
+  opacity: 1;
+}
 
-    .back-button:hover {
-      transform: scale(1.05);
-      text-shadow: 0 0 3px #fff;
-      text-decoration: underline;
-    }
+.back-button:hover {
+  transform: translateX(-50%) scale(1.05);
+  text-shadow: 0 0 3px #fff;
+  text-decoration: underline;
+}
 
     .mask {
       position: fixed;
@@ -144,7 +139,7 @@ body {
     <div class="fade-line">it’s not a pill.</div>
     <div class="fade-line">it’s not a program.</div>
     <div class="fade-line">it’s belief.</div>
-    <div class="fade-line">everything you need is already within.</div>
+    <div class="fade-line">everything you need is within.</div>
     <div class="fade-line">the placebo effect is real.</div>
     <div class="fade-line">science proved it.</div>
     <div class="fade-line">your mind can heal.</div>
@@ -153,17 +148,17 @@ body {
     <div class="fade-line">just because it believes it can.</div>
     <div class="fade-line">take control.</div>
     <div class="fade-line">harness the power of your mind.</div>
-    <div class="fade-line">You are the catalyst.</div>
-    <div class="fade-line">You are the effect.</div>
-    <div class="fade-line">So wear it.</div>
-    <div class="fade-line">Live it.</div>
-    <div class="fade-line">Feel it.</div>
-    <div class="fade-line">And let the world wonder how you did it.</div>
-    <div class="fade-line">Hold on to your dreams like your life depends on it.</div>
-    <div class="fade-line">Because it does.</div>
+    <div class="fade-line">you are the catalyst.</div>
+    <div class="fade-line">you are the effect.</div>
+    <div class="fade-line">so wear it.</div>
+    <div class="fade-line">live it.</div>
+    <div class="fade-line">feel it.</div>
+    <div class="fade-line">let the world wonder how you did it.</div>
+    <div class="fade-line">hold on like your life depends on it.</div>
+    <div class="fade-line">because it does.</div>
     <div class="fade-line">PLACEBO.</div>
-    <div class="fade-line">The mind is the medicine.</div>
-    <div class="fade-line">The effect is you.</div>
+    <div class="fade-line">the mind is the medicine.</div>
+    <div class="fade-line">the effect is you.</div>
     <div class="fade-line">#PLACEBOEFFECT</div>
 
     <a href="index.html" class="back-button" id="backBtn">Back to Home</a>
@@ -175,6 +170,8 @@ let activeIndex = 0;
 const maxPreviousLines = 3;
 let isScrolling = false;
 
+const backButton = document.getElementById('backBtn');
+
 function updateLines() {
   lines.forEach((line, index) => {
     line.classList.remove('active', 'previous', 'fading');
@@ -185,13 +182,11 @@ function updateLines() {
 
   lines.forEach((line, index) => {
     if (index === activeIndex) {
-      // Centered active line
       line.classList.add('active');
       line.style.top = '50%';
       line.style.transform = 'translate(-50%, -50%) scale(1)';
       line.style.opacity = '1';
     } else if (index < activeIndex && index >= activeIndex - maxPreviousLines) {
-      // Previous lines within visible stack
       const distanceFromActive = activeIndex - index;
       const offset = 100 * distanceFromActive;
       const scale = 1 - 0.1 * distanceFromActive;
@@ -202,13 +197,19 @@ function updateLines() {
       line.style.transform = `translate(-50%, -50%) scale(${scale})`;
       line.style.opacity = `${opacity}`;
     } else if (index === activeIndex - maxPreviousLines - 1) {
-      // This is the next line to fade out (was the smallest previous line)
       line.classList.add('fading');
-      line.style.top = '10%'; // Hold roughly in place
+      line.style.top = '10%';
       line.style.transform = 'translate(-50%, -50%) scale(0.7)';
       line.style.opacity = '0';
     }
   });
+
+  // Show back button when at the last line
+  if (activeIndex === lines.length - 1) {
+    backButton.classList.add('visible');
+  } else {
+    backButton.classList.remove('visible');
+  }
 }
 
 updateLines();
