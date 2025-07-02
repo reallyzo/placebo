@@ -25,21 +25,20 @@ html, body {
 .fade-line-wrapper {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   height: 100vh;
   width: 100%;
-  justify-content: center;
-  position: relative;
 }
 
 .previous-lines {
+  width: 100%;
+  max-width: 90%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: absolute;
-  top: 30%;
-  width: 100%; 
-  max-width: 90%; 
+  justify-content: flex-end;
+  flex-grow: 1;
 }
 
 .previous-line {
@@ -47,13 +46,24 @@ html, body {
   font-size: 24px;
   margin-bottom: 10px;
   white-space: nowrap;
+  text-align: center;
   transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.active-line-container {
+  width: 100%;
+  max-width: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .active-line {
   font-size: 36px;
   opacity: 1;
   white-space: nowrap;
+  text-align: center;
   transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
@@ -157,7 +167,9 @@ html, body {
 
   <div class="fade-line-wrapper">
     <div class="previous-lines" id="previousLines"></div>
-    <div class="active-line" id="activeLine"></div>
+    <div class="active-line-container">
+      <div class="active-line" id="activeLine"></div>
+    </div>
   </div>
 
   <a href="index.html" class="back-button" id="backBtn">Back to Home</a>
@@ -211,7 +223,6 @@ const navButtons = document.getElementById('navButtons');
 const isMobile = window.innerWidth < 768;
 
 function updateLines() {
-  // Animate fade out for previous active line
   activeLine.classList.add('fade-out');
 
   setTimeout(() => {
