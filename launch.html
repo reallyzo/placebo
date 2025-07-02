@@ -35,22 +35,17 @@ html, body {
 
 .previous-line {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(40px);
   font-size: 24px;
   margin-bottom: 20px;
   white-space: nowrap;
   text-align: center;
-  max-height: 0;
-  overflow: hidden;
-  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
-              transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
-              max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
 .previous-line.show {
   opacity: 0.5;
   transform: translateY(0);
-  max-height: 60px;
 }
 
 .fade-out-previous {
@@ -224,6 +219,8 @@ const navButtons = document.getElementById('navButtons');
 
 const isMobile = window.innerWidth < 768;
 
+let previousLines = [];
+
 function updateLines() {
   activeLine.classList.add('fade-out');
 
@@ -232,25 +229,16 @@ function updateLines() {
     activeLine.classList.remove('fade-out');
   }, 200);
 
-  const existingLines = previousLinesContainer.querySelectorAll('.previous-line');
+  if (activeIndex > 0) {
+    // Add new previous line to the array
+    previousLines.push(allLines[activeIndex - 1]);
 
-  if (existingLines.length >= maxPreviousLines) {
-    // Fade out the oldest one first
-    existingLines[0].classList.add('fade-out-previous');
-
-    // Wait for fade out to complete before removing
-    setTimeout(() => {
-      if (existingLines[0]) {
-        existingLines[0].remove();
-
-        // Add the new previous line AFTER the old one is gone
-        addNewPreviousLine();
-      }
-    }, 400); // Smooth fade-out timing
-  } else {
-    // If under max, just add the new line instantly
-    addNewPreviousLine();
+    if (previousLines.length > maxPreviousLines) {
+      previousLines.shift(); // Keep it capped at 3
+    }
   }
+
+  renderPreviousLines();
 
   if (activeIndex === allLines.length - 1) {
     backButton.classList.add('visible');
@@ -259,17 +247,19 @@ function updateLines() {
   }
 }
 
-function addNewPreviousLine() {
-  if (activeIndex > 0) {
-    const newPrevLine = document.createElement('div');
-    newPrevLine.textContent = allLines[activeIndex - 1];
-    newPrevLine.classList.add('previous-line');
-    previousLinesContainer.appendChild(newPrevLine);
+function renderPreviousLines() {
+  previousLinesContainer.innerHTML = '';
+
+  previousLines.forEach((text, index) => {
+    const prevLine = document.createElement('div');
+    prevLine.textContent = text;
+    prevLine.classList.add('previous-line');
+    previousLinesContainer.appendChild(prevLine);
 
     setTimeout(() => {
-      newPrevLine.classList.add('show');
+      prevLine.classList.add('show');
     }, 50);
-  }
+  });
 }
 
 updateLines();
