@@ -14,22 +14,33 @@ html, body {
   background: #000;
   color: #fff;
   font-family: sans-serif;
-  text-align: center;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   overflow: hidden;
+}
+
+.fade-line-container {
+  position: relative;
+  width: 100%;
+  max-width: 90%;
+  height: 120px; /* Fixed box height for all lines */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .fade-line {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.8);
   opacity: 0;
   font-size: 24px;
   transition: all 0.5s ease;
+  white-space: nowrap;
 }
 
 .fade-line.active {
-  transform: translate(-50%, -50%) scale(1);
   opacity: 1;
   font-size: 36px;
 }
@@ -39,7 +50,7 @@ html, body {
 }
 
 .fade-line.fading {
-  /* Smooth fade out */
+  opacity: 0;
 }
 
 @keyframes linkGlow {
@@ -135,7 +146,8 @@ html, body {
 
   <div class="mask"></div>
 
-  <div id="content">
+  <!-- Fixed box container -->
+  <div class="fade-line-container" id="fadeLineContainer">
     <div class="fade-line">it’s not a product.</div>
     <div class="fade-line">it’s not a pill.</div>
     <div class="fade-line">it’s not a program.</div>
@@ -161,9 +173,9 @@ html, body {
     <div class="fade-line">the mind is the medicine.</div>
     <div class="fade-line">the effect is you.</div>
     <div class="fade-line">#PLACEBOEFFECT</div>
-
-    <a href="index.html" class="back-button" id="backBtn">Back to Home</a>
   </div>
+
+  <a href="index.html" class="back-button" id="backBtn">Back to Home</a>
 
   <!-- Mobile Arrow Buttons -->
   <div class="nav-buttons hidden" id="navButtons">
@@ -188,31 +200,18 @@ const isMobile = window.innerWidth < 768;
 function updateLines() {
   lines.forEach((line, index) => {
     line.classList.remove('active', 'previous', 'fading');
-    line.style.top = '50%';
-    line.style.transform = 'translate(-50%, -50%) scale(0.8)';
     line.style.opacity = '0';
   });
 
   lines.forEach((line, index) => {
     if (index === activeIndex) {
       line.classList.add('active');
-      line.style.top = '50%';
-      line.style.transform = 'translate(-50%, -50%) scale(1)';
       line.style.opacity = '1';
     } else if (index < activeIndex && index >= activeIndex - maxPreviousLines) {
-      const distanceFromActive = activeIndex - index;
-      const offset = 100 * distanceFromActive;
-      const scale = 1 - 0.1 * distanceFromActive;
-      const opacity = 0.5 - 0.1 * (distanceFromActive - 1);
-
       line.classList.add('previous');
-      line.style.top = `calc(50% - ${offset}px)`;
-      line.style.transform = `translate(-50%, -50%) scale(${scale})`;
-      line.style.opacity = `${opacity}`;
+      line.style.opacity = '0.5';
     } else if (index === activeIndex - maxPreviousLines - 1) {
       line.classList.add('fading');
-      line.style.top = '10%';
-      line.style.transform = 'translate(-50%, -50%) scale(0.7)';
       line.style.opacity = '0';
     }
   });
@@ -242,7 +241,7 @@ if (!isMobile) {
     isScrolling = true;
     setTimeout(() => {
       isScrolling = false;
-    }, 500); // Slightly longer lock for smoother effect
+    }, 500);
   });
 } else {
   navButtons.classList.remove('hidden');
@@ -263,7 +262,7 @@ function mobileScroll(direction) {
   isScrolling = true;
   setTimeout(() => {
     isScrolling = false;
-  }, 500); // Lock scroll for 500ms to prevent glitches
+  }, 500);
 }
 
 prevBtn.addEventListener('click', () => mobileScroll('prev'));
