@@ -26,13 +26,18 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 100vh;
+  width: 100%;
+  justify-content: center;
+  position: relative;
 }
 
 .previous-lines {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 30px; /* spacing between previous and active line */
+  position: absolute;
+  top: 30%;
 }
 
 .previous-line {
@@ -40,18 +45,19 @@ html, body {
   font-size: 24px;
   margin-bottom: 10px;
   white-space: nowrap;
-  transition: all 0.5s ease;
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
 .active-line {
   font-size: 36px;
   opacity: 1;
   white-space: nowrap;
-  transition: all 0.5s ease;
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-.hidden {
-  display: none;
+.fade-out {
+  opacity: 0 !important;
+  transform: translateY(-20px);
 }
 
 @keyframes linkGlow {
@@ -177,7 +183,7 @@ const allLines = [
   "harness your mind.",
   "you are the catalyst.",
   "you are the effect.",
-  "so wear it.",
+  "So wear it.",
   "live it.",
   "feel it.",
   "let the world wonder how you did it.",
@@ -203,7 +209,13 @@ const navButtons = document.getElementById('navButtons');
 const isMobile = window.innerWidth < 768;
 
 function updateLines() {
-  activeLine.textContent = allLines[activeIndex];
+  // Animate fade out for previous active line
+  activeLine.classList.add('fade-out');
+
+  setTimeout(() => {
+    activeLine.textContent = allLines[activeIndex];
+    activeLine.classList.remove('fade-out');
+  }, 200);
 
   previousLinesContainer.innerHTML = '';
   for (let i = Math.max(0, activeIndex - maxPreviousLines); i < activeIndex; i++) {
