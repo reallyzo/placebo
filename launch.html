@@ -177,49 +177,26 @@ const lines = document.querySelectorAll('.fade-line');
 const progressBar = document.getElementById('progressBar');
 
 function updateActiveLine() {
-  const centerY = window.innerHeight / 2;
-
-  let closestLine = null;
-  let minDistance = Infinity;
-  let activeIndex = -1;
-
-  lines.forEach((line, index) => {
-    const rect = line.getBoundingClientRect();
-    const lineCenter = rect.top + rect.height / 2;
-    const distance = Math.abs(centerY - lineCenter);
-
-    if (distance < minDistance) {
-      minDistance = distance;
-      closestLine = line;
-      activeIndex = index;
-    }
-  });
+  // Get current section index based on scroll position
+  const scrollTop = window.scrollY;
+  const sectionHeight = window.innerHeight;
+  const activeIndex = Math.round(scrollTop / sectionHeight);
 
   lines.forEach((line, index) => {
     line.classList.remove('active', 'previous');
 
     if (index < activeIndex) {
-      line.classList.add('previous'); // Show all previous lines
+      line.classList.add('previous'); // Mark previous lines
+    } else if (index === activeIndex) {
+      line.classList.add('active'); // Mark the active centered line
     }
   });
-
-  if (closestLine) {
-    closestLine.classList.add('active');
-  }
 
   updateProgressBar();
 }
 
-// Smoothly track the center using requestAnimationFrame
-function trackScroll() {
-  updateActiveLine();
-  requestAnimationFrame(trackScroll);
-}
-
-window.addEventListener('load', () => {
-  updateActiveLine();
-  requestAnimationFrame(trackScroll); // Start live tracking
-});
+window.addEventListener('scroll', updateActiveLine);
+window.addEventListener('load', updateActiveLine);
   </script>
 
 </body>
