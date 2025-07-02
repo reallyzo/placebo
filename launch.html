@@ -51,8 +51,9 @@
     }
 
 .fade-line {
-  min-height: auto;
-  padding: 100px 0; /* adjust if you want more/less space */
+  display: none;
+  min-height: 100vh;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -60,15 +61,12 @@
   font-size: 24px;
   opacity: 0.3;
   transition: font-size 0.6s ease, opacity 0.6s ease, transform 0.6s ease;
-  transform: translateY(0);
 }
 
 .fade-line.active {
   font-size: 36px;
   opacity: 1;
-  transform: translateY(0);
 }
-
     @keyframes linkGlow {
       0%, 100% { opacity: 0.95; text-shadow: 0 0 0.5px #fff; }
       50% { opacity: 1; text-shadow: 0 0 0.7px #fff; }
@@ -177,11 +175,24 @@ const lines = document.querySelectorAll('.fade-line');
 const progressBar = document.getElementById('progressBar');
 
 function updateActiveLine() {
-  // This grabs the element in the center of the viewport
   const centerElement = document.elementFromPoint(window.innerWidth / 2, window.innerHeight / 2);
 
   if (centerElement && centerElement.classList.contains('fade-line')) {
-    lines.forEach(line => line.classList.remove('active'));
+    lines.forEach(line => {
+      line.classList.remove('active');
+      line.style.display = 'none';
+    });
+
+    // Find the index of the current active line
+    const activeIndex = Array.from(lines).indexOf(centerElement);
+
+    // Show the active line and the previous lines based on scroll depth
+    lines.forEach((line, index) => {
+      if (index <= activeIndex) {
+        line.style.display = 'flex';
+      }
+    });
+
     centerElement.classList.add('active');
   }
 
@@ -196,8 +207,7 @@ function updateProgressBar() {
 }
 
 window.addEventListener('scroll', updateActiveLine);
-window.addEventListener('load', () => {updateActiveLine();
-});
+window.addEventListener('load', () => { updateActiveLine(); });
   </script>
 
 </body>
