@@ -50,9 +50,9 @@ html, body {
 
 .fade-out-previous {
   opacity: 0 !important;
-  transform: translateY(-10px);
-  max-height: 0 !important;
+  transform: translateY(-20px);
 }
+
 
 .active-line {
   position: absolute;
@@ -230,36 +230,34 @@ function updateLines() {
   }, 200);
 
   if (activeIndex > 0) {
-    // Add new previous line to the array
-    previousLines.push(allLines[activeIndex - 1]);
+    const newPrevLine = document.createElement('div');
+    newPrevLine.textContent = allLines[activeIndex - 1];
+    newPrevLine.classList.add('previous-line');
+    previousLinesContainer.appendChild(newPrevLine);
 
-    if (previousLines.length > maxPreviousLines) {
-      previousLines.shift(); // Keep it capped at 3
+    // Smooth fade-in
+    setTimeout(() => {
+      newPrevLine.classList.add('show');
+    }, 50);
+
+    // Handle fading out the oldest one if over 3 lines
+    const existingLines = previousLinesContainer.querySelectorAll('.previous-line');
+    if (existingLines.length > maxPreviousLines) {
+      const oldestLine = existingLines[0];
+      oldestLine.classList.remove('show');
+      oldestLine.classList.add('fade-out-previous');
+
+      setTimeout(() => {
+        if (oldestLine) oldestLine.remove();
+      }, 600); // Matches the transition time
     }
   }
-
-  renderPreviousLines();
 
   if (activeIndex === allLines.length - 1) {
     backButton.classList.add('visible');
   } else {
     backButton.classList.remove('visible');
   }
-}
-
-function renderPreviousLines() {
-  previousLinesContainer.innerHTML = '';
-
-  previousLines.forEach((text, index) => {
-    const prevLine = document.createElement('div');
-    prevLine.textContent = text;
-    prevLine.classList.add('previous-line');
-    previousLinesContainer.appendChild(prevLine);
-
-    setTimeout(() => {
-      prevLine.classList.add('show');
-    }, 50);
-  });
 }
 
 updateLines();
