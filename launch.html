@@ -178,18 +178,15 @@ function updateActiveLine() {
   const centerElement = document.elementFromPoint(window.innerWidth / 2, window.innerHeight / 2);
 
   if (centerElement && centerElement.classList.contains('fade-line')) {
-    lines.forEach(line => {
-      line.classList.remove('active');
-      line.style.display = 'none';
-    });
+    lines.forEach(line => line.classList.remove('active'));
 
-    // Find the index of the current active line
     const activeIndex = Array.from(lines).indexOf(centerElement);
 
-    // Show the active line and the previous lines based on scroll depth
     lines.forEach((line, index) => {
-      if (index <= activeIndex) {
-        line.style.display = 'flex';
+      if (index < activeIndex - 1) {
+        line.style.display = 'none'; // hide lines that are more than 2 behind
+      } else {
+        line.style.display = 'flex'; // show the current and next lines
       }
     });
 
