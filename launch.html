@@ -230,26 +230,25 @@ function updateLines() {
   }, 200);
 
   if (activeIndex > 0) {
-    const newPrevLine = document.createElement('div');
-    newPrevLine.textContent = allLines[activeIndex - 1];
-    newPrevLine.classList.add('previous-line');
-    previousLinesContainer.appendChild(newPrevLine);
-
-    // Smooth fade-in
-    setTimeout(() => {
-      newPrevLine.classList.add('show');
-    }, 50);
-
-    // Handle fading out the oldest one if over 3 lines
     const existingLines = previousLinesContainer.querySelectorAll('.previous-line');
-    if (existingLines.length > maxPreviousLines) {
+
+    if (existingLines.length >= maxPreviousLines) {
+      // Fade out the oldest first
       const oldestLine = existingLines[0];
       oldestLine.classList.remove('show');
       oldestLine.classList.add('fade-out-previous');
 
+      // Wait for the fade out to finish before adding the new line
       setTimeout(() => {
         if (oldestLine) oldestLine.remove();
-      }, 600); // Matches the transition time
+
+        // Add the new line after the oldest is fully removed
+        addNewPreviousLine();
+      }, 600); // Must match fade-out time
+
+    } else {
+      // If under max, add new line immediately
+      addNewPreviousLine();
     }
   }
 
@@ -258,6 +257,18 @@ function updateLines() {
   } else {
     backButton.classList.remove('visible');
   }
+}
+
+function addNewPreviousLine() {
+  const newPrevLine = document.createElement('div');
+  newPrevLine.textContent = allLines[activeIndex - 1];
+  newPrevLine.classList.add('previous-line');
+  previousLinesContainer.appendChild(newPrevLine);
+
+  // Smooth fade-in
+  setTimeout(() => {
+    newPrevLine.classList.add('show');
+  }, 50);
 }
 
 updateLines();
