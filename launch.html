@@ -170,12 +170,13 @@ body {
   <script>
 const lines = document.querySelectorAll('.fade-line');
 let activeIndex = 0;
+const maxPreviousLines = 3; // Show only 3 previous lines
 
 function updateLines() {
   lines.forEach((line, index) => {
     line.classList.remove('active', 'previous');
-    line.style.top = '50%'; // Reset to center by default
-    line.style.transform = 'translate(-50%, -50%) scale(0.8)'; // Default position
+    line.style.top = '50%';
+    line.style.transform = 'translate(-50%, -50%) scale(0.8)';
     line.style.opacity = '0';
   });
 
@@ -186,16 +187,31 @@ function updateLines() {
       line.style.top = '50%';
       line.style.transform = 'translate(-50%, -50%) scale(1)';
       line.style.opacity = '1';
-    } else if (index < activeIndex) {
-      // Previous lines stacked upwards with spacing
+    } else if (index < activeIndex && index >= activeIndex - maxPreviousLines) {
+      // Only show the last 3 previous lines
       line.classList.add('previous');
-      const offset = 20 * (activeIndex - index); // 20px gap per previous line
-      line.style.top = `${20 + offset}px`; // Start from 20px and stack down
+      const offset = 20 * (activeIndex - index); // Space each previous line
+      line.style.top = `${20 + offset}px`;
       line.style.transform = 'translate(-50%, 0) scale(0.9)';
       line.style.opacity = '0.5';
     }
+    // All older lines stay fully hidden
   });
 }
+
+updateLines();
+
+window.addEventListener('wheel', (e) => {
+  if (e.deltaY > 0 && activeIndex < lines.length - 1) {
+    // Scroll down
+    activeIndex++;
+    updateLines();
+  } else if (e.deltaY < 0 && activeIndex > 0) {
+    // Scroll up
+    activeIndex--;
+    updateLines();
+  }
+});
 
 updateLines();
 
