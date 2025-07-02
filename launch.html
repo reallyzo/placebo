@@ -221,18 +221,29 @@ function updateLines() {
     activeLine.classList.remove('fade-out');
   }, 200);
 
-previousLinesContainer.innerHTML = '';
-for (let i = Math.max(0, activeIndex - maxPreviousLines); i < activeIndex; i++) {
-  const prevLine = document.createElement('div');
-  prevLine.textContent = allLines[i];
-  prevLine.classList.add('previous-line');
-  previousLinesContainer.appendChild(prevLine);
+  const existingLines = previousLinesContainer.querySelectorAll('.previous-line');
 
-  // Add smooth delay for the float-in effect
-  setTimeout(() => {
-    prevLine.classList.add('show');
-  }, 50);
-}
+  // Fade out the oldest if more than maxPreviousLines
+  if (existingLines.length >= maxPreviousLines) {
+    existingLines[0].classList.add('fade-out-previous');
+    setTimeout(() => {
+      if (existingLines[0]) {
+        existingLines[0].remove();
+      }
+    }, 500); // Matches CSS fade time
+  }
+
+  // Add the newest previous line
+  if (activeIndex > 0) {
+    const newPrevLine = document.createElement('div');
+    newPrevLine.textContent = allLines[activeIndex - 1];
+    newPrevLine.classList.add('previous-line');
+    previousLinesContainer.appendChild(newPrevLine);
+
+    setTimeout(() => {
+      newPrevLine.classList.add('show');
+    }, 50);
+  }
 
   if (activeIndex === allLines.length - 1) {
     backButton.classList.add('visible');
