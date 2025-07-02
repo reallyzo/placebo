@@ -50,18 +50,8 @@
       position: relative;
     }
 
-body {
-  margin: 0;
-  padding: 0;
-  background: #000;
-  color: #fff;
-  font-family: sans-serif;
-  text-align: center;
-  scroll-snap-type: none; /* Kill scroll snap for now */
-}
-
 .fade-line {
-  min-height: 60vh; /* Each line takes good chunk but not full screen */
+  min-height: 100vh; /* One full screen per line */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -69,6 +59,7 @@ body {
   opacity: 0.3;
   transform: scale(0.95);
   transition: all 0.6s ease;
+  scroll-snap-align: center; /* Perfectly center on scroll stop */
 }
 
 .fade-line.active {
@@ -184,32 +175,11 @@ const lines = document.querySelectorAll('.fade-line');
 const progressBar = document.getElementById('progressBar');
 
 function updateActiveLine() {
-  const centerY = window.innerHeight / 2;
+  const centerElement = document.elementFromPoint(window.innerWidth / 2, window.innerHeight / 2);
 
-  let closestLine = null;
-  let minDistance = Infinity;
-
-  lines.forEach((line) => {
-    const rect = line.getBoundingClientRect();
-    const lineCenter = rect.top + rect.height / 2;
-    const distance = Math.abs(centerY - lineCenter);
-
-    if (distance < minDistance) {
-      minDistance = distance;
-      closestLine = line;
-    }
-
-    // Distance-based scaling and opacity for nice focus effect
-    const scale = Math.max(0.8, 1 - distance / 500);
-    const opacity = Math.max(0.3, 1 - distance / 500);
-    line.style.transform = `scale(${scale})`;
-    line.style.opacity = opacity;
-  });
-
-  lines.forEach(line => line.classList.remove('active'));
-
-  if (closestLine) {
-    closestLine.classList.add('active');
+  if (centerElement && centerElement.classList.contains('fade-line')) {
+    lines.forEach(line => line.classList.remove('active'));
+    centerElement.classList.add('active');
   }
 
   updateProgressBar();
