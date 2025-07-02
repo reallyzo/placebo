@@ -22,40 +22,36 @@ html, body {
   overflow: hidden;
 }
 
-.fade-line-container {
-  width: 100%;
-  max-width: 90%;
-  min-height: 120px;
+.fade-line-wrapper {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 }
 
-.fade-line {
-  opacity: 0;
-  font-size: 24px;
-  transition: all 0.5s ease;
-  white-space: nowrap;
-  margin-bottom: 15px; /* space between lines */
-  display: none;
+.previous-lines {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px; /* spacing between previous and active line */
 }
 
-.fade-line.active {
-  opacity: 1;
-  font-size: 36px;
-  display: block;
-}
-
-.fade-line.previous {
+.previous-line {
   opacity: 0.5;
   font-size: 24px;
-  display: block;
+  margin-bottom: 10px;
+  white-space: nowrap;
+  transition: all 0.5s ease;
 }
 
-.fade-line.fading {
-  opacity: 0;
-  display: block;
+.active-line {
+  font-size: 36px;
+  opacity: 1;
+  white-space: nowrap;
+  transition: all 0.5s ease;
+}
+
+.hidden {
+  display: none;
 }
 
 @keyframes linkGlow {
@@ -141,7 +137,7 @@ html, body {
   transform: scale(1.2);
 }
 
-.hidden {
+.nav-buttons.hidden {
   display: none;
 }
   </style>
@@ -151,33 +147,9 @@ html, body {
 
   <div class="mask"></div>
 
-  <!-- Fixed box container -->
-  <div class="fade-line-container" id="fadeLineContainer">
-    <div class="fade-line">it’s not a product.</div>
-    <div class="fade-line">it’s not a pill.</div>
-    <div class="fade-line">it’s not a program.</div>
-    <div class="fade-line">it’s belief.</div>
-    <div class="fade-line">everything you need is within.</div>
-    <div class="fade-line">the placebo effect is real.</div>
-    <div class="fade-line">science proved it.</div>
-    <div class="fade-line">your mind can heal.</div>
-    <div class="fade-line">your mind can create.</div>
-    <div class="fade-line">your mind can transform.</div>
-    <div class="fade-line">just because it believes it can.</div>
-    <div class="fade-line">take control.</div>
-    <div class="fade-line">harness your mind.</div>
-    <div class="fade-line">you are the catalyst.</div>
-    <div class="fade-line">you are the effect.</div>
-    <div class="fade-line">So wear it.</div>
-    <div class="fade-line">live it.</div>
-    <div class="fade-line">feel it.</div>
-    <div class="fade-line">let the world wonder how you did it.</div>
-    <div class="fade-line">hold on like your life depends on it.</div>
-    <div class="fade-line">because it does.</div>
-    <div class="fade-line">PLACEBO.</div>
-    <div class="fade-line">the mind is the medicine.</div>
-    <div class="fade-line">the effect is you.</div>
-    <div class="fade-line">#PLACEBOEFFECT</div>
+  <div class="fade-line-wrapper">
+    <div class="previous-lines" id="previousLines"></div>
+    <div class="active-line" id="activeLine"></div>
   </div>
 
   <a href="index.html" class="back-button" id="backBtn">Back to Home</a>
@@ -189,10 +161,40 @@ html, body {
   </div>
 
   <script>
-const lines = document.querySelectorAll('.fade-line');
+const allLines = [
+  "it’s not a product.",
+  "it’s not a pill.",
+  "it’s not a program.",
+  "it’s belief.",
+  "everything you need is within.",
+  "the placebo effect is real.",
+  "science proved it.",
+  "your mind can heal.",
+  "your mind can create.",
+  "your mind can transform.",
+  "just because it believes it can.",
+  "take control.",
+  "harness your mind.",
+  "you are the catalyst.",
+  "you are the effect.",
+  "so wear it.",
+  "live it.",
+  "feel it.",
+  "let the world wonder how you did it.",
+  "hold on like your life depends on it.",
+  "because it does.",
+  "PLACEBO.",
+  "the mind is the medicine.",
+  "the effect is you.",
+  "#PLACEBOEFFECT"
+];
+
 let activeIndex = 0;
+const maxPreviousLines = 3;
 let isScrolling = false;
 
+const activeLine = document.getElementById('activeLine');
+const previousLinesContainer = document.getElementById('previousLines');
 const backButton = document.getElementById('backBtn');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
@@ -201,25 +203,17 @@ const navButtons = document.getElementById('navButtons');
 const isMobile = window.innerWidth < 768;
 
 function updateLines() {
-  lines.forEach((line, index) => {
-    line.classList.remove('active', 'previous', 'fading');
-    line.style.display = 'none';
-  });
+  activeLine.textContent = allLines[activeIndex];
 
-  lines.forEach((line, index) => {
-    if (index === activeIndex) {
-      line.classList.add('active');
-      line.style.display = 'block';
-    } else if (index < activeIndex && index >= activeIndex - 3) {
-      line.classList.add('previous');
-      line.style.display = 'block';
-    } else if (index === activeIndex - 4) {
-      line.classList.add('fading');
-      line.style.display = 'block';
-    }
-  });
+  previousLinesContainer.innerHTML = '';
+  for (let i = Math.max(0, activeIndex - maxPreviousLines); i < activeIndex; i++) {
+    const prevLine = document.createElement('div');
+    prevLine.textContent = allLines[i];
+    prevLine.classList.add('previous-line');
+    previousLinesContainer.appendChild(prevLine);
+  }
 
-  if (activeIndex === lines.length - 1) {
+  if (activeIndex === allLines.length - 1) {
     backButton.classList.add('visible');
   } else {
     backButton.classList.remove('visible');
@@ -232,7 +226,7 @@ if (!isMobile) {
   window.addEventListener('wheel', (e) => {
     if (isScrolling) return;
 
-    if (e.deltaY > 0 && activeIndex < lines.length - 1) {
+    if (e.deltaY > 0 && activeIndex < allLines.length - 1) {
       activeIndex++;
       updateLines();
     } else if (e.deltaY < 0 && activeIndex > 0) {
@@ -250,7 +244,7 @@ if (!isMobile) {
 function mobileScroll(direction) {
   if (isScrolling) return;
 
-  if (direction === 'next' && activeIndex < lines.length - 1) {
+  if (direction === 'next' && activeIndex < allLines.length - 1) {
     activeIndex++;
     updateLines();
   } else if (direction === 'prev' && activeIndex > 0) {
