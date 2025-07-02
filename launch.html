@@ -180,23 +180,17 @@ const progressBar = document.getElementById('progressBar');
 function updateActiveLine() {
   const centerY = window.innerHeight / 2;
 
-  lines.forEach((line, index) => {
+  lines.forEach((line) => {
     const rect = line.getBoundingClientRect();
     const lineCenter = rect.top + rect.height / 2;
     const distance = Math.abs(centerY - lineCenter);
 
-    // Adjust scale and opacity based on distance
-    const scale = Math.max(0.8, 1 - distance / 500);
+    // Keep the scale from collapsing too much
+    const scale = Math.max(0.95, 1 - distance / 500);
     const opacity = Math.max(0.3, 1 - distance / 500);
 
     line.style.transform = `scale(${scale})`;
     line.style.opacity = opacity;
-
-    // Set active class only if the line is near the center
-    if (distance < 50) {
-      lines.forEach(l => l.classList.remove('active'));
-      line.classList.add('active');
-    }
   });
 
   updateProgressBar();
