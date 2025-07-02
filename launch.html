@@ -20,6 +20,7 @@
       overflow-y: scroll;
       scroll-behavior: smooth;
       scroll-snap-type: y mandatory;
+      scroll-padding-top: 50vh; /* forces center snapping */
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       text-rendering: optimizeLegibility;
@@ -50,8 +51,8 @@
     }
 
 .fade-line {
-  min-height: auto; /* REMOVE full screen height */
-  padding: 100px 0; /* Give space above and below each line */
+  min-height: auto;
+  padding: 200px 0; /* spacing around each line */
   display: flex;
   align-items: center;
   justify-content: center;
