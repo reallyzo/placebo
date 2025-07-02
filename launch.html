@@ -100,7 +100,7 @@ html, body {
   background: linear-gradient(to top, #000, transparent);
 }
 
-/* Mobile arrow buttons */
+/* Mobile arrow buttons (minimalist style) */
 .nav-buttons {
   position: fixed;
   bottom: 50px;
@@ -113,13 +113,10 @@ html, body {
 
 .nav-button {
   color: white;
-  font-size: 24px;
+  font-size: 32px;
   cursor: pointer;
   opacity: 0.7;
   user-select: none;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 8px 12px;
-  border-radius: 6px;
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
@@ -165,7 +162,7 @@ html, body {
     <div class="fade-line">the effect is you.</div>
     <div class="fade-line">#PLACEBOEFFECT</div>
 
-    <a href="index.html" class="back-button" id="backBtn">back to home</a>
+    <a href="index.html" class="back-button" id="backBtn">Back to Home</a>
   </div>
 
   <!-- Mobile Arrow Buttons -->
@@ -184,6 +181,9 @@ const backButton = document.getElementById('backBtn');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
 const navButtons = document.getElementById('navButtons');
+
+// Show buttons only on mobile
+const isMobile = window.innerWidth < 768;
 
 function updateLines() {
   lines.forEach((line, index) => {
@@ -227,7 +227,7 @@ function updateLines() {
 updateLines();
 
 // Desktop scroll listener
-if (window.innerWidth >= 768) {
+if (!isMobile) {
   window.addEventListener('wheel', (e) => {
     if (isScrolling) return;
 
@@ -242,35 +242,32 @@ if (window.innerWidth >= 768) {
     isScrolling = true;
     setTimeout(() => {
       isScrolling = false;
-    }, 300);
+    }, 500); // Slightly longer lock for smoother effect
   });
 } else {
-  // Mobile → show buttons
   navButtons.classList.remove('hidden');
 }
 
 // Mobile button listeners
-prevBtn.addEventListener('click', () => {
+function mobileScroll(direction) {
   if (isScrolling) return;
 
-  if (activeIndex > 0) {
-    activeIndex--;
-    updateLines();
-    isScrolling = true;
-    setTimeout(() => { isScrolling = false; }, 300);
-  }
-});
-
-nextBtn.addEventListener('click', () => {
-  if (isScrolling) return;
-
-  if (activeIndex < lines.length - 1) {
+  if (direction === 'next' && activeIndex < lines.length - 1) {
     activeIndex++;
     updateLines();
-    isScrolling = true;
-    setTimeout(() => { isScrolling = false; }, 300);
+  } else if (direction === 'prev' && activeIndex > 0) {
+    activeIndex--;
+    updateLines();
   }
-});
+
+  isScrolling = true;
+  setTimeout(() => {
+    isScrolling = false;
+  }, 500); // Lock scroll for 500ms to prevent glitches
+}
+
+prevBtn.addEventListener('click', () => mobileScroll('prev'));
+nextBtn.addEventListener('click', () => mobileScroll('next'));
   </script>
 
 </body>
