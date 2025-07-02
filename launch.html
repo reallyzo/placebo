@@ -50,7 +50,8 @@
     }
 
 .fade-line {
-  min-height: 100vh;
+  min-height: auto; /* REMOVE full screen height */
+  padding: 100px 0; /* Give space above and below each line */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -59,12 +60,6 @@
   opacity: 0;
   transition: font-size 0.6s ease, opacity 0.6s ease, transform 0.6s ease;
   transform: translateY(20px);
-}
-
-.fade-line.hidden {
-  opacity: 0;
-  transform: translateY(0);
-  transition: opacity 0.4s ease;
 }
 
 .fade-line.previous {
@@ -77,6 +72,12 @@
   font-size: 36px;
   opacity: 1;
   transform: translateY(0);
+}
+
+.fade-line.hidden {
+  opacity: 0;
+  transform: translateY(0);
+  transition: opacity 0.4s ease;
 }
 
     @keyframes linkGlow {
