@@ -72,8 +72,8 @@ body {
     }
 
 .back-button {
-  position: fixed; /* Keep it always visible */
-  bottom: 40px; /* Distance from the bottom */
+  position: fixed;
+  bottom: 40px;
   left: 50%;
   transform: translateX(-50%);
   color: white;
@@ -204,7 +204,7 @@ function updateLines() {
     }
   });
 
-  // Show back button when at the last line
+  // Handle back button visibility
   if (activeIndex === lines.length - 1) {
     backButton.classList.add('visible');
   } else {
