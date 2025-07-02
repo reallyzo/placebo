@@ -199,7 +199,10 @@ function updateActiveLine() {
 }
 
 window.addEventListener('scroll', updateActiveLine);
-window.addEventListener('load', updateActiveLine);
+window.addEventListener('load', () => {
+  window.scrollTo(0, 0); // Force to top on load
+  updateActiveLine();
+});
   </script>
 
 </body>
