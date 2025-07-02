@@ -15,7 +15,7 @@ html, body {
   color: #fff;
   font-family: sans-serif;
   text-align: center;
-  overflow: hidden; /* No real scroll */
+  overflow: hidden;
 }
 
 .fade-line {
@@ -99,6 +99,38 @@ html, body {
   bottom: 0;
   background: linear-gradient(to top, #000, transparent);
 }
+
+/* Mobile arrow buttons */
+.nav-buttons {
+  position: fixed;
+  bottom: 50px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 999;
+}
+
+.nav-button {
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  opacity: 0.7;
+  user-select: none;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.nav-button:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+.hidden {
+  display: none;
+}
   </style>
 </head>
 
@@ -133,7 +165,13 @@ html, body {
     <div class="fade-line">the effect is you.</div>
     <div class="fade-line">#PLACEBOEFFECT</div>
 
-    <a href="index.html" class="back-button" id="backBtn">Back to Home</a>
+    <a href="index.html" class="back-button" id="backBtn">back to home</a>
+  </div>
+
+  <!-- Mobile Arrow Buttons -->
+  <div class="nav-buttons hidden" id="navButtons">
+    <div class="nav-button up" id="prevBtn">↑</div>
+    <div class="nav-button down" id="nextBtn">↓</div>
   </div>
 
   <script>
@@ -143,6 +181,9 @@ const maxPreviousLines = 3;
 let isScrolling = false;
 
 const backButton = document.getElementById('backBtn');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const navButtons = document.getElementById('navButtons');
 
 function updateLines() {
   lines.forEach((line, index) => {
@@ -185,21 +226,50 @@ function updateLines() {
 
 updateLines();
 
-window.addEventListener('wheel', (e) => {
+// Desktop scroll listener
+if (window.innerWidth >= 768) {
+  window.addEventListener('wheel', (e) => {
+    if (isScrolling) return;
+
+    if (e.deltaY > 0 && activeIndex < lines.length - 1) {
+      activeIndex++;
+      updateLines();
+    } else if (e.deltaY < 0 && activeIndex > 0) {
+      activeIndex--;
+      updateLines();
+    }
+
+    isScrolling = true;
+    setTimeout(() => {
+      isScrolling = false;
+    }, 300);
+  });
+} else {
+  // Mobile → show buttons
+  navButtons.classList.remove('hidden');
+}
+
+// Mobile button listeners
+prevBtn.addEventListener('click', () => {
   if (isScrolling) return;
 
-  if (e.deltaY > 0 && activeIndex < lines.length - 1) {
-    activeIndex++;
-    updateLines();
-  } else if (e.deltaY < 0 && activeIndex > 0) {
+  if (activeIndex > 0) {
     activeIndex--;
     updateLines();
+    isScrolling = true;
+    setTimeout(() => { isScrolling = false; }, 300);
   }
+});
 
-  isScrolling = true;
-  setTimeout(() => {
-    isScrolling = false;
-  }, 300);
+nextBtn.addEventListener('click', () => {
+  if (isScrolling) return;
+
+  if (activeIndex < lines.length - 1) {
+    activeIndex++;
+    updateLines();
+    isScrolling = true;
+    setTimeout(() => { isScrolling = false; }, 300);
+  }
 });
   </script>
 
