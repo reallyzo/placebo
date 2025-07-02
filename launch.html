@@ -16,8 +16,7 @@ body {
   color: #fff;
   font-family: sans-serif;
   text-align: center;
-  overflow-x: hidden;
-  scroll-behavior: smooth;
+  overflow: hidden; /* No real scroll */
 }
     .progress-container {
       position: fixed;
@@ -43,31 +42,27 @@ body {
       position: relative;
     }
 
+
 .fade-line {
-  min-height: 50vh; /* SMALLER sections for faster flipping */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  opacity: 0;
   font-size: 24px;
-  opacity: 0.3;
-  transform: scale(0.8);
-  transition: all 0.3s ease;
+  transition: all 0.5s ease;
 }
 
 .fade-line.active {
-  font-size: 36px;
+  transform: translate(-50%, -50%) scale(1);
   opacity: 1;
-  transform: scale(1);
+  font-size: 36px;
 }
 
 .fade-line.previous {
+  top: 20%; /* Stack previous lines above */
   opacity: 0.5;
-  transform: scale(0.9);
-}
-
-.fade-line.future {
-  opacity: 0;
-  pointer-events: none; /* Optional: Make hidden lines unclickable */
+  transform: translate(-50%, -50%) scale(0.9);
 }
     @keyframes linkGlow {
       0%, 100% { opacity: 0.95; text-shadow: 0 0 0.5px #fff; }
@@ -174,49 +169,32 @@ body {
 
   <script>
 const lines = document.querySelectorAll('.fade-line');
+let activeIndex = 0;
 
-function updateActiveLine() {
-  const centerY = window.innerHeight / 2;
-
-  let closestLine = null;
-  let minDistance = Infinity;
-  let activeIndex = -1;
-
+function updateLines() {
   lines.forEach((line, index) => {
-    const rect = line.getBoundingClientRect();
-    const lineCenter = rect.top + rect.height / 2;
-    const distance = Math.abs(centerY - lineCenter);
+    line.classList.remove('active', 'previous');
 
-    if (distance < minDistance && rect.top < centerY + 100) {
-      minDistance = distance;
-      closestLine = line;
-      activeIndex = index;
-    }
-  });
-
-  lines.forEach((line, index) => {
-    line.classList.remove('active', 'previous', 'future');
-
-    if (index < activeIndex) {
-      line.classList.add('previous');
-    } else if (index === activeIndex) {
+    if (index === activeIndex) {
       line.classList.add('active');
-    } else {
-      line.classList.add('future');
+    } else if (index < activeIndex) {
+      line.classList.add('previous');
     }
   });
 }
 
-// Track the center in real-time
-function trackScroll() {
-  updateActiveLine();
-  requestAnimationFrame(trackScroll);
-}
+updateLines();
 
-window.addEventListener('load', () => {
-  window.scrollTo(0, 0);
-  updateActiveLine();
-  requestAnimationFrame(trackScroll);
+window.addEventListener('wheel', (e) => {
+  if (e.deltaY > 0 && activeIndex < lines.length - 1) {
+    // Scroll down
+    activeIndex++;
+    updateLines();
+  } else if (e.deltaY < 0 && activeIndex > 0) {
+    // Scroll up
+    activeIndex--;
+    updateLines();
+  }
 });
   </script>
 
