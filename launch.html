@@ -188,7 +188,7 @@ function updateActiveLine() {
     const lineCenter = rect.top + rect.height / 2;
     const distance = Math.abs(centerY - lineCenter);
 
-    if (distance < minDistance && rect.top < centerY + 100) { // Only consider lines that are in or near the viewport
+    if (distance < minDistance && rect.top < centerY) { // Only consider visible lines
       minDistance = distance;
       closestLine = line;
       activeIndex = index;
@@ -199,18 +199,15 @@ function updateActiveLine() {
     line.classList.remove('active', 'previous', 'visible');
 
     if (index <= activeIndex) {
-      line.style.display = 'flex'; // Show lines up to the active line
-      line.classList.add('visible');
-    } else {
-      line.style.display = 'none'; // Hide future lines fully
+      line.classList.add('visible'); // Lines that have been scrolled to are now visible
     }
 
     if (index < activeIndex) {
-      line.classList.add('previous'); // Previous lines
+      line.classList.add('previous'); // Lines above the center line
     }
 
     if (index === activeIndex) {
-      line.classList.add('active'); // Current line
+      line.classList.add('active'); // Centered line
     }
   });
 
