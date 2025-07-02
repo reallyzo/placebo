@@ -171,7 +171,7 @@ body {
 const lines = document.querySelectorAll('.fade-line');
 let activeIndex = 0;
 const maxPreviousLines = 3;
-let isScrolling = false; // Lock flag
+let isScrolling = false;
 
 function updateLines() {
   lines.forEach((line, index) => {
@@ -183,17 +183,24 @@ function updateLines() {
 
   lines.forEach((line, index) => {
     if (index === activeIndex) {
+      // Centered active line
       line.classList.add('active');
       line.style.top = '50%';
       line.style.transform = 'translate(-50%, -50%) scale(1)';
       line.style.opacity = '1';
     } else if (index < activeIndex && index >= activeIndex - maxPreviousLines) {
-      line.classList.add('previous');
+      // Evenly spaced previous lines
       const distanceFromActive = activeIndex - index;
-      const offset = 20 * distanceFromActive;
-      line.style.top = `${20 + offset}px`;
-      line.style.transform = 'translate(-50%, 0) scale(0.9)';
-      line.style.opacity = '0.5';
+
+      // Each previous line gets higher and smaller
+      const offset = 100 * distanceFromActive; // Spacing between previous lines
+      const scale = 1 - 0.1 * distanceFromActive; // Smaller as they get higher
+      const opacity = 0.5 - 0.1 * (distanceFromActive - 1); // Slight fade if desired
+
+      line.classList.add('previous');
+      line.style.top = `calc(50% - ${offset}px)`;
+      line.style.transform = `translate(-50%, -50%) scale(${scale})`;
+      line.style.opacity = `${opacity}`;
     }
   });
 }
@@ -201,7 +208,7 @@ function updateLines() {
 updateLines();
 
 window.addEventListener('wheel', (e) => {
-  if (isScrolling) return; // Prevent spamming input
+  if (isScrolling) return;
 
   if (e.deltaY > 0 && activeIndex < lines.length - 1) {
     activeIndex++;
@@ -213,8 +220,8 @@ window.addEventListener('wheel', (e) => {
 
   isScrolling = true;
   setTimeout(() => {
-    isScrolling = false; // Unlock after short delay
-  }, 300); // Adjust delay to make scroll faster or slower
+    isScrolling = false;
+  }, 300);
 });
   </script>
 
