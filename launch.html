@@ -203,12 +203,15 @@ const observer = new IntersectionObserver((entries) => {
       currentIndex = Array.from(lines).indexOf(entry.target);
 
       lines.forEach((line, index) => {
-        if (index < currentIndex) {
-          line.classList.add('previous'); // Keep previous lines visible
+        if (index < currentIndex - 2) {
+          line.classList.remove('active', 'previous');
+          line.classList.add('hidden'); // Fully hide older lines
+        } else if (index < currentIndex) {
           line.classList.remove('active', 'hidden');
+          line.classList.add('previous'); // Show previous 2 lines
         } else if (index === currentIndex) {
-          line.classList.add('active'); // Current line is big and bright
           line.classList.remove('previous', 'hidden');
+          line.classList.add('active'); // Current centered line
         } else {
           line.classList.remove('active', 'previous');
           line.classList.add('hidden'); // Future lines stay hidden
