@@ -17,30 +17,6 @@ html, body {
   text-align: center;
   overflow: hidden; /* No real scroll */
 }
-    .progress-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.1);
-      z-index: 999;
-    }
-
-    .progress-bar {
-      width: 0%;
-      height: 100%;
-      background: white;
-      transition: width 0.2s ease;
-    }
-
-    .content-wrapper {
-      padding: 0 20px;
-      max-width: 800px;
-      margin: 0 auto;
-      position: relative;
-    }
-
 
 .fade-line {
   position: absolute;
@@ -63,12 +39,13 @@ html, body {
 }
 
 .fade-line.fading {
-  /* Optional: Add any extra fade-out effects here if you want */
+  /* Smooth fade out */
 }
-    @keyframes linkGlow {
-      0%, 100% { opacity: 0.95; text-shadow: 0 0 0.5px #fff; }
-      50% { opacity: 1; text-shadow: 0 0 0.7px #fff; }
-    }
+
+@keyframes linkGlow {
+  0%, 100% { opacity: 0.95; text-shadow: 0 0 0.5px #fff; }
+  50% { opacity: 1; text-shadow: 0 0 0.7px #fff; }
+}
 
 .back-button {
   position: fixed;
@@ -94,51 +71,47 @@ html, body {
   text-decoration: underline;
 }
 
-    .mask {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 998;
-    }
+.mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 998;
+}
 
-    .mask::before, .mask::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      width: 100%;
-      height: 20%;
-      pointer-events: none;
-    }
+.mask::before, .mask::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 20%;
+  pointer-events: none;
+}
 
-    .mask::before {
-      top: 0;
-      background: linear-gradient(to bottom, #000, transparent);
-    }
+.mask::before {
+  top: 0;
+  background: linear-gradient(to bottom, #000, transparent);
+}
 
-    .mask::after {
-      bottom: 0;
-      background: linear-gradient(to top, #000, transparent);
-    }
+.mask::after {
+  bottom: 0;
+  background: linear-gradient(to top, #000, transparent);
+}
   </style>
 </head>
 
 <body>
 
-  <div class="progress-container">
-    <div class="progress-bar" id="progressBar"></div>
-  </div>
-
   <div class="mask"></div>
 
-  <div class="content-wrapper" id="content">
+  <div id="content">
     <div class="fade-line">it’s not a product.</div>
     <div class="fade-line">it’s not a pill.</div>
     <div class="fade-line">it’s not a program.</div>
     <div class="fade-line">it’s belief.</div>
-    <div class="fade-line">everything you need is within.</div>
+    <div class="fade-line">everything you need is already within.</div>
     <div class="fade-line">the placebo effect is real.</div>
     <div class="fade-line">science proved it.</div>
     <div class="fade-line">your mind can heal.</div>
@@ -147,17 +120,17 @@ html, body {
     <div class="fade-line">just because it believes it can.</div>
     <div class="fade-line">take control.</div>
     <div class="fade-line">harness the power of your mind.</div>
-    <div class="fade-line">you are the catalyst.</div>
-    <div class="fade-line">you are the effect.</div>
-    <div class="fade-line">so wear it.</div>
-    <div class="fade-line">live it.</div>
-    <div class="fade-line">feel it.</div>
-    <div class="fade-line">let the world wonder how you did it.</div>
-    <div class="fade-line">hold on like your life depends on it.</div>
-    <div class="fade-line">because it does.</div>
+    <div class="fade-line">You are the catalyst.</div>
+    <div class="fade-line">You are the effect.</div>
+    <div class="fade-line">So wear it.</div>
+    <div class="fade-line">Live it.</div>
+    <div class="fade-line">Feel it.</div>
+    <div class="fade-line">And let the world wonder how you did it.</div>
+    <div class="fade-line">Hold on to your dreams like your life depends on it.</div>
+    <div class="fade-line">Because it does.</div>
     <div class="fade-line">PLACEBO.</div>
-    <div class="fade-line">the mind is the medicine.</div>
-    <div class="fade-line">the effect is you.</div>
+    <div class="fade-line">The mind is the medicine.</div>
+    <div class="fade-line">The effect is you.</div>
     <div class="fade-line">#PLACEBOEFFECT</div>
 
     <a href="index.html" class="back-button" id="backBtn">Back to Home</a>
@@ -203,7 +176,6 @@ function updateLines() {
     }
   });
 
-  // Handle back button visibility
   if (activeIndex === lines.length - 1) {
     backButton.classList.add('visible');
   } else {
