@@ -25,35 +25,37 @@ html, body {
 .fade-line-container {
   width: 100%;
   max-width: 90%;
-  height: 120px; /* Fixed container height */
+  min-height: 120px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
 .fade-line {
-  display: none;
   opacity: 0;
   font-size: 24px;
   transition: all 0.5s ease;
   white-space: nowrap;
+  margin-bottom: 15px; /* space between lines */
+  display: none;
 }
 
 .fade-line.active {
-  display: block;
   opacity: 1;
   font-size: 36px;
+  display: block;
 }
 
 .fade-line.previous {
-  display: block;
   opacity: 0.5;
   font-size: 24px;
+  display: block;
 }
 
 .fade-line.fading {
-  display: block;
   opacity: 0;
+  display: block;
 }
 
 @keyframes linkGlow {
