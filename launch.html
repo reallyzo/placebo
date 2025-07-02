@@ -65,7 +65,7 @@ html, body {
 }
 
 .fade-line.previous {
-  opacity: 0.5; /* Slightly more visible than future lines */
+  opacity: 0.5;
   transform: scale(0.9);
 }
 
@@ -196,12 +196,10 @@ function updateActiveLine() {
   });
 
   lines.forEach((line, index) => {
-    line.classList.remove('active');
-    line.classList.remove('previous');
+    line.classList.remove('active', 'previous');
 
     if (index < activeIndex) {
-      // Lines above the active line (previous lines)
-      line.classList.add('previous');
+      line.classList.add('previous'); // Show all previous lines
     }
   });
 
@@ -212,14 +210,16 @@ function updateActiveLine() {
   updateProgressBar();
 }
 
-let scrollTimeout;
+// Smoothly track the center using requestAnimationFrame
+function trackScroll() {
+  updateActiveLine();
+  requestAnimationFrame(trackScroll);
+}
 
-window.addEventListener('scroll', () => {
-  clearTimeout(scrollTimeout);
-  scrollTimeout = setTimeout(updateActiveLine, 50);
+window.addEventListener('load', () => {
+  updateActiveLine();
+  requestAnimationFrame(trackScroll); // Start live tracking
 });
-
-window.addEventListener('load', updateActiveLine);
   </script>
 
 </body>
