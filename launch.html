@@ -223,17 +223,32 @@ function updateLines() {
 
   const existingLines = previousLinesContainer.querySelectorAll('.previous-line');
 
-  // Fade out the oldest if more than maxPreviousLines
   if (existingLines.length >= maxPreviousLines) {
+    // Fade out the oldest one first
     existingLines[0].classList.add('fade-out-previous');
+
+    // Wait for fade out to complete before removing
     setTimeout(() => {
       if (existingLines[0]) {
         existingLines[0].remove();
+
+        // Add the new previous line AFTER the old one is gone
+        addNewPreviousLine();
       }
-    }, 500); // Matches CSS fade time
+    }, 400); // Smooth fade-out timing
+  } else {
+    // If under max, just add the new line instantly
+    addNewPreviousLine();
   }
 
-  // Add the newest previous line
+  if (activeIndex === allLines.length - 1) {
+    backButton.classList.add('visible');
+  } else {
+    backButton.classList.remove('visible');
+  }
+}
+
+function addNewPreviousLine() {
   if (activeIndex > 0) {
     const newPrevLine = document.createElement('div');
     newPrevLine.textContent = allLines[activeIndex - 1];
@@ -243,12 +258,6 @@ function updateLines() {
     setTimeout(() => {
       newPrevLine.classList.add('show');
     }, 50);
-  }
-
-  if (activeIndex === allLines.length - 1) {
-    backButton.classList.add('visible');
-  } else {
-    backButton.classList.remove('visible');
   }
 }
 
