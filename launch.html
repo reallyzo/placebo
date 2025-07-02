@@ -34,12 +34,18 @@ html, body {
 }
 
 .previous-line {
-  opacity: 0.5;
+  opacity: 0;
+  transform: translateY(20px);
   font-size: 24px;
   margin-bottom: 10px;
   white-space: nowrap;
   text-align: center;
   transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.previous-line.show {
+  opacity: 0.5;
+  transform: translateY(0);
 }
 
 .active-line {
@@ -167,9 +173,9 @@ html, body {
 
   <script>
 const allLines = [
-  "it’s not a product.",
-  "it’s not a pill.",
-  "it’s not a program.",
+  "not a product.",
+  "not a pill.",
+  "not a program.",
   "it’s belief.",
   "everything you need is within.",
   "the placebo effect is real.",
@@ -182,12 +188,12 @@ const allLines = [
   "harness your mind.",
   "you are the catalyst.",
   "you are the effect.",
-  "So wear it.",
+  "so wear it.",
   "live it.",
   "feel it.",
   "let the world wonder how you did it.",
   "hold on like your life depends on it.",
-  "because it does.",
+  "it does.",
   "PLACEBO.",
   "the mind is the medicine.",
   "the effect is you.",
@@ -215,13 +221,18 @@ function updateLines() {
     activeLine.classList.remove('fade-out');
   }, 200);
 
-  previousLinesContainer.innerHTML = '';
-  for (let i = Math.max(0, activeIndex - maxPreviousLines); i < activeIndex; i++) {
-    const prevLine = document.createElement('div');
-    prevLine.textContent = allLines[i];
-    prevLine.classList.add('previous-line');
-    previousLinesContainer.appendChild(prevLine);
-  }
+previousLinesContainer.innerHTML = '';
+for (let i = Math.max(0, activeIndex - maxPreviousLines); i < activeIndex; i++) {
+  const prevLine = document.createElement('div');
+  prevLine.textContent = allLines[i];
+  prevLine.classList.add('previous-line');
+  previousLinesContainer.appendChild(prevLine);
+
+  // Add smooth delay for the float-in effect
+  setTimeout(() => {
+    prevLine.classList.add('show');
+  }, 50);
+}
 
   if (activeIndex === allLines.length - 1) {
     backButton.classList.add('visible');
