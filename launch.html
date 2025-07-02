@@ -8,23 +8,19 @@
   <link rel="icon" href="favicon.png" type="image/png" />
 
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: #000;
-      color: #fff;
-      font-family: sans-serif;
-      text-align: center;
-      height: 100vh;
-      overflow-x: hidden;
-      overflow-y: scroll;
-      scroll-behavior: smooth;
-      scroll-snap-type: y mandatory;
-      scroll-padding-top: 50vh; /* forces center snapping */
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      text-rendering: optimizeLegibility;
-    }
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #000;
+  color: #fff;
+  font-family: sans-serif;
+  text-align: center;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
 
     .progress-container {
       position: fixed;
@@ -51,7 +47,7 @@
     }
 
 .fade-line {
-  min-height: 100vh; /* One full screen per line */
+  height: 100vh; /* Full screen per line */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -59,7 +55,7 @@
   opacity: 0.3;
   transform: scale(0.95);
   transition: all 0.6s ease;
-  scroll-snap-align: center; /* Perfectly center on scroll stop */
+  scroll-snap-align: center; /* Each line locks to center */
 }
 
 .fade-line.active {
@@ -175,24 +171,38 @@ const lines = document.querySelectorAll('.fade-line');
 const progressBar = document.getElementById('progressBar');
 
 function updateActiveLine() {
-  const centerElement = document.elementFromPoint(window.innerWidth / 2, window.innerHeight / 2);
+  const centerY = window.innerHeight / 2;
 
-  if (centerElement && centerElement.classList.contains('fade-line')) {
-    lines.forEach(line => line.classList.remove('active'));
-    centerElement.classList.add('active');
+  let closestLine = null;
+  let minDistance = Infinity;
+
+  lines.forEach((line) => {
+    const rect = line.getBoundingClientRect();
+    const lineCenter = rect.top + rect.height / 2;
+    const distance = Math.abs(centerY - lineCenter);
+
+    if (distance < minDistance) {
+      minDistance = distance;
+      closestLine = line;
+    }
+  });
+
+  lines.forEach(line => line.classList.remove('active'));
+
+  if (closestLine) {
+    closestLine.classList.add('active');
   }
 
   updateProgressBar();
 }
 
-function updateProgressBar() {
-  const scrollTop = window.scrollY;
-  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-  const scrolled = (scrollTop / docHeight) * 100;
-  progressBar.style.width = `${scrolled}%`;
-}
+let scrollTimeout;
 
-window.addEventListener('scroll', updateActiveLine);
+window.addEventListener('scroll', () => {
+  clearTimeout(scrollTimeout);
+  scrollTimeout = setTimeout(updateActiveLine, 50); // Wait for snap to finish
+});
+
 window.addEventListener('load', updateActiveLine);
   </script>
 
