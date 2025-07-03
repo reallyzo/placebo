@@ -221,21 +221,22 @@ function updateLines() {
     activeLine.classList.remove('fade-out');
   }, 200);
 
-  if (activeIndex > 0) {
-    const existingLines = previousLinesContainer.querySelectorAll('.previous-line');
-
-if (existingLines.length > maxPreviousLines) {
-  const oldestLine = existingLines[0];
-  oldestLine.classList.add('fade-out-previous');
-
-  setTimeout(() => {
-    oldestLine.remove();
-    slideUpRemainingLines();
-    addNewPreviousLine();
-  }, 600);
-} else {
-  slideUpRemainingLines();
+if (activeIndex > 0) {
+  // Always add the new previous line first
   addNewPreviousLine();
+
+  const existingLines = previousLinesContainer.querySelectorAll('.previous-line');
+
+  if (existingLines.length > maxPreviousLines) {
+    const oldestLine = existingLines[0];
+    oldestLine.classList.add('fade-out-previous');
+
+    setTimeout(() => {
+      oldestLine.remove();
+      slideUpRemainingLines();
+    }, 600);
+  } else {
+    slideUpRemainingLines();
   }
 }
 
