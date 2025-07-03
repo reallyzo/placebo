@@ -34,25 +34,19 @@ html, body {
 }
 
 .previous-line {
-  opacity: 0;
-  transform: translateY(40px);
+  opacity: 0.5;
+  transform: translateY(0);
   font-size: 24px;
   margin-bottom: 20px;
   white-space: nowrap;
   text-align: center;
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition: transform 0.6s ease, opacity 0.6s ease;
 }
 
-.previous-line.show {
-  opacity: 0.5;
-  transform: translateY(0);
-}
-
-.fade-out-previous {
+.previous-line.fade-out-previous {
   opacity: 0 !important;
   transform: translateY(-20px);
 }
-
 
 .active-line {
   position: absolute;
@@ -129,7 +123,7 @@ html, body {
   background: linear-gradient(to top, #000, transparent);
 }
 
-/* Mobile arrow buttons (minimalist style) */
+/* Mobile arrow buttons */
 .nav-buttons {
   position: fixed;
   bottom: 50px;
@@ -179,9 +173,9 @@ html, body {
 
   <script>
 const allLines = [
-  "not a product.",
-  "not a pill.",
-  "not a program.",
+  "it’s not a product.",
+  "it’s not a pill.",
+  "it’s not a program.",
   "it’s belief.",
   "everything you need is within.",
   "the placebo effect is real.",
@@ -194,12 +188,12 @@ const allLines = [
   "harness your mind.",
   "you are the catalyst.",
   "you are the effect.",
-  "so wear it.",
+  "So wear it.",
   "live it.",
   "feel it.",
   "let the world wonder how you did it.",
   "hold on like your life depends on it.",
-  "it does.",
+  "because it does.",
   "PLACEBO.",
   "the mind is the medicine.",
   "the effect is you.",
@@ -207,8 +201,8 @@ const allLines = [
 ];
 
 let activeIndex = 0;
-const maxPreviousLines = 3;
 let isScrolling = false;
+const maxPreviousLines = 3;
 
 const activeLine = document.getElementById('activeLine');
 const previousLinesContainer = document.getElementById('previousLines');
@@ -218,8 +212,6 @@ const nextBtn = document.getElementById('nextBtn');
 const navButtons = document.getElementById('navButtons');
 
 const isMobile = window.innerWidth < 768;
-
-let previousLines = [];
 
 function updateLines() {
   activeLine.classList.add('fade-out');
@@ -233,21 +225,20 @@ function updateLines() {
     const existingLines = previousLinesContainer.querySelectorAll('.previous-line');
 
     if (existingLines.length >= maxPreviousLines) {
-      // Fade out the oldest first
       const oldestLine = existingLines[0];
-      oldestLine.classList.remove('show');
       oldestLine.classList.add('fade-out-previous');
 
-      // Wait for the fade out to finish before adding the new line
+      // Slide up remaining lines
+      for (let i = 1; i < existingLines.length; i++) {
+        existingLines[i].style.transform = `translateY(-60px)`; // Slide up by the approximate line height + margin
+      }
+
       setTimeout(() => {
         if (oldestLine) oldestLine.remove();
-
-        // Add the new line after the oldest is fully removed
         addNewPreviousLine();
-      }, 600); // Must match fade-out time
-
+        resetLineTransforms();
+      }, 600);
     } else {
-      // If under max, add new line immediately
       addNewPreviousLine();
     }
   }
@@ -264,14 +255,14 @@ function addNewPreviousLine() {
   newPrevLine.textContent = allLines[activeIndex - 1];
   newPrevLine.classList.add('previous-line');
   previousLinesContainer.appendChild(newPrevLine);
-
-  // Smooth fade-in
-  setTimeout(() => {
-    newPrevLine.classList.add('show');
-  }, 50);
 }
 
-updateLines();
+function resetLineTransforms() {
+  const allLines = previousLinesContainer.querySelectorAll('.previous-line');
+  allLines.forEach(line => {
+    line.style.transform = `translateY(0)`; // Reset transform after the animation
+  });
+}
 
 if (!isMobile) {
   window.addEventListener('wheel', (e) => {
