@@ -188,7 +188,7 @@ const allLines = [
   "harness your mind.",
   "you are the catalyst.",
   "you are the effect.",
-  "so wear it.",
+  "So wear it.",
   "live it.",
   "feel it.",
   "let the world wonder how you did it.",
@@ -203,6 +203,7 @@ const allLines = [
 let activeIndex = 0;
 let isScrolling = false;
 const maxPreviousLines = 3;
+let previousLineElements = []; // Track elements manually
 
 const activeLine = document.getElementById('activeLine');
 const previousLinesContainer = document.getElementById('previousLines');
@@ -221,24 +222,27 @@ function updateLines() {
     activeLine.classList.remove('fade-out');
   }, 200);
 
-if (activeIndex > 0) {
-  // Always add the new previous line first
-  addNewPreviousLine();
+  if (activeIndex > 0) {
+    // Always add the new previous line first
+    const newPrevLine = document.createElement('div');
+    newPrevLine.textContent = allLines[activeIndex - 1];
+    newPrevLine.classList.add('previous-line');
+    previousLinesContainer.appendChild(newPrevLine);
+    previousLineElements.push(newPrevLine);
 
-  const existingLines = previousLinesContainer.querySelectorAll('.previous-line');
+    if (previousLineElements.length > maxPreviousLines) {
+      const oldestLine = previousLineElements[0];
+      oldestLine.classList.add('fade-out-previous');
 
-  if (existingLines.length > maxPreviousLines) {
-    const oldestLine = existingLines[0];
-    oldestLine.classList.add('fade-out-previous');
-
-    setTimeout(() => {
-      oldestLine.remove();
+      setTimeout(() => {
+        oldestLine.remove();
+        previousLineElements.shift(); // Remove from tracking array
+        slideUpRemainingLines();
+      }, 600);
+    } else {
       slideUpRemainingLines();
-    }, 600);
-  } else {
-    slideUpRemainingLines();
+    }
   }
-}
 
   if (activeIndex === allLines.length - 1) {
     backButton.classList.add('visible');
@@ -247,25 +251,13 @@ if (activeIndex > 0) {
   }
 }
 
-function addNewPreviousLine() {
-  const newPrevLine = document.createElement('div');
-  newPrevLine.textContent = allLines[activeIndex - 1];
-  newPrevLine.classList.add('previous-line');
-  previousLinesContainer.appendChild(newPrevLine);
-}
-
 function slideUpRemainingLines() {
-  const remainingLines = previousLinesContainer.querySelectorAll('.previous-line');
-  // Exclude the last line (newest one)
-  const linesToSlide = Array.from(remainingLines).slice(0, -1);
-
-  linesToSlide.forEach(line => {
+  previousLineElements.forEach(line => {
     line.style.transform = `translateY(-60px)`;
     setTimeout(() => {
       line.style.transition = 'none';
       line.style.transform = 'translateY(0)';
-      // Force browser reflow
-      void line.offsetWidth;
+      void line.offsetWidth; // Force browser reflow
       line.style.transition = 'transform 0.6s ease, opacity 0.6s ease';
     }, 600);
   });
