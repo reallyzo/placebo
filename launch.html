@@ -188,7 +188,7 @@ const allLines = [
   "harness your mind.",
   "you are the catalyst.",
   "you are the effect.",
-  "So wear it.",
+  "so wear it.",
   "live it.",
   "feel it.",
   "let the world wonder how you did it.",
@@ -224,20 +224,19 @@ function updateLines() {
   if (activeIndex > 0) {
     const existingLines = previousLinesContainer.querySelectorAll('.previous-line');
 
-    if (existingLines.length >= maxPreviousLines) {
-      const oldestLine = existingLines[0];
-      oldestLine.classList.add('fade-out-previous');
+if (existingLines.length > maxPreviousLines) {
+  const oldestLine = existingLines[0];
+  oldestLine.classList.add('fade-out-previous');
 
-      // Slide up remaining lines smoothly
-      setTimeout(() => {
-        oldestLine.remove();
-        slideUpRemainingLines();
-        addNewPreviousLine();
-      }, 600);
-    } else {
-      slideUpRemainingLines();
-      addNewPreviousLine();
-    }
+  setTimeout(() => {
+    oldestLine.remove();
+    slideUpRemainingLines();
+    addNewPreviousLine();
+  }, 600);
+} else {
+  slideUpRemainingLines();
+  addNewPreviousLine();
+}
   }
 
   if (activeIndex === allLines.length - 1) {
