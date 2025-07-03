@@ -203,7 +203,7 @@ const allLines = [
 let activeIndex = 0;
 let isScrolling = false;
 const maxPreviousLines = 3;
-let previousLineElements = []; // Track elements manually
+let previousLineElements = []; // manual stack
 
 const activeLine = document.getElementById('activeLine');
 const previousLinesContainer = document.getElementById('previousLines');
@@ -223,24 +223,25 @@ function updateLines() {
   }, 200);
 
   if (activeIndex > 0) {
-    // Always add the new previous line first
+    // Add new previous line
     const newPrevLine = document.createElement('div');
     newPrevLine.textContent = allLines[activeIndex - 1];
     newPrevLine.classList.add('previous-line');
     previousLinesContainer.appendChild(newPrevLine);
     previousLineElements.push(newPrevLine);
 
+    // Only trigger fade out if stack exceeds 3
     if (previousLineElements.length > maxPreviousLines) {
       const oldestLine = previousLineElements[0];
       oldestLine.classList.add('fade-out-previous');
 
       setTimeout(() => {
         oldestLine.remove();
-        previousLineElements.shift(); // Remove from tracking array
-        slideUpRemainingLines();
+        previousLineElements.shift(); // Remove from array
+        adjustPreviousLinePositions();
       }, 600);
     } else {
-      slideUpRemainingLines();
+      adjustPreviousLinePositions();
     }
   }
 
@@ -251,15 +252,10 @@ function updateLines() {
   }
 }
 
-function slideUpRemainingLines() {
-  previousLineElements.forEach(line => {
-    line.style.transform = `translateY(-60px)`;
-    setTimeout(() => {
-      line.style.transition = 'none';
-      line.style.transform = 'translateY(0)';
-      void line.offsetWidth; // Force browser reflow
-      line.style.transition = 'transform 0.6s ease, opacity 0.6s ease';
-    }, 600);
+function adjustPreviousLinePositions() {
+  // Reset positions based on array index
+  previousLineElements.forEach((line, index) => {
+    line.style.transform = `translateY(${index * -60}px)`;
   });
 }
 
