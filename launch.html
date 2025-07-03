@@ -228,17 +228,14 @@ function updateLines() {
       const oldestLine = existingLines[0];
       oldestLine.classList.add('fade-out-previous');
 
-      // Slide up remaining lines
-      for (let i = 1; i < existingLines.length; i++) {
-        existingLines[i].style.transform = `translateY(-60px)`; // Slide up by the approximate line height + margin
-      }
-
+      // Slide up remaining lines smoothly
       setTimeout(() => {
-        if (oldestLine) oldestLine.remove();
+        oldestLine.remove();
+        slideUpRemainingLines();
         addNewPreviousLine();
-        resetLineTransforms();
       }, 600);
     } else {
+      slideUpRemainingLines();
       addNewPreviousLine();
     }
   }
@@ -257,10 +254,17 @@ function addNewPreviousLine() {
   previousLinesContainer.appendChild(newPrevLine);
 }
 
-function resetLineTransforms() {
-  const allLines = previousLinesContainer.querySelectorAll('.previous-line');
-  allLines.forEach(line => {
-    line.style.transform = `translateY(0)`; // Reset transform after the animation
+function slideUpRemainingLines() {
+  const remainingLines = previousLinesContainer.querySelectorAll('.previous-line');
+  remainingLines.forEach(line => {
+    line.style.transform = `translateY(-60px)`;
+    setTimeout(() => {
+      line.style.transition = 'none';
+      line.style.transform = 'translateY(0)';
+      // Force browser to reflow to reset transition
+      void line.offsetWidth;
+      line.style.transition = 'transform 0.6s ease, opacity 0.6s ease';
+    }, 600);
   });
 }
 
@@ -300,6 +304,9 @@ function mobileScroll(direction) {
 
 prevBtn.addEventListener('click', () => mobileScroll('prev'));
 nextBtn.addEventListener('click', () => mobileScroll('next'));
+
+// Initialize first line on load
+activeLine.textContent = allLines[activeIndex];
   </script>
 
 </body>
