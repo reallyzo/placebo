@@ -256,12 +256,15 @@ function addNewPreviousLine() {
 
 function slideUpRemainingLines() {
   const remainingLines = previousLinesContainer.querySelectorAll('.previous-line');
-  remainingLines.forEach(line => {
+  // Exclude the last line (newest one)
+  const linesToSlide = Array.from(remainingLines).slice(0, -1);
+
+  linesToSlide.forEach(line => {
     line.style.transform = `translateY(-60px)`;
     setTimeout(() => {
       line.style.transition = 'none';
       line.style.transform = 'translateY(0)';
-      // Force browser to reflow to reset transition
+      // Force browser reflow
       void line.offsetWidth;
       line.style.transition = 'transform 0.6s ease, opacity 0.6s ease';
     }, 600);
