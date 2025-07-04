@@ -101,19 +101,42 @@
 
     /* Mobile arrow buttons */
 /* Mobile arrow buttons */
+.nav-buttons {
+  position: fixed;
+  bottom: 50px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 999;
+}
+
 .nav-button {
-  color: white;
-  font-size: 40px; /* Bigger arrow, fully visible */
+  width: 0;
+  height: 0;
   cursor: pointer;
   opacity: 0.7;
   user-select: none;
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
+.nav-button.up {
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 16px solid white;
+}
+
+.nav-button.down {
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-top: 16px solid white;
+}
+
 .nav-button:hover {
   opacity: 1;
-  transform: scale(1.8);
+  transform: scale(1.2);
 }
+
 
     .nav-buttons.hidden {
       display: none;
@@ -150,8 +173,8 @@
 
   <!-- Mobile Arrow Buttons -->
   <div class="nav-buttons hidden" id="navButtons">
-  <div class="nav-button up" id="prevBtn">&#x2BC5;</div> <!-- ⯅ -->
-  <div class="nav-button down" id="nextBtn">&#x2BC6;</div> <!-- ⯆ -->
+  <div class="nav-button up" id="prevBtn"></div>
+  <div class="nav-button down" id="nextBtn"></div>
   </div>
 
   <script>
