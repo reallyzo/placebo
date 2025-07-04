@@ -102,23 +102,12 @@
     /* Mobile arrow buttons */
 /* Mobile arrow buttons */
 .nav-button {
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  border: solid white;
-  border-width: 0 4px 4px 0;
+  color: white;
+  font-size: 40px; /* Bigger arrow, fully visible */
   cursor: pointer;
   opacity: 0.7;
   user-select: none;
   transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.nav-button.up {
-  transform: rotate(-135deg) scale(1.5); /* points up and scales bigger */
-}
-
-.nav-button.down {
-  transform: rotate(45deg) scale(1.5); /* points down and scales bigger */
 }
 
 .nav-button:hover {
@@ -161,8 +150,8 @@
 
   <!-- Mobile Arrow Buttons -->
   <div class="nav-buttons hidden" id="navButtons">
-  <div class="nav-button up" id="prevBtn"></div>
-  <div class="nav-button down" id="nextBtn"></div>
+  <div class="nav-button up" id="prevBtn">&#x2BC5;</div> <!-- ⯅ -->
+  <div class="nav-button down" id="nextBtn">&#x2BC6;</div> <!-- ⯆ -->
   </div>
 
   <script>
