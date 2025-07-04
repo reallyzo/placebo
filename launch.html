@@ -102,12 +102,11 @@
     /* Mobile arrow buttons */
 /* Mobile arrow buttons */
 .nav-button {
-  width: 20px;
-  height: 20px;
-  border: solid white;
-  border-width: 0 4px 4px 0;  /* Thicker lines for visibility */
   display: inline-block;
-  padding: 4px;
+  width: 16px;
+  height: 16px;
+  border: solid white;
+  border-width: 0 4px 4px 0;
   cursor: pointer;
   opacity: 0.7;
   user-select: none;
@@ -115,16 +114,16 @@
 }
 
 .nav-button.up {
-  transform: rotate(-135deg);
+  transform: rotate(-135deg) scale(1.5); /* points up and scales bigger */
 }
 
 .nav-button.down {
-  transform: rotate(45deg);
+  transform: rotate(45deg) scale(1.5); /* points down and scales bigger */
 }
 
 .nav-button:hover {
   opacity: 1;
-  transform: scale(1.2);
+  transform: scale(1.8);
 }
 
     .nav-buttons.hidden {
