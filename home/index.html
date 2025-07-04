@@ -1,1 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+  <meta charset="UTF-8" />
+  <title>PLACEBO</title>
+  <link rel="icon" href="favicon.png" type="image/png" />
+
+  <script>
+    if (window.innerWidth >= 768) {
+      const zoomRatio = window.innerWidth / screen.width;
+      const hasRun = sessionStorage.getItem('softZoomFix');
+
+      if (!hasRun && (zoomRatio < 0.9 || zoomRatio > 1.1)) {
+        sessionStorage.setItem('softZoomFix', 'true');
+
+        setTimeout(() => {
+          document.querySelectorAll('meta[name="viewport"]').forEach(m => m.remove());
+
+          const newMeta = document.createElement('meta');
+          newMeta.name = 'viewport';
+          newMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+          document.head.appendChild(newMeta);
+
+          const shim = document.createElement('div');
+          shim.style.cssText = 'position: fixed; width: 1px; height: 1px; top: 0; left: 0; opacity: 0; pointer-events: none;';
+          document.body.appendChild(shim);
+          void shim.offsetHeight;
+          shim.remove();
+        }, 100);
+      }
+    }
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+  <style>
+    html {
+      zoom: 100% !important;
+      transform: none !important;
+      transform-origin: top left !important;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      height: 100%;
+      overflow: hidden;
+      cursor: default;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-family: sans-serif;
+      text-align: center;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    .scale-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: breatheScale 6s ease-in-out infinite;
+    }
+
+    @keyframes breatheScale {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    .logo-container {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-style: preserve-3d;
+      will-change: transform;
+      transition: transform 0.12s ease-out;
+    }
+
+    .logo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: auto;
+      display: block;
+      pointer-events: none;
+    }
+
+    .logo-glow {
+      animation: fadeGlow 6s ease-in-out infinite;
+    }
+
+    @keyframes fadeGlow {
+      0%, 100% { opacity: 0.1; }
+      50% { opacity: 1; }
+    }
+
+    #motionBtn {
+      display: none;
+      background: none;
+      color: #fff;
+      font-size: 12px;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      opacity: 0.6;
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+    }
+
+    #motionBtn:hover {
+      opacity: 1;
+    }
+
+    .link-wrapper {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: #fff;
+      font-family: sans-serif;
+      z-index: 2;
+    }
+
+    @keyframes linkGlow {
+      0%, 100% { opacity: 0.95; text-shadow: 0 0 0.5px #fff; }
+      50% { opacity: 1; text-shadow: 0 0 0.7px #fff; }
+    }
+
+    .link-wrapper a {
+      color: #fff;
+      text-decoration: none;
+      animation: linkGlow 6s ease-in-out infinite;
+      transition: transform 0.2s ease, text-shadow 0.2s ease;
+      will-change: transform;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .link-wrapper a:hover {
+      transform: scale(1.05);
+      text-shadow: 0 0 3px #fff;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .scale-wrapper { animation: none; }
+      .logo-glow { animation: none; opacity: 0.5; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="scale-wrapper">
+    <div class="logo-container" id="logoContainer">
+      <img src="triangle-glow-style-2.png" class="logo logo-base" alt="PLACEBO Logo Base" />
+      <img src="triangle-glow-style-2-ultra.png" class="logo logo-glow" alt="PLACEBO Logo Glow" />
+    </div>
+  </div>
+
+  <div class="link-wrapper">
+    <a id="link1" href="https://instagram.com/placeboreal" target="_blank">instagram</a>
+    <a id="link2" href="https://www.tiktok.com/@placebo8026" target="_blank">tiktok</a>
+    <a id="link3" href="mailto:placebocreateyourreality@gmail.com">contact</a>
+    <a id="link4" href="launch-info">launch info</a>
+  </div>
+
+  <button id="motionBtn">Enable Motion</button>
+
+  <script>
+    const container = document.getElementById('logoContainer');
+    const motionBtn = document.getElementById('motionBtn');
+
+    const links = [
+      { el: document.getElementById('link1'), shiftX: 0, shiftY: 0, targetX: 0, targetY: 0, factor: 2 },
+      { el: document.getElementById('link2'), shiftX: 0, shiftY: 0, targetX: 0, targetY: 0, factor: 3 },
+      { el: document.getElementById('link3'), shiftX: 0, shiftY: 0, targetX: 0, targetY: 0, factor: 2.5 },
+      { el: document.getElementById('link4'), shiftX: 0, shiftY: 0, targetX: 0, targetY: 0, factor: 3.2 }
+    ];
+
+    let rotateX = 0, rotateY = 0;
+    let shiftX = 0, shiftY = 0;
+
+    function clamp(val, min, max) {
+      return Math.max(min, Math.min(max, val));
+    }
+
+    function updateTransform() {
+      container.style.transform = `
+        translateX(${shiftX}px)
+        translateY(${shiftY}px)
+        rotateX(${rotateX}deg)
+        rotateY(${rotateY}deg)
+      `;
+
+      links.forEach(link => {
+        // Use style.translate instead of transform so scale hover can work
+        link.el.style.translate = `${link.shiftX}px ${link.shiftY}px`;
+      });
+    }
+
+    if (window.innerWidth >= 768) {
+      let rect = container.getBoundingClientRect();
+      let lastRectUpdate = Date.now();
+
+      document.addEventListener('mousemove', (e) => {
+        const now = Date.now();
+        if (now - lastRectUpdate > 100) {
+          rect = container.getBoundingClientRect();
+          lastRectUpdate = now;
+        }
+
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const offsetX = (e.clientX - centerX) / (rect.width / 2);
+        const offsetY = (e.clientY - centerY) / (rect.height / 2);
+
+        let targetX = clamp(offsetY * -6, -15, 15);
+        let targetY = clamp(offsetX * 6, -15, 15);
+
+        rotateX += (targetX - rotateX) * 0.08;
+        rotateY += (targetY - rotateY) * 0.08;
+
+        links.forEach(link => {
+          link.targetX = clamp(offsetX * link.factor, -link.factor, link.factor);
+          link.targetY = clamp(offsetY * link.factor, -link.factor, link.factor);
+        });
+      });
+
+      document.addEventListener('mouseleave', () => {
+        links.forEach(link => {
+          link.targetX = 0;
+          link.targetY = 0;
+        });
+      });
+
+      function animateDesktop() {
+        links.forEach(link => {
+          link.shiftX += (link.targetX - link.shiftX) * 0.05;
+          link.shiftY += (link.targetY - link.shiftY) * 0.05;
+        });
+
+        updateTransform();
+        requestAnimationFrame(animateDesktop);
+      }
+
+      animateDesktop();
+    }
+
+if (window.innerWidth < 768) {
+  let baselineBeta = null;
+  let baselineGamma = null;
+
+  // Assign unique factors to each link for better desync
+  links[0].factor = { x: 0.7, y: 0.6 };
+  links[1].factor = { x: 1.1, y: 0.8 };
+  links[2].factor = { x: 0.9, y: 1.0 };
+  links[3].factor = { x: 1.3, y: 0.7 };
+
+  function handleOrientation(event) {
+    const beta = event.beta || 0;
+    const gamma = event.gamma || 0;
+
+    if (baselineBeta === null) baselineBeta = beta;
+    if (baselineGamma === null) baselineGamma = gamma;
+
+    const relativeTiltX = clamp((beta - baselineBeta) / -2.5, -10, 10);
+    const relativeTiltY = clamp((gamma - baselineGamma) / 2.5, -10, 10);
+
+    rotateX += ((relativeTiltX * 0.8) - rotateX) * 0.06;
+    rotateY += ((relativeTiltY * 0.8) - rotateY) * 0.06;
+
+    shiftX += ((relativeTiltY * 0.5) - shiftX) * 0.06;
+    shiftY += ((relativeTiltX * 0.5) - shiftY) * 0.06;
+
+    links.forEach((link, index) => {
+      link.shiftX += ((relativeTiltY * link.factor.x) - link.shiftX) * 0.06;
+      link.shiftY += ((relativeTiltX * link.factor.y) - link.shiftY) * 0.06;
+    });
+
+    updateTransform();
+  }
+
+  if (typeof DeviceOrientationEvent !== 'undefined' &&
+    typeof DeviceOrientationEvent.requestPermission === 'function') {
+    motionBtn.style.display = 'block';
+    motionBtn.addEventListener('click', () => {
+      DeviceOrientationEvent.requestPermission()
+        .then(state => {
+          if (state === 'granted') {
+            window.addEventListener('deviceorientation', handleOrientation);
+            motionBtn.style.display = 'none';
+          }
+        })
+        .catch(console.error);
+    });
+  } else {
+    window.addEventListener('deviceorientation', handleOrientation);
+  }
+}
+  </script>
+</body>
+</html>
