@@ -188,7 +188,7 @@ function typeWriter(text, i = 0) {
     activeLine.textContent += text.charAt(i);
 
     // Random typing speed between 40ms and 120ms
-    const randomSpeed = Math.floor(Math.random() * 80) + 40;
+const randomSpeed = Math.floor(Math.random() * 50) + 20;
 
     setTimeout(() => typeWriter(text, i + 1), randomSpeed);
   }
