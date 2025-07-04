@@ -223,7 +223,7 @@ function typeWriter(text, i = 0) {
 
     // Set speed ranges based on word count
     let randomSpeed;
-    if (wordCount <= 2) {
+    if (wordCount <= 1) {
       // Normal speed for short lines
       randomSpeed = Math.floor(Math.random() * 50) + 50; // 50-100ms
     } else {
