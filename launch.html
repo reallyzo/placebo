@@ -30,7 +30,6 @@
   font-size: 36px;
   white-space: normal; /* This allows word wrapping */
   text-align: center;
-  border-right: 2px solid white;
   overflow: hidden;
   max-width: 90%; /* Keeps text inside screen edges */
   word-break: break-word; /* Forces long words to break if needed */
@@ -131,9 +130,20 @@
     
     @media (max-width: 768px) {
   .active-line {
-    font-size: 24px; /* Smaller text on mobile */
+    font-size: 28px; /* Smaller text on mobile */
   }
 }
+    .cursor {
+  display: inline-block;
+  margin-left: 2px;
+  animation: blink 0.7s step-end infinite;
+}
+
+@keyframes blink {
+  from, to { opacity: 0; }
+  50% { opacity: 1; }
+}
+
   </style>
 </head>
 
@@ -142,7 +152,7 @@
   <div class="mask"></div>
 
   <div class="fade-line-wrapper">
-    <div class="active-line" id="activeLine"></div>
+    <div class="active-line" id="activeLine"><span id="typedText"></span><span class="cursor">|</span></div>
   </div>
 
   <a href="index.html" class="back-button" id="backBtn">back to home</a>
@@ -193,7 +203,7 @@
 
 function typeWriter(text, i = 0) {
   if (i < text.length) {
-    activeLine.textContent += text.charAt(i);
+  document.getElementById('typedText').textContent += text.charAt(i);
 
     // Random typing speed between 20ms and 70ms
 const randomSpeed = Math.floor(Math.random() * 50) + 20;
@@ -207,7 +217,7 @@ const randomSpeed = Math.floor(Math.random() * 50) + 20;
 
       setTimeout(() => {
         activeLine.classList.remove('fade-out');
-        activeLine.textContent = '';
+        document.getElementById('typedText').textContent = '';
         typeWriter(allLines[activeIndex]);
       }, 300);
 
