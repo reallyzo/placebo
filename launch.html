@@ -28,15 +28,16 @@
 
     .active-line {
       font-size: 36px;
-      opacity: 1;
       white-space: nowrap;
       text-align: center;
-      transition: opacity 0.5s ease, transform 0.5s ease;
+      border-right: 2px solid white;
+      overflow: hidden;
     }
 
     .fade-out {
       opacity: 0 !important;
       transform: translateY(-20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
     }
 
     @keyframes linkGlow {
@@ -97,7 +98,7 @@
       background: linear-gradient(to top, #000, transparent);
     }
 
-    /* Mobile arrow buttons (minimalist style) */
+    /* Mobile arrow buttons */
     .nav-buttons {
       position: fixed;
       bottom: 50px;
@@ -136,7 +137,7 @@
     <div class="active-line" id="activeLine"></div>
   </div>
 
-  <a href="index.html" class="back-button" id="backBtn">Back to Home</a>
+  <a href="index.html" class="back-button" id="backBtn">back to home</a>
 
   <!-- Mobile Arrow Buttons -->
   <div class="nav-buttons hidden" id="navButtons">
@@ -175,22 +176,28 @@
 
     let activeIndex = 0;
     let isScrolling = false;
-
     const activeLine = document.getElementById('activeLine');
     const backButton = document.getElementById('backBtn');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     const navButtons = document.getElementById('navButtons');
-
     const isMobile = window.innerWidth < 768;
+
+    function typeWriter(text, i = 0) {
+      if (i < text.length) {
+        activeLine.textContent += text.charAt(i);
+        setTimeout(() => typeWriter(text, i + 1), 60);
+      }
+    }
 
     function updateLines() {
       activeLine.classList.add('fade-out');
 
       setTimeout(() => {
-        activeLine.textContent = allLines[activeIndex];
         activeLine.classList.remove('fade-out');
-      }, 200);
+        activeLine.textContent = '';
+        typeWriter(allLines[activeIndex]);
+      }, 300);
 
       if (activeIndex === allLines.length - 1) {
         backButton.classList.add('visible');
