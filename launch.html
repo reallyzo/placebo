@@ -200,26 +200,30 @@
     const nextBtn = document.getElementById('nextBtn');
     const navButtons = document.getElementById('navButtons');
     const isMobile = window.innerWidth < 768;
+    let typingTimeout; // store the timeout ID
 
 function typeWriter(text, i = 0) {
   if (i < text.length) {
-  document.getElementById('typedText').textContent += text.charAt(i);
+    document.getElementById('typedText').textContent += text.charAt(i);
 
-    // Random typing speed between 20ms and 70ms
-const randomSpeed = Math.floor(Math.random() * 50) + 20;
+    const randomSpeed = Math.floor(Math.random() * 50) + 20; // your chosen speed
 
-    setTimeout(() => typeWriter(text, i + 1), randomSpeed);
+    typingTimeout = setTimeout(() => typeWriter(text, i + 1), randomSpeed);
   }
 }
 
     function updateLines() {
       activeLine.classList.add('fade-out');
 
-      setTimeout(() => {
-        activeLine.classList.remove('fade-out');
-        document.getElementById('typedText').textContent = '';
-        typeWriter(allLines[activeIndex]);
-      }, 300);
+setTimeout(() => {
+  activeLine.classList.remove('fade-out');
+
+  // CLEAR the previous timeout to stop the old typing loop
+  clearTimeout(typingTimeout);
+
+  document.getElementById('typedText').textContent = '';
+  typeWriter(allLines[activeIndex]);
+}, 300);
 
       if (activeIndex === allLines.length - 1) {
         backButton.classList.add('visible');
