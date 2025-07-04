@@ -183,12 +183,16 @@
     const navButtons = document.getElementById('navButtons');
     const isMobile = window.innerWidth < 768;
 
-    function typeWriter(text, i = 0) {
-      if (i < text.length) {
-        activeLine.textContent += text.charAt(i);
-        setTimeout(() => typeWriter(text, i + 1), 60);
-      }
-    }
+function typeWriter(text, i = 0) {
+  if (i < text.length) {
+    activeLine.textContent += text.charAt(i);
+
+    // Random typing speed between 40ms and 120ms
+    const randomSpeed = Math.floor(Math.random() * 80) + 40;
+
+    setTimeout(() => typeWriter(text, i + 1), randomSpeed);
+  }
+}
 
     function updateLines() {
       activeLine.classList.add('fade-out');
