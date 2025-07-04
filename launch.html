@@ -52,6 +52,22 @@ html, body {
   opacity: 0 !important;
   transform: translateY(-20px);
 }
+    .previous-lines-wrapper {
+  position: absolute;
+  top: 20%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  overflow: hidden; /* hides lines that slide out */
+}
+
+.previous-lines {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.5s ease; /* this is the smooth slide */
+}
+
 
 
 .active-line {
@@ -165,7 +181,9 @@ html, body {
   <div class="mask"></div>
 
   <div class="fade-line-wrapper">
-    <div class="previous-lines" id="previousLines"></div>
+    <div class="previous-lines-wrapper">
+  <div class="previous-lines" id="previousLines"></div>
+</div>
     <div class="active-line" id="activeLine"></div>
   </div>
 
@@ -238,13 +256,25 @@ function updateLines() {
       oldestLine.classList.remove('show');
       oldestLine.classList.add('fade-out-previous');
 
-      // Wait for the fade out to finish before adding the new line
-      setTimeout(() => {
-        if (oldestLine) oldestLine.remove();
+      // Slide the container up
+      previousLinesContainer.style.transform = `translateY(-${40 + 20}px)`; // (line height + margin)
 
-        // Add the new line after the oldest is fully removed
+      // After slide is done
+      setTimeout(() => {
+        oldestLine.remove();
+
+        // Reset container position
+        previousLinesContainer.style.transition = 'none';
+        previousLinesContainer.style.transform = `translateY(0)`;
+
+        // Force reflow
+        void previousLinesContainer.offsetWidth;
+
+        previousLinesContainer.style.transition = 'transform 0.5s ease';
+
+        // Add the new line after the oldest is removed
         addNewPreviousLine();
-      }, 600); // Must match fade-out time
+      }, 500); // Match slide transition
 
     } else {
       // If under max, add new line immediately
@@ -258,7 +288,6 @@ function updateLines() {
     backButton.classList.remove('visible');
   }
 }
-
 function addNewPreviousLine() {
   const newPrevLine = document.createElement('div');
   newPrevLine.textContent = allLines[activeIndex - 1];
