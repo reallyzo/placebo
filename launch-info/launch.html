@@ -1,1 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+  <meta charset="UTF-8" />
+  <title>Launch Info – PLACEBO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <link rel="icon" href="favicon.png" type="image/png" />
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      color: #fff;
+      font-family: sans-serif;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .fade-line-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+.active-line {
+  font-size: 36px;
+  white-space: normal; /* This allows word wrapping */
+  text-align: center;
+  overflow: hidden;
+  max-width: 90%; /* Keeps text inside screen edges */
+  word-break: break-word; /* Forces long words to break if needed */
+}
+
+    .fade-out {
+      opacity: 0 !important;
+      transform: translateY(-20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    @keyframes linkGlow {
+      0%, 100% { opacity: 1; text-shadow: 0 0 1px #fff; }
+      50% { opacity: 1; text-shadow: 0 0 3px #fff; }
+    }
+
+    .back-button {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      text-decoration: none;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      font-size: 14px;
+      animation: linkGlow 6s ease-in-out infinite;
+      cursor: pointer;
+    }
+
+    .back-button.visible {
+      opacity: 1;
+    }
+
+    .back-button:hover {
+      transform: translateX(-50%) scale(1.05);
+      text-shadow: 0 0 3px #fff;
+      text-decoration: underline;
+    }
+
+    .mask {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 998;
+    }
+
+    .mask::before, .mask::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 20%;
+      pointer-events: none;
+    }
+
+    .mask::before {
+      top: 0;
+      background: linear-gradient(to bottom, #000, transparent);
+    }
+
+    .mask::after {
+      bottom: 0;
+      background: linear-gradient(to top, #000, transparent);
+    }
+
+    /* Mobile arrow buttons */
+/* Mobile arrow buttons */
+.nav-buttons {
+  position: fixed;
+  bottom: 50px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 999;
+}
+
+.nav-button {
+  width: 0;
+  height: 0;
+  cursor: pointer;
+  opacity: 1;
+  user-select: none;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.nav-button.up {
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 16px solid white; /* Make this white for solid arrow */
+}
+
+.nav-button.down {
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-top: 16px solid white; /* Make this white for solid arrow */
+}
+
+.nav-button:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+    .nav-buttons.hidden {
+      display: none;
+    }
+    
+    @media (max-width: 768px) {
+  .active-line {
+    font-size: 28px; /* Smaller text on mobile */
+  }
+}
+    .cursor {
+  display: inline-block;
+  margin-left: 2px;
+  animation: blink 0.7s step-end infinite;
+}
+
+@keyframes blink {
+  from, to { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+  </style>
+</head>
+
+<body>
+
+  <div class="mask"></div>
+
+  <div class="fade-line-wrapper">
+    <div class="active-line" id="activeLine"><span id="typedText"></span><span class="cursor">|</span></div>
+  </div>
+
+  <a href="index.html" class="back-button" id="backBtn">back to home</a>
+
+  <!-- Mobile Arrow Buttons -->
+  <div class="nav-buttons hidden" id="navButtons">
+  <div class="nav-button up" id="prevBtn"></div>
+  <div class="nav-button down" id="nextBtn"></div>
+  </div>
+
+  <script>
+    const allLines = [
+      "not a product.",
+      "not a pill.",
+      "not a program.",
+      "it’s belief.",
+      "everything is within.",
+      "the placebo effect is real.",
+      "science proved it.",
+      "the mind can heal.",
+      "the mind can create.",
+      "the mind can transform.",
+      "just because it believes.",
+      "take control.",
+      "utilize your mind.",
+      "you are the catalyst.",
+      "you are the effect.",
+      "so wear it.",
+      "live it.",
+      "feel it.",
+      "let the world wonder how you did it.",
+      "don't let go.",
+      "it's waiting for you.",
+      "PLACEBO.",
+      "the mind is the medicine.",
+      "the effect is you.",
+      "#PLACEBOEFFECT"
+    ];
+
+    let activeIndex = 0;
+    let isScrolling = false;
+    const activeLine = document.getElementById('activeLine');
+    const backButton = document.getElementById('backBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const navButtons = document.getElementById('navButtons');
+    const isMobile = window.innerWidth < 768;
+    let typingTimeout; // store the timeout ID
+
+function typeWriter(text, i = 0) {
+  if (i < text.length) {
+    document.getElementById('typedText').textContent += text.charAt(i);
+
+    const randomSpeed = Math.floor(Math.random() * 50) + 20; // your chosen speed
+
+    typingTimeout = setTimeout(() => typeWriter(text, i + 1), randomSpeed);
+  }
+}
+
+    function updateLines() {
+      activeLine.classList.add('fade-out');
+
+setTimeout(() => {
+  activeLine.classList.remove('fade-out');
+
+  // CLEAR the previous timeout to stop the old typing loop
+  clearTimeout(typingTimeout);
+
+  document.getElementById('typedText').textContent = '';
+  typeWriter(allLines[activeIndex]);
+}, 300);
+
+      if (activeIndex === allLines.length - 1) {
+        backButton.classList.add('visible');
+      } else {
+        backButton.classList.remove('visible');
+      }
+    }
+
+    updateLines();
+
+    if (!isMobile) {
+      window.addEventListener('wheel', (e) => {
+        if (isScrolling) return;
+
+        if (e.deltaY > 0 && activeIndex < allLines.length - 1) {
+          activeIndex++;
+          updateLines();
+        } else if (e.deltaY < 0 && activeIndex > 0) {
+          activeIndex--;
+          updateLines();
+        }
+
+        isScrolling = true;
+        setTimeout(() => { isScrolling = false; }, 500);
+      });
+    } else {
+      navButtons.classList.remove('hidden');
+    }
+
+    function mobileScroll(direction) {
+      if (isScrolling) return;
+
+      if (direction === 'next' && activeIndex < allLines.length - 1) {
+        activeIndex++;
+        updateLines();
+      } else if (direction === 'prev' && activeIndex > 0) {
+        activeIndex--;
+        updateLines();
+      }
+
+      isScrolling = true;
+      setTimeout(() => { isScrolling = false; }, 500);
+    }
+
+    prevBtn.addEventListener('click', () => mobileScroll('prev'));
+    nextBtn.addEventListener('click', () => mobileScroll('next'));
+  </script>
+
+</body>
+
+</html>
