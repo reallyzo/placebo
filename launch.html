@@ -26,13 +26,15 @@
       align-items: center;
     }
 
-    .active-line {
-      font-size: 36px;
-      white-space: nowrap;
-      text-align: center;
-      border-right: 2px solid white;
-      overflow: hidden;
-    }
+.active-line {
+  font-size: 36px;
+  white-space: normal; /* This allows word wrapping */
+  text-align: center;
+  border-right: 2px solid white;
+  overflow: hidden;
+  max-width: 90%; /* Keeps text inside screen edges */
+  word-break: break-word; /* Forces long words to break if needed */
+}
 
     .fade-out {
       opacity: 0 !important;
@@ -126,6 +128,12 @@
     .nav-buttons.hidden {
       display: none;
     }
+    
+    @media (max-width: 768px) {
+  .active-line {
+    font-size: 24px; /* Smaller text on mobile */
+  }
+}
   </style>
 </head>
 
