@@ -219,7 +219,17 @@ function typeWriter(text, i = 0) {
   if (i < text.length) {
     document.getElementById('typedText').textContent += text.charAt(i);
 
-    const randomSpeed = Math.floor(Math.random() * 50) + 20; // your chosen speed
+    const wordCount = text.trim().split(/\s+/).length;
+
+    // Set speed ranges based on word count
+    let randomSpeed;
+    if (wordCount <= 3) {
+      // Normal speed for short lines
+      randomSpeed = Math.floor(Math.random() * 50) + 50; // 50-100ms
+    } else {
+      // Faster speed for longer lines
+      randomSpeed = Math.floor(Math.random() * 30) + 20; // 20-50ms
+    }
 
     typingTimeout = setTimeout(() => typeWriter(text, i + 1), randomSpeed);
   }
